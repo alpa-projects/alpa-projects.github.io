@@ -48,8 +48,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Alpa Tutorials</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started with Alpa</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#import-libraries">Import libraries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#train-a-mlp-on-a-single-device">Train a MLP on a single device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#import-libraries">Import Libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#train-a-mlp-on-a-single-device">Train a MLP on a Single Device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#auto-parallelization-with-parallelize">Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#speed-comparision">Speed Comparision</a></li>
 </ul>
@@ -101,7 +101,7 @@ plan by solving optimization problems. Therefore, you can efficiently scale your
 computation to a distributed cluster, without any expertise in distributed computing.</p>
 <p>In this tutorial, we show the usage of Alpa with a MLP example.</p>
 <section id="import-libraries">
-<h2>Import libraries<a class="headerlink" href="#import-libraries" title="Permalink to this headline"></a></h2>
+<h2>Import Libraries<a class="headerlink" href="#import-libraries" title="Permalink to this headline"></a></h2>
 <p>We first import the required libraries.
 Flax and optax are libraries on top of jax for training neural networks.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">alpa</span>
@@ -117,7 +117,7 @@ Flax and optax are libraries on top of jax for training neural networks.</p>
 </div>
 </section>
 <section id="train-a-mlp-on-a-single-device">
-<h2>Train a MLP on a single device<a class="headerlink" href="#train-a-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
+<h2>Train a MLP on a Single Device<a class="headerlink" href="#train-a-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
 <p>To begin with, we implement the model and training loop on a single device. We will
 parallelize it later. We train a MLP to learn the function y = Wx + b.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MLPModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -179,7 +179,8 @@ You may know that jax has some built-in transformations for parallelization,
 such as <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, <code class="docutils literal notranslate"><span class="pre">pjit</span></code>, and <code class="docutils literal notranslate"><span class="pre">xmap</span></code>. However, these transformations are not
 fully automatic, because they require users to manually specify the parallelization
 strategies such as parallelization axes and device mapping schemes. You also need to
-manually call communication primitives such as <code class="docutils literal notranslate"><span class="pre">lax.pmean</span></code> and <code class="docutils literal notranslate"><span class="pre">lax.all_gather</span></code>.
+manually call communication primitives such as <code class="docutils literal notranslate"><span class="pre">lax.pmean</span></code> and <code class="docutils literal notranslate"><span class="pre">lax.all_gather</span></code>,
+which is nontrivial if you want to do advanced model parallelization.
 Unlike these transformations, <a href="#id1"><span class="problematic" id="id2">``</span></a>&#64;alpa.parallelize` can do all things automatically for
 you. You only need to write the code as if you are writing for a single device.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Transform the function and run it</span>
@@ -195,8 +196,9 @@ you. You only need to write the code as if you are writing for a single device.<
 <section id="speed-comparision">
 <h2>Speed Comparision<a class="headerlink" href="#speed-comparision" title="Permalink to this headline"></a></h2>
 <p>By parallelizing a jax function, we can accelerate the computation and reduce
-the memory usage per GPU. We benchmark the execution speed of <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> and
-<code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> on a 8-GPU machine.</p>
+the memory usage per GPU, so we can train large models faster.
+We benchmark the execution speed of <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code>
+on a 8-GPU machine.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alpa.util</span> <span class="kn">import</span> <span class="n">benchmark_func</span>
 
 <span class="n">jit_train_step</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">train_step</span><span class="p">,</span> <span class="n">donate_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
@@ -224,11 +226,11 @@ the memory usage per GPU. We benchmark the execution speed of <code class="docut
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution. Mean: 232.55 ms, Std: 0.53 ms
-Parallel execution. Mean: 84.84 ms, Std: 0.17 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution. Mean: 232.56 ms, Std: 0.67 ms
+Parallel execution. Mean: 84.87 ms, Std: 0.06 ms
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  40.955 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  40.602 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c057f060b15d3f12dbd33a402784ff5a/getting_started.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">getting_started.py</span></code></a></p>

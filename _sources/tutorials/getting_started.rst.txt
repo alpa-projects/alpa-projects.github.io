@@ -36,7 +36,7 @@ In this tutorial, we show the usage of Alpa with a MLP example.
 
 .. GENERATED FROM PYTHON SOURCE LINES 20-24
 
-Import libraries
+Import Libraries
 --------------------
 We first import the required libraries.
 Flax and optax are libraries on top of jax for training neural networks.
@@ -66,7 +66,7 @@ Flax and optax are libraries on top of jax for training neural networks.
 
 .. GENERATED FROM PYTHON SOURCE LINES 37-41
 
-Train a MLP on a single device
+Train a MLP on a Single Device
 ------------------------------
 To begin with, we implement the model and training loop on a single device. We will
 parallelize it later. We train a MLP to learn the function y = Wx + b.
@@ -130,7 +130,7 @@ parallelize it later. We train a MLP to learn the function y = Wx + b.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 90-103
+.. GENERATED FROM PYTHON SOURCE LINES 90-104
 
 Auto-parallelization with ``@parallelize``
 ------------------------------------------
@@ -142,11 +142,12 @@ You may know that jax has some built-in transformations for parallelization,
 such as ``pmap``, ``pjit``, and ``xmap``. However, these transformations are not
 fully automatic, because they require users to manually specify the parallelization
 strategies such as parallelization axes and device mapping schemes. You also need to
-manually call communication primitives such as ``lax.pmean`` and ``lax.all_gather``.
+manually call communication primitives such as ``lax.pmean`` and ``lax.all_gather``,
+which is nontrivial if you want to do advanced model parallelization.
 Unlike these transformations, ``@alpa.parallelize` can do all things automatically for
 you. You only need to write the code as if you are writing for a single device.
 
-.. GENERATED FROM PYTHON SOURCE LINES 103-112
+.. GENERATED FROM PYTHON SOURCE LINES 104-113
 
 .. code-block:: default
 
@@ -166,15 +167,16 @@ you. You only need to write the code as if you are writing for a single device.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 113-118
+.. GENERATED FROM PYTHON SOURCE LINES 114-120
 
 Speed Comparision 
 -----------------
 By parallelizing a jax function, we can accelerate the computation and reduce
-the memory usage per GPU. We benchmark the execution speed of ``@jax.jit`` and
-``@alpa.parallelize`` on a 8-GPU machine.
+the memory usage per GPU, so we can train large models faster.
+We benchmark the execution speed of ``@jax.jit`` and ``@alpa.parallelize``
+on a 8-GPU machine.
 
-.. GENERATED FROM PYTHON SOURCE LINES 118-143
+.. GENERATED FROM PYTHON SOURCE LINES 120-145
 
 .. code-block:: default
 
@@ -213,8 +215,8 @@ the memory usage per GPU. We benchmark the execution speed of ``@jax.jit`` and
 
  .. code-block:: none
 
-    Serial execution. Mean: 232.55 ms, Std: 0.53 ms
-    Parallel execution. Mean: 84.84 ms, Std: 0.17 ms
+    Serial execution. Mean: 232.56 ms, Std: 0.67 ms
+    Parallel execution. Mean: 84.87 ms, Std: 0.06 ms
 
 
 
@@ -222,7 +224,7 @@ the memory usage per GPU. We benchmark the execution speed of ``@jax.jit`` and
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  40.955 seconds)
+   **Total running time of the script:** ( 0 minutes  40.602 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:
