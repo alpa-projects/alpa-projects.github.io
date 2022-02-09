@@ -50,7 +50,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#import-libraries">Import Libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#train-an-mlp-on-a-single-device">Train an MLP on a Single Device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#auto-parallelization-with-parallelize">Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#speed-comparision">Speed Comparision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#execution-speed-comparision">Execution Speed Comparision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-consumption-comparision">Memory Consumption Comparision</a></li>
 </ul>
 </li>
 </ul>
@@ -120,22 +121,24 @@ does not depend on these specific libraries.</p>
 <div class="section" id="train-an-mlp-on-a-single-device">
 <h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
 <p>To begin with, we implement the model and training loop on a single device. We will
-parallelize it later. We train an MLP to learn the function y = Wx + b.</p>
+parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MLPModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">output_dim</span><span class="p">:</span> <span class="nb">int</span>
     <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="p">:</span> <span class="nb">int</span>
 
     <span class="nd">@nn</span><span class="o">.</span><span class="n">compact</span>
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="p">):</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
 
-<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a> <span class="o">=</span> <span class="mi">4096</span>
-<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a> <span class="o">=</span> <span class="mi">4096</span>
-<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a> <span class="o">=</span> <span class="mi">8</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a> <span class="o">=</span> <span class="mi">2048</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a> <span class="o">=</span> <span class="mi">2048</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="c1"># Generate ground truth W and b</span>
 <span class="n">rngkey</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -146,12 +149,12 @@ parallelize it later. We train an MLP to learn the function y = Wx + b.</p>
 <span class="c1"># Generate the training data</span>
 <span class="n">ksample</span><span class="p">,</span> <span class="n">knoise</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">ksample</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">W</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">knoise</span><span class="p">,(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">W</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">knoise</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">))</span>
 
 <span class="c1"># Initialize a train state, which includes the model paramter and optimizer state.</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">MLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="p">)</span>
 <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">rngkey</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">tx</span> <span class="o">=</span> <span class="n">optax</span><span class="o">.</span><span class="n">sgd</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+<span class="n">tx</span> <span class="o">=</span> <span class="n">optax</span><span class="o">.</span><span class="n">adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
 
 <span class="c1"># Define training step</span>
@@ -184,7 +187,7 @@ fully automatic, because they require users to manually specify the parallelizat
 strategies such as parallelization axes and device mapping schemes. You also need to
 manually call communication primitives such as <code class="docutils literal notranslate"><span class="pre">lax.pmean</span></code> and <code class="docutils literal notranslate"><span class="pre">lax.all_gather</span></code>,
 which is nontrivial if you want to do advanced model parallelization.
-Unlike these transformations, <a href="#id1"><span class="problematic" id="id2">``</span></a>&#64;alpa.parallelize` can do all things automatically for
+Unlike these transformations, <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> can do all things automatically for
 you. You only need to write the code as if you are writing for a single device.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Transform the function and run it</span>
 <span class="n">parallel_train_step</span> <span class="o">=</span> <span class="n">alpa</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">train_step</span><span class="p">)</span>
@@ -192,7 +195,7 @@ you. You only need to write the code as if you are writing for a single device.<
 <span class="n">actual_state</span> <span class="o">=</span> <span class="n">parallel_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 
 <span class="c1"># Test correctness</span>
-<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
 
 <span class="c1"># The types of parameters in actual_state become `ShardedDeviceArray`,</span>
 <span class="c1"># which means the parameters are now stored distributedly on multiple devices.</span>
@@ -204,8 +207,8 @@ you. You only need to write the code as if you are writing for a single device.<
 </pre></div>
 </div>
 </div>
-<div class="section" id="speed-comparision">
-<h2>Speed Comparision<a class="headerlink" href="#speed-comparision" title="Permalink to this headline"></a></h2>
+<div class="section" id="execution-speed-comparision">
+<h2>Execution Speed Comparision<a class="headerlink" href="#execution-speed-comparision" title="Permalink to this headline"></a></h2>
 <p>By parallelizing a jax function, we can accelerate the computation and reduce
 the memory usage per GPU, so we can train large models faster.
 We benchmark the execution speed of <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code>
@@ -224,7 +227,7 @@ on a 8-GPU machine.</p>
 
 <span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">serial_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Serial execution. Mean: {np.mean(costs):.2f} ms, Std: {np.std(costs):.2f} ms&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Serial execution time. Mean: {np.mean(costs):.2f} ms, Std: {np.std(costs):.2f} ms&quot;</span><span class="p">)</span>
 
 <span class="c1"># Benchmark parallel execution</span>
 <span class="k">def</span> <span class="nf">parallel_execution</span><span class="p">():</span>
@@ -233,15 +236,33 @@ on a 8-GPU machine.</p>
 
 <span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">parallel_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parallel execution. Mean: {np.mean(costs):.2f} ms, Std: {np.std(costs):.2f} ms&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parallel execution time. Mean: {np.mean(costs):.2f} ms, Std: {np.std(costs):.2f} ms&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution. Mean: 234.74 ms, Std: 0.44 ms
-Parallel execution. Mean: 85.10 ms, Std: 0.21 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 157.22 ms, Std: 0.25 ms
+Parallel execution time. Mean: 46.42 ms, Std: 0.14 ms
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  40.607 seconds)</p>
+</div>
+<div class="section" id="memory-consumption-comparision">
+<h2>Memory Consumption Comparision<a class="headerlink" href="#memory-consumption-comparision" title="Permalink to this headline"></a></h2>
+<p>We can also compare the memory consumption per GPU.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a> <span class="o">=</span> <span class="mi">1024</span> <span class="o">**</span> <span class="mi">3</span>
+
+<span class="n">executable</span> <span class="o">=</span> <span class="n">jit_train_step</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span><span class="o">.</span><span class="n">runtime_executable</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Serial execution. Per GPU Memory Consumption: {executable.total_allocation_size() / GB:.2f} GB&quot;</span><span class="p">)</span>
+
+<span class="n">executable</span> <span class="o">=</span> <span class="n">parallel_train_step</span><span class="o">.</span><span class="n">get_executable</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parallel execution. Per GPU Memory Consumption: {executable.get_total_allocation_size() / GB:.2f} GB&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution. Per GPU Memory Consumption: 3.16 GB
+Parallel execution. Per GPU Memory Consumption: 1.52 GB
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  40.947 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c057f060b15d3f12dbd33a402784ff5a/getting_started.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">getting_started.py</span></code></a></p>
