@@ -164,9 +164,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">loss</span>
 
-    <span class="c1"># Note that we have to replace `jax.grad` with `alpa.grad` if we want</span>
-    <span class="c1"># to use gradient accumulation and pipeline parallelism.</span>
-    <span class="n">grads</span> <span class="o">=</span> <span class="n">alpa</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
     <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">new_state</span>
 
@@ -243,8 +241,8 @@ on a 8-GPU machine.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 155.76 ms, Std: 0.11 ms
-Parallel execution time. Mean: 36.48 ms, Std: 0.23 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 148.86 ms, Std: 0.45 ms
+Parallel execution time. Mean: 25.63 ms, Std: 0.47 ms
 </pre></div>
 </div>
 </div>
@@ -261,11 +259,11 @@ Parallel execution time. Mean: 36.48 ms, Std: 0.23 ms
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution per GPU memory usage: 3.16 GB
-Parallel execution per GPU memory usage: 1.52 GB
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution per GPU memory usage: 2.86 GB
+Parallel execution per GPU memory usage: 0.50 GB
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  40.351 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  39.054 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c057f060b15d3f12dbd33a402784ff5a/getting_started.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">getting_started.py</span></code></a></p>

@@ -73,7 +73,7 @@ Train an MLP on a Single Device
 To begin with, we implement the model and training loop on a single device. We will
 parallelize it later. We train an MLP to learn a function y = Wx + b.
 
-.. GENERATED FROM PYTHON SOURCE LINES 43-95
+.. GENERATED FROM PYTHON SOURCE LINES 43-93
 
 .. code-block:: default
 
@@ -120,9 +120,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
             loss = jnp.mean((out - batch["y"])**2)
             return loss
 
-        # Note that we have to replace `jax.grad` with `alpa.grad` if we want
-        # to use gradient accumulation and pipeline parallelism.
-        grads = alpa.grad(loss_func)(state.params)
+        grads = jax.grad(loss_func)(state.params)
         new_state = state.apply_gradients(grads=grads)
         return new_state
 
@@ -136,7 +134,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 96-110
+.. GENERATED FROM PYTHON SOURCE LINES 94-108
 
 Auto-parallelization with ``@parallelize``
 ------------------------------------------
@@ -153,7 +151,7 @@ which is nontrivial if you want to do advanced model parallelization.
 Unlike these transformations, ``@alpa.parallelize`` can do all things automatically for
 you. You only need to write the code as if you are writing for a single device.
 
-.. GENERATED FROM PYTHON SOURCE LINES 110-123
+.. GENERATED FROM PYTHON SOURCE LINES 108-121
 
 .. code-block:: default
 
@@ -185,7 +183,7 @@ you. You only need to write the code as if you are writing for a single device.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-130
+.. GENERATED FROM PYTHON SOURCE LINES 122-128
 
 Execution Speed Comparision 
 ---------------------------
@@ -194,7 +192,7 @@ the memory usage per GPU, so we can train large models faster.
 We benchmark the execution speed of ``@jax.jit`` and ``@alpa.parallelize``
 on a 8-GPU machine.
 
-.. GENERATED FROM PYTHON SOURCE LINES 130-159
+.. GENERATED FROM PYTHON SOURCE LINES 128-157
 
 .. code-block:: default
 
@@ -237,19 +235,19 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 155.76 ms, Std: 0.11 ms
-    Parallel execution time. Mean: 36.48 ms, Std: 0.23 ms
+    Serial execution time. Mean: 148.86 ms, Std: 0.45 ms
+    Parallel execution time. Mean: 25.63 ms, Std: 0.47 ms
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 160-163
+.. GENERATED FROM PYTHON SOURCE LINES 158-161
 
 Memory Usage Comparision
 ------------------------
 We can also compare the memory usage per GPU.
 
-.. GENERATED FROM PYTHON SOURCE LINES 163-171
+.. GENERATED FROM PYTHON SOURCE LINES 161-169
 
 .. code-block:: default
 
@@ -271,8 +269,8 @@ We can also compare the memory usage per GPU.
 
  .. code-block:: none
 
-    Serial execution per GPU memory usage: 3.16 GB
-    Parallel execution per GPU memory usage: 1.52 GB
+    Serial execution per GPU memory usage: 2.86 GB
+    Parallel execution per GPU memory usage: 0.50 GB
 
 
 
@@ -280,7 +278,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  40.351 seconds)
+   **Total running time of the script:** ( 0 minutes  39.054 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:
