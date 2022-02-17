@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Getting Started with Alpa &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -89,7 +88,7 @@
 <p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-getting-started-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<section class="sphx-glr-example-title" id="getting-started-with-alpa">
+<div class="sphx-glr-example-title section" id="getting-started-with-alpa">
 <span id="sphx-glr-tutorials-getting-started-py"></span><h1>Getting Started with Alpa<a class="headerlink" href="#getting-started-with-alpa" title="Permalink to this headline"></a></h1>
 <p>Alpa is a library that automatically parallelizes jax functions and runs them
 on a distributed cluster. Alpa analyses the jax computational graph and generates
@@ -101,25 +100,25 @@ including data parallelism, operator parallelism, and pipeline parallelism.</p>
 plan by solving optimization problems. Therefore, you can efficiently scale your jax
 computation on a distributed cluster, without any expertise in distributed computing.</p>
 <p>In this tutorial, we show the usage of Alpa with an MLP example.</p>
-<section id="import-libraries">
+<div class="section" id="import-libraries">
 <h2>Import Libraries<a class="headerlink" href="#import-libraries" title="Permalink to this headline"></a></h2>
 <p>We first import the required libraries.
 Flax and optax are libraries on top of jax for training neural networks.
 Although we use these libraries in this example, Alpa works at jax level and
 does not depend on these specific libraries.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">alpa</span>
-<span class="kn">from</span> <span class="nn">alpa.testing</span> <span class="kn">import</span> <span class="n">assert_allclose</span>
-<span class="kn">from</span> <span class="nn">flax</span> <span class="kn">import</span> <span class="n">linen</span> <span class="k">as</span> <span class="n">nn</span>
-<span class="kn">from</span> <span class="nn">flax.training.train_state</span> <span class="kn">import</span> <span class="n">TrainState</span>
+<span class="kn">from</span> <span class="nn">alpa.testing</span> <span class="k">import</span> <span class="n">assert_allclose</span>
+<span class="kn">from</span> <span class="nn">flax</span> <span class="k">import</span> <span class="n">linen</span> <span class="k">as</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">flax.training.train_state</span> <span class="k">import</span> <span class="n">TrainState</span>
 <span class="kn">import</span> <span class="nn">jax</span>
 <span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
-<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="k">import</span> <span class="n">random</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">optax</span>
 </pre></div>
 </div>
-</section>
-<section id="train-an-mlp-on-a-single-device">
+</div>
+<div class="section" id="train-an-mlp-on-a-single-device">
 <h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
 <p>To begin with, we implement the model and training loop on a single device. We will
 parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
@@ -128,7 +127,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
     <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="p">:</span> <span class="nb">int</span>
 
     <span class="nd">@nn</span><span class="o">.</span><span class="n">compact</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">num_layers</span></a><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
@@ -173,8 +172,8 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
 <span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="auto-parallelization-with-parallelize">
+</div>
+<div class="section" id="auto-parallelization-with-parallelize">
 <h2>Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code><a class="headerlink" href="#auto-parallelization-with-parallelize" title="Permalink to this headline"></a></h2>
 <p>Alpa provides a transformation <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> to parallelize a jax function.
 <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> is similar to <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> . <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> compiles a jax
@@ -205,14 +204,14 @@ you. You only need to write the code as if you are writing for a single device.<
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;jaxlib.xla_extension.pmap_lib.ShardedDeviceArray&#39;&gt;
 </pre></div>
 </div>
-</section>
-<section id="execution-speed-comparison">
+</div>
+<div class="section" id="execution-speed-comparison">
 <h2>Execution Speed Comparison<a class="headerlink" href="#execution-speed-comparison" title="Permalink to this headline"></a></h2>
 <p>By parallelizing a jax function, we can accelerate the computation and reduce
 the memory usage per GPU, so we can train large models faster.
 We benchmark the execution speed of <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code>
 on a 8-GPU machine.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alpa.util</span> <span class="kn">import</span> <span class="n">benchmark_func</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alpa.util</span> <span class="k">import</span> <span class="n">benchmark_func</span>
 
 <span class="n">jit_train_step</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">train_step</span><span class="p">,</span> <span class="n">donate_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
 
@@ -226,7 +225,7 @@ on a 8-GPU machine.</p>
 
 <span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">serial_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Serial execution time. Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Serial execution time. Mean: {np.mean(costs):.2f} ms, Std: {np.std(costs):.2f} ms&quot;</span><span class="p">)</span>
 
 <span class="c1"># Benchmark parallel execution</span>
 <span class="c1"># We shard arguments in advance for the benchmarking purpose.</span>
@@ -238,25 +237,25 @@ on a 8-GPU machine.</p>
 
 <span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">parallel_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallel execution time. Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parallel execution time. Mean: {np.mean(costs):.2f} ms, Std: {np.std(costs):.2f} ms&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 145.73 ms, Std: 0.28 ms
-Parallel execution time. Mean: 24.37 ms, Std: 0.63 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 147.86 ms, Std: 0.25 ms
+Parallel execution time. Mean: 24.35 ms, Std: 0.54 ms
 </pre></div>
 </div>
-</section>
-<section id="memory-usage-comparison">
+</div>
+<div class="section" id="memory-usage-comparison">
 <h2>Memory Usage Comparison<a class="headerlink" href="#memory-usage-comparison" title="Permalink to this headline"></a></h2>
 <p>We can also compare the memory usage per GPU.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a> <span class="o">=</span> <span class="mi">1024</span> <span class="o">**</span> <span class="mi">3</span>
 
 <span class="n">executable</span> <span class="o">=</span> <span class="n">jit_train_step</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span><span class="o">.</span><span class="n">runtime_executable</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Serial execution per GPU memory usage: </span><span class="si">{</span><span class="n">executable</span><span class="o">.</span><span class="n">total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Serial execution per GPU memory usage: {executable.total_allocation_size() / GB:.2f} GB&quot;</span><span class="p">)</span>
 
 <span class="n">executable</span> <span class="o">=</span> <span class="n">parallel_train_step</span><span class="o">.</span><span class="n">get_executable</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallel execution per GPU memory usage: </span><span class="si">{</span><span class="n">executable</span><span class="o">.</span><span class="n">get_total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parallel execution per GPU memory usage: {executable.get_total_allocation_size() / GB:.2f} GB&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
@@ -264,7 +263,7 @@ Parallel execution time. Mean: 24.37 ms, Std: 0.63 ms
 Parallel execution per GPU memory usage: 0.50 GB
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  39.354 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  40.250 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c057f060b15d3f12dbd33a402784ff5a/getting_started.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">getting_started.py</span></code></a></p>
@@ -274,8 +273,8 @@ Parallel execution per GPU memory usage: 0.50 GB
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

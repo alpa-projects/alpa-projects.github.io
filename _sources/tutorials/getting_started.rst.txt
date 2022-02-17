@@ -235,8 +235,8 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 145.73 ms, Std: 0.28 ms
-    Parallel execution time. Mean: 24.37 ms, Std: 0.63 ms
+    Serial execution time. Mean: 147.86 ms, Std: 0.25 ms
+    Parallel execution time. Mean: 24.35 ms, Std: 0.54 ms
 
 
 
@@ -278,7 +278,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  39.354 seconds)
+   **Total running time of the script:** ( 0 minutes  40.250 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:
