@@ -118,7 +118,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
     # Define the training function and execute one step
     def train_step(state, batch):
         def loss_func(params):
-            out = model.apply(params, batch["x"])
+            out = state.apply_fn(params, batch["x"])
             loss = jnp.mean((out - batch["y"])**2)
             return loss
 
@@ -274,8 +274,8 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 146.31 ms, Std: 0.23 ms
-    Parallel execution time. Mean: 24.23 ms, Std: 0.54 ms
+    Serial execution time. Mean: 152.58 ms, Std: 0.36 ms
+    Parallel execution time. Mean: 24.43 ms, Std: 0.65 ms
 
 
 
@@ -317,7 +317,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  39.421 seconds)
+   **Total running time of the script:** ( 0 minutes  49.968 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:
