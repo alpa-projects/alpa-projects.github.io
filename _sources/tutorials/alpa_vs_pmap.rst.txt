@@ -39,19 +39,45 @@ In this tutorial, we are going to compare ``alpa.parallelize`` and ``pmap`` on t
 workloads. A more detailed comparison among ``alpa.parallelize``, ``pmap``, and ``xmap``
 is also attached at the end of the article.
 
-.. GENERATED FROM PYTHON SOURCE LINES 25-28
+.. GENERATED FROM PYTHON SOURCE LINES 25-27
 
 When data parallelism is prefered
 ---------------------------------
-TODO
 
-.. GENERATED FROM PYTHON SOURCE LINES 30-33
+.. GENERATED FROM PYTHON SOURCE LINES 27-30
+
+.. code-block:: default
+
+
+    # TODO
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 31-33
 
 When model parallelism is prefered
 ----------------------------------
-TODO
 
-.. GENERATED FROM PYTHON SOURCE LINES 35-57
+.. GENERATED FROM PYTHON SOURCE LINES 33-36
+
+.. code-block:: default
+
+
+    # TODO
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 37-59
 
 Comparing ``alpa.parallelize``, ``pmap``, and ``xmap``
 ------------------------------------------------------
@@ -79,7 +105,7 @@ xmap              yes              yes                  no                   no
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.000 seconds)
+   **Total running time of the script:** ( 0 minutes  0.001 seconds)
 
 
 .. _sphx_glr_download_tutorials_alpa_vs_pmap.py:

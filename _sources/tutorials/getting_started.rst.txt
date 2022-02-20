@@ -75,7 +75,7 @@ Train an MLP on a Single Device
 To begin with, we implement the model and training loop on a single device. We will
 parallelize it later. We train an MLP to learn a function y = Wx + b.
 
-.. GENERATED FROM PYTHON SOURCE LINES 45-81
+.. GENERATED FROM PYTHON SOURCE LINES 45-95
 
 .. code-block:: default
 
@@ -115,22 +115,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
     tx = optax.adam(learning_rate=1e-3)
     state = TrainState.create(apply_fn=model.apply, params=params, tx=tx)
 
-
-
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 82-83
-
-Define the training function and execute one step
-
-.. GENERATED FROM PYTHON SOURCE LINES 83-97
-
-.. code-block:: default
-
-
+    # Define the training function and execute one step
     def train_step(state, batch):
         def loss_func(params):
             out = model.apply(params, batch["x"])
@@ -151,7 +136,7 @@ Define the training function and execute one step
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 98-114
+.. GENERATED FROM PYTHON SOURCE LINES 96-112
 
 Auto-parallelization with ``@parallelize``
 ------------------------------------------
@@ -170,16 +155,15 @@ you. ``@alpa.parallelize`` finds the best parallelization strategy for the given
 function and does the code tranformation. You only need to write the code as if you are
 writing for a single device.
 
-.. GENERATED FROM PYTHON SOURCE LINES 117-120
-
-Define the training step. The body of this function is the same as the
-``train_step`` above. The only difference is to decorate it with
-``@alpa.paralellize``.
-
-.. GENERATED FROM PYTHON SOURCE LINES 120-136
+.. GENERATED FROM PYTHON SOURCE LINES 112-133
 
 .. code-block:: default
 
+
+
+    # Define the training step. The body of this function is the same as the
+    # ``train_step`` above. The only difference is to decorate it with
+    # ``@alpa.paralellize``.
 
     @alpa.parallelize
     def alpa_train_step(state, batch):
@@ -203,15 +187,15 @@ Define the training step. The body of this function is the same as the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-142
+.. GENERATED FROM PYTHON SOURCE LINES 134-139
 
-After decorated by ``@parallelize``, the function can still take numpy arrays or
-jax arrays as input. The function will first distribute the input arrays
-into correct devices according to the parallelization strategy and then
-execute the function distributedly. The returned result arrays
-are also stored distributedly.
+After being decorated by ``@parallelize``, the function can still take numpy
+arrays or jax arrays as inputs. The function will first distribute the input
+arrays into correct devices according to the parallelization strategy and then
+execute the function distributedly. The returned result arrays are also
+stored distributedly.
 
-.. GENERATED FROM PYTHON SOURCE LINES 142-149
+.. GENERATED FROM PYTHON SOURCE LINES 139-146
 
 .. code-block:: default
 
@@ -238,7 +222,7 @@ are also stored distributedly.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 150-156
+.. GENERATED FROM PYTHON SOURCE LINES 147-153
 
 Execution Speed Comparison
 --------------------------
@@ -247,7 +231,7 @@ the memory usage per GPU, so we can train large models faster.
 We benchmark the execution speed of ``@jax.jit`` and ``@alpa.parallelize``
 on a 8-GPU machine.
 
-.. GENERATED FROM PYTHON SOURCE LINES 156-185
+.. GENERATED FROM PYTHON SOURCE LINES 153-182
 
 .. code-block:: default
 
@@ -290,19 +274,19 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 149.67 ms, Std: 0.21 ms
-    Parallel execution time. Mean: 24.27 ms, Std: 0.49 ms
+    Serial execution time. Mean: 146.31 ms, Std: 0.23 ms
+    Parallel execution time. Mean: 24.23 ms, Std: 0.54 ms
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 186-189
+.. GENERATED FROM PYTHON SOURCE LINES 183-186
 
 Memory Usage Comparison
 -----------------------
 We can also compare the memory usage per GPU.
 
-.. GENERATED FROM PYTHON SOURCE LINES 189-197
+.. GENERATED FROM PYTHON SOURCE LINES 186-194
 
 .. code-block:: default
 
@@ -333,7 +317,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  40.050 seconds)
+   **Total running time of the script:** ( 0 minutes  39.421 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:
