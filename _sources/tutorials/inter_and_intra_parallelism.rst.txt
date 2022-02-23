@@ -54,12 +54,6 @@ We first import the required libraries.
     import optax
 
 
-
-
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 33-36
 
 Besides alpa and jax related libraries, we also import `ray <https://docs.
@@ -78,25 +72,6 @@ devices in the distributed cluster in alpa.
     # Alternatively, you can use the following command to connect to an existing
     # ray cluster.
     # ray.init(address="auto")
-
-
-
-.. rst-class:: sphx-glr-script-out
-
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/home/ubuntu/efs/alpa/docs/gallery/tutorials/inter_and_intra_parallelism.py", line 39, in <module>
-        ray.init()
-      File "/home/ubuntu/anaconda3/lib/python3.7/site-packages/ray/_private/client_mode_hook.py", line 105, in wrapper
-        return func(*args, **kwargs)
-      File "/home/ubuntu/anaconda3/lib/python3.7/site-packages/ray/worker.py", line 968, in init
-        job_config=job_config)
-      File "/home/ubuntu/anaconda3/lib/python3.7/site-packages/ray/worker.py", line 1366, in connect
-        faulthandler.enable(all_threads=False)
-    AttributeError: '_LoggingTee' object has no attribute 'fileno'
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 46-49
@@ -320,7 +295,7 @@ partitioning algorithm consists of the following steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  4.222 seconds)
+   **Total running time of the script:** ( 0 minutes  0.000 seconds)
 
 
 .. _sphx_glr_download_tutorials_inter_and_intra_parallelism.py:

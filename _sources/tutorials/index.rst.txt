@@ -50,6 +50,27 @@ Alpa Tutorials
    :hidden:
 
    /tutorials/alpa_vs_pmap
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Alpa can automatically parallelizes jax functions with both intra-operator parallelism (e.g. da...">
+
+.. only:: html
+
+ .. figure:: /tutorials/images/thumb/sphx_glr_inter_and_intra_parallelism_thumb.png
+     :alt: Distributed Training with Both Intra- and Inter-Operator Parallelism
+
+     :ref:`sphx_glr_tutorials_inter_and_intra_parallelism.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/inter_and_intra_parallelism
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
