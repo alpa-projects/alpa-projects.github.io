@@ -32,27 +32,6 @@ Alpa Tutorials
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="The most common tool for parallelization or distributed computing in jax is `pmap &lt;https://jax....">
-
-.. only:: html
-
- .. figure:: /tutorials/images/thumb/sphx_glr_alpa_vs_pmap_thumb.png
-     :alt: Difference between alpa.parallelize and jax.pmap
-
-     :ref:`sphx_glr_tutorials_alpa_vs_pmap.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /tutorials/alpa_vs_pmap
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="Alpa can automatically parallelizes jax functions with both intra-operator parallelism (e.g. da...">
 
 .. only:: html
@@ -71,6 +50,27 @@ Alpa Tutorials
    :hidden:
 
    /tutorials/inter_and_intra_parallelism
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="The most common tool for parallelization or distributed computing in jax is `pmap &lt;https://jax....">
+
+.. only:: html
+
+ .. figure:: /tutorials/images/thumb/sphx_glr_alpa_vs_pmap_thumb.png
+     :alt: Difference between alpa.parallelize and jax.pmap
+
+     :ref:`sphx_glr_tutorials_alpa_vs_pmap.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/alpa_vs_pmap
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
