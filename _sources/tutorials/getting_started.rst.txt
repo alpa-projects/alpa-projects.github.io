@@ -18,6 +18,8 @@
 .. _sphx_glr_tutorials_getting_started.py:
 
 
+.. _Getting Started with Alpa:
+
 Getting Started with Alpa
 =========================
 
@@ -30,11 +32,11 @@ including data parallelism, operator parallelism, and pipeline parallelism.
 
 Alpa provides a simple API ``@parallelize`` and automatically generates the best execution
 plan by solving optimization problems. Therefore, you can efficiently scale your jax
-computation on a distributed cluster, without any expertise in distributed computing. 
+computation on a distributed cluster, without any expertise in distributed computing.
 
 In this tutorial, we show the usage of Alpa with an MLP example.
 
-.. GENERATED FROM PYTHON SOURCE LINES 20-26
+.. GENERATED FROM PYTHON SOURCE LINES 22-28
 
 Import Libraries
 --------------------
@@ -43,7 +45,7 @@ Flax and optax are libraries on top of jax for training neural networks.
 Although we use these libraries in this example, Alpa works on jax's and XLA's internal
 intermediate representations and does not depend on any specific high-level libraries.
 
-.. GENERATED FROM PYTHON SOURCE LINES 26-40
+.. GENERATED FROM PYTHON SOURCE LINES 28-42
 
 .. code-block:: default
 
@@ -68,14 +70,14 @@ intermediate representations and does not depend on any specific high-level libr
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 41-45
+.. GENERATED FROM PYTHON SOURCE LINES 43-47
 
 Train an MLP on a Single Device
 -------------------------------
 To begin with, we implement the model and training loop on a single device. We will
 parallelize it later. We train an MLP to learn a function y = Wx + b.
 
-.. GENERATED FROM PYTHON SOURCE LINES 45-95
+.. GENERATED FROM PYTHON SOURCE LINES 47-97
 
 .. code-block:: default
 
@@ -136,7 +138,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 96-112
+.. GENERATED FROM PYTHON SOURCE LINES 98-114
 
 Auto-parallelization with ``@parallelize``
 ------------------------------------------
@@ -155,7 +157,7 @@ you. ``@alpa.parallelize`` finds the best parallelization strategy for the given
 function and does the code tranformation. You only need to write the code as if you are
 writing for a single device.
 
-.. GENERATED FROM PYTHON SOURCE LINES 112-133
+.. GENERATED FROM PYTHON SOURCE LINES 114-135
 
 .. code-block:: default
 
@@ -187,7 +189,7 @@ writing for a single device.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 134-139
+.. GENERATED FROM PYTHON SOURCE LINES 136-141
 
 After being decorated by ``@parallelize``, the function can still take numpy
 arrays or jax arrays as inputs. The function will first distribute the input
@@ -195,7 +197,7 @@ arrays into correct devices according to the parallelization strategy and then
 execute the function distributedly. The returned result arrays are also
 stored distributedly.
 
-.. GENERATED FROM PYTHON SOURCE LINES 139-146
+.. GENERATED FROM PYTHON SOURCE LINES 141-148
 
 .. code-block:: default
 
@@ -222,7 +224,7 @@ stored distributedly.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 147-153
+.. GENERATED FROM PYTHON SOURCE LINES 149-155
 
 Execution Speed Comparison
 --------------------------
@@ -231,7 +233,7 @@ the memory usage per GPU, so we can train large models faster.
 We benchmark the execution speed of ``@jax.jit`` and ``@alpa.parallelize``
 on a 8-GPU machine.
 
-.. GENERATED FROM PYTHON SOURCE LINES 153-182
+.. GENERATED FROM PYTHON SOURCE LINES 155-184
 
 .. code-block:: default
 
@@ -254,7 +256,7 @@ on a 8-GPU machine.
 
     # Benchmark parallel execution
     # We distribute arguments in advance for the benchmarking purpose
-    state, batch = alpa_train_step.preshard_dynamic_args(state, batch) 
+    state, batch = alpa_train_step.preshard_dynamic_args(state, batch)
 
     def parallel_execution():
         global state
@@ -274,19 +276,19 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 152.58 ms, Std: 0.36 ms
-    Parallel execution time. Mean: 24.43 ms, Std: 0.65 ms
+    Serial execution time. Mean: 148.77 ms, Std: 0.27 ms
+    Parallel execution time. Mean: 40.54 ms, Std: 0.34 ms
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 183-186
+.. GENERATED FROM PYTHON SOURCE LINES 185-188
 
 Memory Usage Comparison
 -----------------------
 We can also compare the memory usage per GPU.
 
-.. GENERATED FROM PYTHON SOURCE LINES 186-194
+.. GENERATED FROM PYTHON SOURCE LINES 188-196
 
 .. code-block:: default
 
@@ -309,7 +311,7 @@ We can also compare the memory usage per GPU.
  .. code-block:: none
 
     Serial execution per GPU memory usage: 2.86 GB
-    Parallel execution per GPU memory usage: 0.50 GB
+    Parallel execution per GPU memory usage: 0.81 GB
 
 
 
@@ -317,7 +319,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  49.968 seconds)
+   **Total running time of the script:** ( 0 minutes  33.809 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:
