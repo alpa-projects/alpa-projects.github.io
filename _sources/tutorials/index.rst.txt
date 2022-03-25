@@ -71,6 +71,27 @@ Alpa Tutorials
    :hidden:
 
    /tutorials/alpa_vs_pmap
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This page will cover some more advanced examples of Alpa.">
+
+.. only:: html
+
+ .. figure:: /tutorials/images/thumb/sphx_glr_advanced_api_usage_thumb.png
+     :alt: Advanced API Usage
+
+     :ref:`sphx_glr_tutorials_advanced_api_usage.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/advanced_api_usage
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
