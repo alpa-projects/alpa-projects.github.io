@@ -233,19 +233,20 @@ the memory usage per GPU, so we can train large models faster.
 We benchmark the execution speed of ``@jax.jit`` and ``@alpa.parallelize``
 on a 8-GPU machine.
 
-.. GENERATED FROM PYTHON SOURCE LINES 155-184
+.. GENERATED FROM PYTHON SOURCE LINES 155-185
 
 .. code-block:: default
 
 
+    state = actual_state  # We need this assignment because the original `state` is "donated" and freed.
     from alpa.util import benchmark_func
 
+    # Benchmark serial execution with jax.jit
     jit_train_step = jax.jit(train_step, donate_argnums=(0,))
 
     def sync_func():
         jax.local_devices()[0].synchronize_all_activity()
 
-    # Benchmark serial execution
     def serial_execution():
         global state
         state = jit_train_step(state, batch)
@@ -276,19 +277,19 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 145.40 ms, Std: 0.37 ms
-    Parallel execution time. Mean: 23.49 ms, Std: 0.59 ms
+    Serial execution time. Mean: 145.43 ms, Std: 0.29 ms
+    Parallel execution time. Mean: 22.80 ms, Std: 0.48 ms
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-188
+.. GENERATED FROM PYTHON SOURCE LINES 186-189
 
 Memory Usage Comparison
 -----------------------
 We can also compare the memory usage per GPU.
 
-.. GENERATED FROM PYTHON SOURCE LINES 188-196
+.. GENERATED FROM PYTHON SOURCE LINES 189-197
 
 .. code-block:: default
 
@@ -310,7 +311,7 @@ We can also compare the memory usage per GPU.
 
  .. code-block:: none
 
-    Serial execution per GPU memory usage: 2.86 GB
+    Serial execution per GPU memory usage: 2.78 GB
     Parallel execution per GPU memory usage: 0.50 GB
 
 
@@ -319,7 +320,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  41.459 seconds)
+   **Total running time of the script:** ( 0 minutes  43.760 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:

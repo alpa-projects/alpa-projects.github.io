@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Distributed Training with Both Shard and Pipeline Parallelism &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -66,7 +65,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="alpa_vs_pmap.html">Difference between alpa.parallelize and jax.pmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_api_usage.html">Advanced API Usage</a></li>
 </ul>
 </li>
 </ul>
@@ -101,7 +99,7 @@
 <p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-pipeshard-parallelism-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<section class="sphx-glr-example-title" id="distributed-training-with-both-shard-and-pipeline-parallelism">
+<div class="sphx-glr-example-title section" id="distributed-training-with-both-shard-and-pipeline-parallelism">
 <span id="sphx-glr-tutorials-pipeshard-parallelism-py"></span><h1>Distributed Training with Both Shard and Pipeline Parallelism<a class="headerlink" href="#distributed-training-with-both-shard-and-pipeline-parallelism" title="Permalink to this headline"></a></h1>
 <p>Alpa can automatically parallelizes jax functions with both shard
 parallelism, including data parallelism and operator parallelism (a.k.a.
@@ -112,7 +110,7 @@ focuses on using Alpa for shard parallelism.</p>
 both shard and pipeline parallelism. First, we show how to use Alpa
 to manually assign stages for pipeline parallelism. Then we show how
 to use Alpa to automate this process.</p>
-<section id="import-libraries-and-initialize-environment">
+<div class="section" id="import-libraries-and-initialize-environment">
 <h2>Import Libraries and Initialize Environment<a class="headerlink" href="#import-libraries-and-initialize-environment" title="Permalink to this headline"></a></h2>
 <p>We first import the required libraries.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">alpa</span>
@@ -143,8 +141,8 @@ from occupying the GPU memory.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;jax_platform_name&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="train-an-mlp-on-a-single-device">
+</div>
+<div class="section" id="train-an-mlp-on-a-single-device">
 <h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
 <p>In this tutorial, we use a toy dataset to train an MLP model.
 Specifically, we use the model to fit the function: <span class="math notranslate nohighlight">\(y = Wx + b\)</span>.
@@ -201,8 +199,8 @@ process to use the CPU.</p>
 <span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="manual-pipeline-parallelism-with-alpa">
+</div>
+<div class="section" id="manual-pipeline-parallelism-with-alpa">
 <h2>Manual Pipeline Parallelism with Alpa<a class="headerlink" href="#manual-pipeline-parallelism-with-alpa" title="Permalink to this headline"></a></h2>
 <p>To manually assign stages for pipeline parallelism, we can use the
 <code class="docutils literal notranslate"><span class="pre">alpa.mark_pipeline</span></code> function to mark the start and end of each pipeline
@@ -247,7 +245,7 @@ also automatically parallelized by the shard parallel pass.</p>
 <span class="c1"># model.</span>
 <span class="n">manual_pipeline_model</span> <span class="o">=</span> <span class="n">ManualPipelineMLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
 <span class="n">manual_pipeline_state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">manual_pipeline_model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span>
-                                       <span class="n">params</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
+                                          <span class="n">params</span><span class="o">=</span><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span></a></a></a></a></a><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
 
 <span class="c1"># Define the training step with manually parallelized pipeline stages.</span>
 <span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span>
@@ -280,8 +278,8 @@ also automatically parallelized by the shard parallel pass.</p>
                                           <span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-<section id="automatic-pipeline-parallelism-with-alpa">
+</div>
+<div class="section" id="automatic-pipeline-parallelism-with-alpa">
 <h2>Automatic Pipeline Parallelism with Alpa<a class="headerlink" href="#automatic-pipeline-parallelism-with-alpa" title="Permalink to this headline"></a></h2>
 <p>Alpa also supports automatically partitioning the model into multiple
 pipeline stages and assign each pipeline stage a device mesh such that
@@ -344,8 +342,8 @@ pipeline execution latency.</p></li>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
