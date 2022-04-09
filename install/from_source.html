@@ -114,22 +114,40 @@ git clone git@github.com:alpa-projects/tensorflow-alpa.git
 <li><p>Install dependencies</p></li>
 </ol>
 <blockquote>
-<div><ul class="simple">
-<li><p>CUDA Toolkit: <a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">cuda</a>, <a class="reference external" href="https://developer.nvidia.com/cudnn">cudnn</a>, and <a class="reference external" href="https://developer.nvidia.com/nccl">nccl</a></p></li>
-<li><p>Python packages:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install cmake tqdm numpy scipy numba pybind11 ray <span class="nv">flax</span><span class="o">==</span><span class="m">0</span>.4.1
+<div><ul>
+<li><dl class="simple">
+<dt>CUDA Toolkit:</dt><dd><p>Follow the official guides to install <a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">cuda</a> and <a class="reference external" href="https://developer.nvidia.com/cudnn">cudnn</a>.</p>
+</dd>
+</dl>
+</li>
+<li><p>Python packages:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install cmake tqdm pybind11 numba numpy scipy pulp ray <span class="nv">flax</span><span class="o">==</span><span class="m">0</span>.4.1
 pip3 install cupy-cuda114  <span class="c1"># use your own CUDA version. Here cuda-cuda114 means cuda 11.4.</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>ILP Solver:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install coinor-cbc
-pip3 install pulp
+</div></blockquote>
+</li>
+<li><dl>
+<dt>NCCL:</dt><dd><p>First, check whether your system already has NCCL installed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -c <span class="s2">&quot;from cupy.cuda import nccl&quot;</span>
 </pre></div>
 </div>
-<p>If you do not have sudo permission, please try install via <a class="reference external" href="https://projects.coin-or.org/Cbc#DownloadandInstall">binary</a> or <a class="reference external" href="https://anaconda.org/conda-forge/coincbc">conda</a>.</p>
+<p>If it prints nothing, then nccl is already installed.
+Otherwise, follow the printed instructions to install nccl.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>ILP Solver:</dt><dd><p>If you have sudo permission, use</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install coinor-cbc
+</pre></div>
+</div>
+<p>Otherwise, please try to install via <a class="reference external" href="https://projects.coin-or.org/Cbc#DownloadandInstall">binary</a> or <a class="reference external" href="https://anaconda.org/conda-forge/coincbc">conda</a>.</p>
+</dd>
+</dl>
+</li>
+</ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
 <li><p>Build and install jaxlib</p></li>
