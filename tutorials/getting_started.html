@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started with Alpa &mdash; Alpa 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Distributed Training with Both Shard and Pipeline Parallelism" href="pipeshard_parallelism.html" />
+    <link rel="prev" title="Alpa Tutorials" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Alpa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/from_source.html">Install Alpa</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/overview.html">Design and Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer_guide.html">Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Alpa Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started with Alpa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import-libraries">Import Libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#train-an-mlp-on-a-single-device">Train an MLP on a Single Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-parallelization-with-parallelize">Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#execution-speed-comparison">Execution Speed Comparison</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-usage-comparison">Memory Usage Comparison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alpa_vs_pmap.html">Difference between alpa.parallelize and jax.pmap</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Alpa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Alpa Tutorials</a> &raquo;</li>
+      <li>Getting Started with Alpa</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-getting-started-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="getting-started-with-alpa">
+<span id="sphx-glr-tutorials-getting-started-py"></span><span id="id1"></span><h1>Getting Started with Alpa<a class="headerlink" href="#getting-started-with-alpa" title="Permalink to this headline"></a></h1>
+<p>Alpa is a library that automatically parallelizes jax functions and runs them
+on a distributed cluster. Alpa analyses the jax computational graph and generates
+a distributed execution plan tailored for the computational graph and target cluster.
+Alpa is specifically designed for training large-scale neural networks.
+The generated execution plan can combine state-of-the-art distributed training techniques
+including data parallelism, operator parallelism, and pipeline parallelism.</p>
+<p>Alpa provides a simple API <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code> and automatically generates the best execution
+plan by solving optimization problems. Therefore, you can efficiently scale your jax
+computation on a distributed cluster, without any expertise in distributed computing.</p>
+<p>In this tutorial, we show the usage of Alpa with an MLP example.</p>
+<section id="import-libraries">
+<h2>Import Libraries<a class="headerlink" href="#import-libraries" title="Permalink to this headline"></a></h2>
+<p>We first import the required libraries.
+Flax and optax are libraries on top of jax for training neural networks.
+Although we use these libraries in this example, Alpa works on jax’s and XLA’s internal
+intermediate representations and does not depend on any specific high-level libraries.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span> <span class="nn">alpa</span>
+<span class="kn">from</span> <span class="nn">alpa.testing</span> <span class="kn">import</span> <span class="n">assert_allclose</span>
+<span class="kn">from</span> <span class="nn">flax</span> <span class="kn">import</span> <span class="n">linen</span> <span class="k">as</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">flax.training.train_state</span> <span class="kn">import</span> <span class="n">TrainState</span>
+<span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">optax</span>
+</pre></div>
+</div>
+</section>
+<section id="train-an-mlp-on-a-single-device">
+<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
+<p>To begin with, we implement the model and training loop on a single device. We will
+parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MLPModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@nn</span><span class="o">.</span><span class="n">compact</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">dim</span> <span class="o">=</span> <span class="mi">2048</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">2048</span>
+<span class="n">num_layers</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Generate ground truth W and b</span>
+<span class="n">rngkey</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">k1</span><span class="p">,</span> <span class="n">k2</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">rngkey</span><span class="p">)</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="p">(</span><span class="n">dim</span><span class="p">,))</span>
+
+<span class="c1"># Generate the training data</span>
+<span class="n">ksample</span><span class="p">,</span> <span class="n">knoise</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">ksample</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">W</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">knoise</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+
+<span class="c1"># Initialize a train state, which includes the model paramter and optimizer state.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">rngkey</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">tx</span> <span class="o">=</span> <span class="n">optax</span><span class="o">.</span><span class="n">adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
+
+<span class="c1"># Define the training function and execute one step</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_state</span>
+
+<span class="n">batch</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
+<span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="auto-parallelization-with-parallelize">
+<h2>Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code><a class="headerlink" href="#auto-parallelization-with-parallelize" title="Permalink to this headline"></a></h2>
+<p>Alpa provides a transformation <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> to parallelize a jax function.
+<code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> is similar to <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> . <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> compiles a jax
+function for a single device, while <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> compiles a jax function
+for a distributed device cluster.
+You may know that jax has some built-in transformations for parallelization,
+such as <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, <code class="docutils literal notranslate"><span class="pre">pjit</span></code>, and <code class="docutils literal notranslate"><span class="pre">xmap</span></code>. However, these transformations are not
+fully automatic, because they require users to manually specify the parallelization
+strategies such as parallelization axes and device mapping schemes. You also need to
+manually call communication primitives such as <code class="docutils literal notranslate"><span class="pre">lax.pmean</span></code> and <code class="docutils literal notranslate"><span class="pre">lax.all_gather</span></code>,
+which is nontrivial if you want to do advanced model parallelization.
+Unlike these transformations, <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> can do all things automatically for
+you. <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> finds the best parallelization strategy for the given jax
+function and does the code tranformation. You only need to write the code as if you are
+writing for a single device.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the training step. The body of this function is the same as the</span>
+<span class="c1"># ``train_step`` above. The only difference is to decorate it with</span>
+<span class="c1"># ``@alpa.paralellize``.</span>
+
+<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span>
+<span class="k">def</span> <span class="nf">alpa_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_state</span>
+
+<span class="c1"># Test correctness</span>
+<span class="n">actual_state</span> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After being decorated by <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code>, the function can still take numpy
+arrays or jax arrays as inputs. The function will first distribute the input
+arrays into correct devices according to the parallelization strategy and then
+execute the function distributedly. The returned result arrays are also
+stored distributedly.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input parameter type:&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;Dense_0&quot;</span><span class="p">][</span><span class="s2">&quot;kernel&quot;</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output parameter type:&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;Dense_0&quot;</span><span class="p">][</span><span class="s2">&quot;kernel&quot;</span><span class="p">]))</span>
+
+<span class="c1"># Get one copy</span>
+<span class="n">kernel_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;Dense_0&quot;</span><span class="p">][</span><span class="s2">&quot;kernel&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="execution-speed-comparison">
+<h2>Execution Speed Comparison<a class="headerlink" href="#execution-speed-comparison" title="Permalink to this headline"></a></h2>
+<p>By parallelizing a jax function, we can accelerate the computation and reduce
+the memory usage per GPU, so we can train large models faster.
+We benchmark the execution speed of <code class="docutils literal notranslate"><span class="pre">&#64;jax.jit</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code>
+on a 8-GPU machine.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">actual_state</span>  <span class="c1"># We need this assignment because the original `state` is &quot;donated&quot; and freed.</span>
+<span class="kn">from</span> <span class="nn">alpa.util</span> <span class="kn">import</span> <span class="n">benchmark_func</span>
+
+<span class="c1"># Benchmark serial execution with jax.jit</span>
+<span class="n">jit_train_step</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">train_step</span><span class="p">,</span> <span class="n">donate_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+
+<span class="k">def</span> <span class="nf">sync_func</span><span class="p">():</span>
+    <span class="n">jax</span><span class="o">.</span><span class="n">local_devices</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">synchronize_all_activity</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">serial_execution</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">state</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">jit_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+
+<span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">serial_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Serial execution time. Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+
+<span class="c1"># Benchmark parallel execution</span>
+<span class="c1"># We distribute arguments in advance for the benchmarking purpose</span>
+<span class="n">state</span><span class="p">,</span> <span class="n">batch</span> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="o">.</span><span class="n">preshard_dynamic_args</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">parallel_execution</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">state</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+
+<span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">parallel_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallel execution time. Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="memory-usage-comparison">
+<h2>Memory Usage Comparison<a class="headerlink" href="#memory-usage-comparison" title="Permalink to this headline"></a></h2>
+<p>We can also compare the memory usage per GPU.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GB</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">**</span> <span class="mi">3</span>
+
+<span class="n">executable</span> <span class="o">=</span> <span class="n">jit_train_step</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span><span class="o">.</span><span class="n">runtime_executable</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Serial execution per GPU memory usage: </span><span class="si">{</span><span class="n">executable</span><span class="o">.</span><span class="n">total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <span class="n">GB</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+
+<span class="n">executable</span> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="o">.</span><span class="n">get_executable</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallel execution per GPU memory usage: </span><span class="si">{</span><span class="n">executable</span><span class="o">.</span><span class="n">get_total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <span class="n">GB</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/c057f060b15d3f12dbd33a402784ff5a/getting_started.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">getting_started.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/0af9a5002be22ca27fdefa05cc3ec685/getting_started.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">getting_started.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Alpa Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeshard_parallelism.html" class="btn btn-neutral float-right" title="Distributed Training with Both Shard and Pipeline Parallelism" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

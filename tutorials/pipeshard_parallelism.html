@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Distributed Training with Both Shard and Pipeline Parallelism &mdash; Alpa 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Difference between alpa.parallelize and jax.pmap" href="alpa_vs_pmap.html" />
+    <link rel="prev" title="Getting Started with Alpa" href="getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Alpa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/from_source.html">Install Alpa</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/overview.html">Design and Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer_guide.html">Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Alpa Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting Started with Alpa</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Distributed Training with Both Shard and Pipeline Parallelism</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import-libraries-and-initialize-environment">Import Libraries and Initialize Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#train-an-mlp-on-a-single-device">Train an MLP on a Single Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manual-pipeline-parallelism-with-alpa">Manual Pipeline Parallelism with Alpa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automatic-pipeline-parallelism-with-alpa">Automatic Pipeline Parallelism with Alpa</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="alpa_vs_pmap.html">Difference between alpa.parallelize and jax.pmap</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Alpa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Alpa Tutorials</a> &raquo;</li>
+      <li>Distributed Training with Both Shard and Pipeline Parallelism</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/pipeshard_parallelism.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-pipeshard-parallelism-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="distributed-training-with-both-shard-and-pipeline-parallelism">
+<span id="sphx-glr-tutorials-pipeshard-parallelism-py"></span><h1>Distributed Training with Both Shard and Pipeline Parallelism<a class="headerlink" href="#distributed-training-with-both-shard-and-pipeline-parallelism" title="Permalink to this headline"></a></h1>
+<p>Alpa can automatically parallelizes jax functions with both shard
+parallelism, including data parallelism and operator parallelism (a.k.a.
+intra-operator parallelism), and pipeline parallelism (a.k.a. inter-operator
+parallelism). The <a class="reference internal" href="getting_started.html#getting-started-with-alpa"><span class="std std-ref">getting started guide</span></a>
+focuses on using Alpa for shard parallelism.</p>
+<p>In this tutorial, we show how to use Alpa to parallelize an MLP model with
+both shard and pipeline parallelism. First, we show how to use Alpa
+to manually assign stages for pipeline parallelism. Then we show how
+to use Alpa to automate this process.</p>
+<section id="import-libraries-and-initialize-environment">
+<h2>Import Libraries and Initialize Environment<a class="headerlink" href="#import-libraries-and-initialize-environment" title="Permalink to this headline"></a></h2>
+<p>We first import the required libraries.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">alpa</span>
+<span class="kn">from</span> <span class="nn">alpa.testing</span> <span class="kn">import</span> <span class="n">assert_allclose</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">flax</span> <span class="kn">import</span> <span class="n">linen</span> <span class="k">as</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">flax.training.train_state</span> <span class="kn">import</span> <span class="n">TrainState</span>
+<span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="nn">optax</span>
+</pre></div>
+</div>
+<p>Besides alpa and jax related libraries, we also import <a class="reference external" href="https://docs.ray.io/">ray</a> and start (or connect to) a ray cluster. We use ray to manage the
+devices in the distributed cluster in alpa.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ray</span>
+
+<span class="n">ray</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+<span class="c1"># Alternatively, you can use the following command to connect to an existing</span>
+<span class="c1"># ray cluster.</span>
+<span class="c1"># ray.init(address=&quot;auto&quot;)</span>
+</pre></div>
+</div>
+<p>In alpa, the actual computation of a computational graph is executed on ray
+actors. Therefore, we force the driver process to use the CPU to avoid it
+from occupying the GPU memory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;jax_platform_name&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="train-an-mlp-on-a-single-device">
+<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
+<p>In this tutorial, we use a toy dataset to train an MLP model.
+Specifically, we use the model to fit the function: <span class="math notranslate nohighlight">\(y = Wx + b\)</span>.
+Note that now this model is being executed on CPU because we force the driver
+process to use the CPU.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MLPModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@nn</span><span class="o">.</span><span class="n">compact</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">dim</span> <span class="o">=</span> <span class="mi">2048</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">2048</span>
+
+<span class="c1"># Generate ground truth W and b</span>
+<span class="n">rngkey</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">k1</span><span class="p">,</span> <span class="n">k2</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">rngkey</span><span class="p">)</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="p">(</span><span class="n">dim</span><span class="p">,))</span>
+
+<span class="c1"># Generate the training data</span>
+<span class="n">ksample</span><span class="p">,</span> <span class="n">knoise</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">ksample</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">W</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">knoise</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+
+<span class="c1"># Initialize a train state, which includes the model paramter and optimizer</span>
+<span class="c1"># state.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">rngkey</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">tx</span> <span class="o">=</span> <span class="n">optax</span><span class="o">.</span><span class="n">adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
+
+<span class="c1"># Define training step</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_state</span>
+
+<span class="n">batch</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
+<span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="manual-pipeline-parallelism-with-alpa">
+<h2>Manual Pipeline Parallelism with Alpa<a class="headerlink" href="#manual-pipeline-parallelism-with-alpa" title="Permalink to this headline"></a></h2>
+<p>To manually assign stages for pipeline parallelism, we can use the
+<code class="docutils literal notranslate"><span class="pre">alpa.mark_pipeline</span></code> function to mark the start and end of each pipeline
+stage, and use the <code class="docutils literal notranslate"><span class="pre">&#64;alpa.manual_layer_construction</span></code> decorator to indicate
+that we are manually assigning stages. Note that each the pipeline stage is
+also automatically parallelized by the shard parallel pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the number of microbatches for pipeline parallelism.</span>
+<span class="n">num_micro_batches</span> <span class="o">=</span> <span class="mi">16</span>
+
+<span class="c1"># Initialize the alpa device cluster.</span>
+<span class="n">device_cluster</span> <span class="o">=</span> <span class="n">alpa</span><span class="o">.</span><span class="n">DeviceCluster</span><span class="p">()</span>
+<span class="n">devices</span> <span class="o">=</span> <span class="n">device_cluster</span><span class="o">.</span><span class="n">get_virtual_physical_mesh</span><span class="p">()</span>
+
+<span class="c1"># Set the parallel strategy to &quot;pipeshard_parallel&quot; to enable both pipeline and</span>
+<span class="c1"># shard parallelism.</span>
+<span class="n">alpa</span><span class="o">.</span><span class="n">set_parallelize_options</span><span class="p">(</span>
+    <span class="n">devices</span><span class="o">=</span><span class="n">devices</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;pipeshard_parallel&quot;</span><span class="p">,</span>
+    <span class="n">num_micro_batches</span><span class="o">=</span><span class="n">num_micro_batches</span><span class="p">)</span>
+
+<span class="c1"># Define the manually parallelized model with pipeline markers.</span>
+<span class="k">class</span> <span class="nc">ManualPipelineMLPModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@nn</span><span class="o">.</span><span class="n">compact</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># Mark the end of the 0th pipeline stage and the start of the 1st</span>
+        <span class="c1"># pipeline stage. the start marker of the 0th stage and the end</span>
+        <span class="c1"># marker of the 1st stage are marked in the train_step below.</span>
+        <span class="n">alpa</span><span class="o">.</span><span class="n">mark_pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">mark_type</span><span class="o">=</span><span class="s1">&#39;end&#39;</span><span class="p">)</span>
+        <span class="n">alpa</span><span class="o">.</span><span class="n">mark_pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">mark_type</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="c1"># Initialize the train state with the same parameters as the single-device</span>
+<span class="c1"># model.</span>
+<span class="n">manual_pipeline_model</span> <span class="o">=</span> <span class="n">ManualPipelineMLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+<span class="n">manual_pipeline_state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">manual_pipeline_model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span>
+                                          <span class="n">params</span><span class="o">=</span><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span></a><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
+
+<span class="c1"># Define the training step with manually parallelized pipeline stages.</span>
+<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span>
+<span class="k">def</span> <span class="nf">manual_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+    <span class="c1"># Indicate that we are manually assigning pipeline stages.</span>
+    <span class="nd">@alpa</span><span class="o">.</span><span class="n">manual_layer_construction</span>
+    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="c1"># Mark the start of the 0th pipeline stage.</span>
+        <span class="n">alpa</span><span class="o">.</span><span class="n">mark_pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">mark_type</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Mark the end of the 1st pipeline stage.</span>
+        <span class="n">alpa</span><span class="o">.</span><span class="n">mark_pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">mark_type</span><span class="o">=</span><span class="s1">&#39;end&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="c1"># We use `alpa.grad` here to seperate the apply gradient stage with the</span>
+    <span class="c1"># forward/backward stages in the pipeline. This is necessary to ensure that</span>
+    <span class="c1"># the gradient accumulation is correct.</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">alpa</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_state</span>
+
+<span class="n">manual_pipeline_actual_state</span> <span class="o">=</span> <span class="n">manual_pipeline_train_step</span><span class="p">(</span><span class="n">manual_pipeline_state</span><span class="p">,</span>
+                                                          <span class="n">batch</span><span class="p">)</span>
+<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">manual_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
+
+<span class="c1"># Terminate the alpa device cluster.</span>
+<span class="n">manual_pipeline_train_step</span><span class="o">.</span><span class="n">get_executable</span><span class="p">(</span><span class="n">manual_pipeline_state</span><span class="p">,</span>
+                                          <span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="automatic-pipeline-parallelism-with-alpa">
+<h2>Automatic Pipeline Parallelism with Alpa<a class="headerlink" href="#automatic-pipeline-parallelism-with-alpa" title="Permalink to this headline"></a></h2>
+<p>Alpa also supports automatically partitioning the model into multiple
+pipeline stages and assign each pipeline stage a device mesh such that
+the total execution latency is minimized. Specifically, the automatic
+partitioning algorithm consists of the following steps:</p>
+<ol class="arabic simple">
+<li><p><strong>Layer Construction:</strong> In this step, the operators in the model are
+clustered into <a href="#id1"><span class="problematic" id="id2">``</span></a>layers’’ based on a graph clustering algorithm. The
+user needs to specify the total number of layers (i.e. clusters) as
+a hyperparameter.</p></li>
+<li><p><strong>Stage Construction and Mesh Slicing:</strong> In this step, we partition
+the device cluster (device mesh) to multiple submeshes and assign
+layers to submeshes to form pipeline stages to minimize the total
+pipeline execution latency.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new cluster class for automatic pipeline parallelism.</span>
+<span class="n">device_cluster</span> <span class="o">=</span> <span class="n">alpa</span><span class="o">.</span><span class="n">DeviceCluster</span><span class="p">()</span>
+<span class="n">devices</span> <span class="o">=</span> <span class="n">device_cluster</span><span class="o">.</span><span class="n">get_virtual_physical_mesh</span><span class="p">()</span>
+<span class="c1"># Set pipeline stage mode to &quot;auto_stage&quot; to enable automatic</span>
+<span class="c1"># parallelism with automatic stage slicing and mesh assignment.</span>
+<span class="n">alpa</span><span class="o">.</span><span class="n">set_parallelize_options</span><span class="p">(</span>
+    <span class="n">devices</span><span class="o">=</span><span class="n">devices</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;pipeshard_parallel&quot;</span><span class="p">,</span>
+    <span class="n">pipeline_stage_mode</span><span class="o">=</span><span class="s2">&quot;auto_stage&quot;</span><span class="p">,</span> <span class="n">num_micro_batches</span><span class="o">=</span><span class="n">num_micro_batches</span><span class="p">)</span>
+
+<span class="c1"># Define training step with automatic pipeline-operator parallelism. Note that</span>
+<span class="c1"># we reuse the same model and state as the single device case. The only</span>
+<span class="c1"># modification required is the two decorators. The stage construction and</span>
+<span class="c1"># mesh slicing are performed within the `parallelize` decorator.</span>
+<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span>
+<span class="k">def</span> <span class="nf">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+    <span class="c1"># Indicate that we use automatic layer construction. The `layer_num` here</span>
+    <span class="c1"># is a hyperparameter to control how many layers we get from the</span>
+    <span class="c1"># layer construction algorithm.</span>
+    <span class="nd">@alpa</span><span class="o">.</span><span class="n">automatic_layer_construction</span><span class="p">(</span><span class="n">layer_num</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="c1"># Again, we use `alpa.grad` here to seperate the apply gradient stage with</span>
+    <span class="c1"># the forward/backward stages in the pipeline.</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">alpa</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_state</span>
+
+<span class="n">auto_pipeline_actual_state</span> <span class="o">=</span> <span class="n">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">auto_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
+
+<span class="n">auto_pipeline_train_step</span><span class="o">.</span><span class="n">get_executable</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-pipeshard-parallelism-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/a3ca1faed62a74bef9de2bc3edfc7d0a/pipeshard_parallelism.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">pipeshard_parallelism.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/119275878b2983d17fa8261c96cf7ace/pipeshard_parallelism.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">pipeshard_parallelism.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started with Alpa" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="alpa_vs_pmap.html" class="btn btn-neutral float-right" title="Difference between alpa.parallelize and jax.pmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

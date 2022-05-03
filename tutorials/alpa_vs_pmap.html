@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Difference between alpa.parallelize and jax.pmap &mdash; Alpa 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Distributed Training with Both Shard and Pipeline Parallelism" href="pipeshard_parallelism.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Alpa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/from_source.html">Install Alpa</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/overview.html">Design and Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer_guide.html">Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Alpa Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting Started with Alpa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Difference between alpa.parallelize and jax.pmap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#when-data-parallelism-is-prefered">When data parallelism is prefered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-model-parallelism-is-prefered">When model parallelism is prefered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#comparing-alpa-parallelize-pmap-and-xmap">Comparing <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">xmap</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Alpa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Alpa Tutorials</a> &raquo;</li>
+      <li>Difference between alpa.parallelize and jax.pmap</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/alpa_vs_pmap.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-alpa-vs-pmap-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="difference-between-alpa-parallelize-and-jax-pmap">
+<span id="sphx-glr-tutorials-alpa-vs-pmap-py"></span><h1>Difference between alpa.parallelize and jax.pmap<a class="headerlink" href="#difference-between-alpa-parallelize-and-jax-pmap" title="Permalink to this headline"></a></h1>
+<p>The most common tool for parallelization or distributed computing in jax is
+<a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.html#parallelization-pmap">pmap</a>.
+With several lines of code change, we can use <code class="docutils literal notranslate"><span class="pre">pmap</span></code> for data parallel
+training. However, we cannot use <code class="docutils literal notranslate"><span class="pre">pmap</span></code> for model parallel training,
+which is required for training large models with billions of parameters.</p>
+<p>On the contrary, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> supports both data parallelism and
+model parallelism in an automatic way. <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> analyzes the
+jax computational graph and picks the best strategy.
+If data parallelism is more suitable, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> achieves the same
+performance as <code class="docutils literal notranslate"><span class="pre">pmap</span></code> but with less code change.
+If model parallelism is more suitable, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> achieves better performance
+and uses less memory than <code class="docutils literal notranslate"><span class="pre">pmap</span></code>.</p>
+<p>In this tutorial, we are going to compare <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> and <code class="docutils literal notranslate"><span class="pre">pmap</span></code> on two
+workloads. A more detailed comparison among <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">xmap</span></code>
+is also attached at the end of the article.</p>
+<section id="when-data-parallelism-is-prefered">
+<h2>When data parallelism is prefered<a class="headerlink" href="#when-data-parallelism-is-prefered" title="Permalink to this headline"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</section>
+<section id="when-model-parallelism-is-prefered">
+<h2>When model parallelism is prefered<a class="headerlink" href="#when-model-parallelism-is-prefered" title="Permalink to this headline"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</section>
+<section id="comparing-alpa-parallelize-pmap-and-xmap">
+<h2>Comparing <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">xmap</span></code><a class="headerlink" href="#comparing-alpa-parallelize-pmap-and-xmap" title="Permalink to this headline"></a></h2>
+<p>Besides <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, jax also provides
+<a class="reference external" href="https://jax.readthedocs.io/en/latest/notebooks/xmap_tutorial.html">xmap</a>
+for more advanced parallelization.
+The table below compares the features of <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">xmap</span></code>.
+In summary, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> supports more parallelism techniques in a
+more automatic way.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 11%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Transformation</p></th>
+<th class="head"><p>Data Parallelism</p></th>
+<th class="head"><p>Operator Parallelism</p></th>
+<th class="head"><p>Pipeline Parallelism</p></th>
+<th class="head"><p>Automated</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>alpa.parallelize</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>pmap</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>xmap</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Operator parallelism and pipeline parallelism are two forms of model parallelism.
+Operator parallelism partitions the work in a single operator and assigns them
+to different devices. Pipeline parallelism partitions the computational
+graphs and assigns different operators to different devices.</p>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-alpa-vs-pmap-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/7d940243c8289879d99b6065a123a241/alpa_vs_pmap.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">alpa_vs_pmap.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/94bafdde45190761cb017b4b1c53325a/alpa_vs_pmap.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">alpa_vs_pmap.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeshard_parallelism.html" class="btn btn-neutral float-left" title="Distributed Training with Both Shard and Pipeline Parallelism" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
