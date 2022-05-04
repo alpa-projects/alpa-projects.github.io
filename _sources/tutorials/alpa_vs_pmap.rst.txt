@@ -52,6 +52,12 @@ When data parallelism is prefered
     # TODO
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 31-33
 
 When model parallelism is prefered
@@ -63,6 +69,12 @@ When model parallelism is prefered
 
 
     # TODO
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 37-59

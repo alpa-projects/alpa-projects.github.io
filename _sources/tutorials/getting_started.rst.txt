@@ -64,6 +64,12 @@ intermediate representations and does not depend on any specific high-level libr
 
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 43-47
 
 Train an MLP on a Single Device
@@ -126,6 +132,12 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
     expected_state = train_step(state, batch)
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 98-114
 
 Auto-parallelization with ``@parallelize``
@@ -171,6 +183,12 @@ writing for a single device.
     assert_allclose(expected_state.params, actual_state.params, atol=5e-3)
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 136-141
 
 After being decorated by ``@parallelize``, the function can still take numpy
@@ -189,6 +207,21 @@ stored distributedly.
 
     # Get one copy
     kernel_np = np.array(actual_state.params["params"]["Dense_0"]["kernel"])
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Input parameter type: <class 'jaxlib.xla_extension.DeviceArray'>
+    Output parameter type: <class 'jaxlib.xla_extension.pmap_lib.ShardedDeviceArray'>
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 149-155
@@ -235,6 +268,21 @@ on a 8-GPU machine.
     print(f"Parallel execution time. Mean: {np.mean(costs):.2f} ms, Std: {np.std(costs):.2f} ms")
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Serial execution time. Mean: 197.83 ms, Std: 0.22 ms
+    Parallel execution time. Mean: 67.99 ms, Std: 0.15 ms
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 186-189
 
 Memory Usage Comparison
@@ -255,9 +303,24 @@ We can also compare the memory usage per GPU.
     print(f"Parallel execution per GPU memory usage: {executable.get_total_allocation_size() / GB:.2f} GB")
 
 
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Serial execution per GPU memory usage: 2.78 GB
+    Parallel execution per GPU memory usage: 0.50 GB
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.000 seconds)
+   **Total running time of the script:** ( 0 minutes  50.949 seconds)
 
 
 .. _sphx_glr_download_tutorials_getting_started.py:
