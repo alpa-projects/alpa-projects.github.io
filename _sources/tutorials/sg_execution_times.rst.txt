@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**00:50.059** total execution time for **tutorials** files:
+**00:50.934** total execution time for **tutorials** files:
 
 +-----------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_getting_started.py` (``getting_started.py``)             | 00:50.059 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_getting_started.py` (``getting_started.py``)             | 00:50.934 | 0.0 MB |
 +-----------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_alpa_vs_pmap.py` (``alpa_vs_pmap.py``)                   | 00:00.001 | 0.0 MB |
 +-----------------------------------------------------------------------------------+-----------+--------+
