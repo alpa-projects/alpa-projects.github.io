@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Install Alpa &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -86,17 +87,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="install-alpa">
+  <section id="install-alpa">
 <h1>Install Alpa<a class="headerlink" href="#install-alpa" title="Permalink to this headline"></a></h1>
-<div class="section" id="requirements">
+<section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>CUDA &gt;= 11.1</p></li>
 <li><p>CuDNN &gt;= 8.1</p></li>
 <li><p>python &gt;= 3.7</p></li>
 </ul>
-</div>
-<div class="section" id="install-from-source">
+</section>
+<section id="install-from-source">
 <h2>Install from Source<a class="headerlink" href="#install-from-source" title="Permalink to this headline"></a></h2>
 <p>Alpa depends on its own fork of jax and tensorflow.
 To install alpa from source, we need to build these forks.</p>
@@ -122,7 +123,7 @@ git clone git@github.com:alpa-projects/tensorflow-alpa.git
 </li>
 <li><p>Python packages:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install cmake tqdm pybind11 numba numpy scipy pulp ray <span class="nv">flax</span><span class="o">==</span><span class="m">0</span>.4.1
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install cmake tqdm pybind11 numba numpy scipy pulp ray <span class="nv">flax</span><span class="o">==</span><span class="m">0</span>.4.1 tensorstore
 pip3 install cupy-cuda114  <span class="c1"># use your own CUDA version. Here cuda-cuda114 means cuda 11.4.</span>
 </pre></div>
 </div>
@@ -196,8 +197,8 @@ To modify c++ code in tensorflow, you only need to run the command below from st
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="check-installation">
+</section>
+<section id="check-installation">
 <h2>Check Installation<a class="headerlink" href="#check-installation" title="Permalink to this headline"></a></h2>
 <p>You can check the installation by running the following test script.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa
@@ -205,8 +206,8 @@ ray start --head
 python3 tests/test_install.py
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
