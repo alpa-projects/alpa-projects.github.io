@@ -186,6 +186,11 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
 <span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 </pre></div>
 </div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/python3.8-env/lib/python3.8/site-packages/jax/_src/numpy/lax_numpy.py:1866: UserWarning: Explicitly requested dtype &lt;class &#39;numpy.float64&#39;&gt; requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/google/jax#current-gotchas for more.
+  lax_internal._check_user_dtype_supported(dtype, &quot;asarray&quot;)
+</pre></div>
+</div>
 </section>
 <section id="auto-parallelization-with-parallelize">
 <h2>Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">&#64;parallelize</span></code><a class="headerlink" href="#auto-parallelization-with-parallelize" title="Permalink to this headline"></a></h2>
@@ -278,8 +283,8 @@ on a 8-GPU machine.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 212.04 ms, Std: 9.09 ms
-Parallel execution time. Mean: 72.17 ms, Std: 2.67 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 397.96 ms, Std: 1.36 ms
+Parallel execution time. Mean: 220.19 ms, Std: 15.58 ms
 </pre></div>
 </div>
 </section>
@@ -300,7 +305,7 @@ Parallel execution time. Mean: 72.17 ms, Std: 2.67 ms
 Parallel execution per GPU memory usage: 0.50 GB
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  52.152 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  19.606 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c057f060b15d3f12dbd33a402784ff5a/getting_started.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">getting_started.py</span></code></a></p>
