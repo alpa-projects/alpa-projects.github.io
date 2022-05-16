@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design and Architecture &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -23,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Developer Guide" href="../developer/developer_guide.html" />
-    <link rel="prev" title="Install Alpa" href="../install/from_source.html" /> 
+    <link rel="prev" title="Differences between alpa.parallelize and jax.pmap" href="../tutorials/alpa_vs_pmap.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,9 +40,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Install</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../install/from_source.html">Install Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Alpa Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/pipeshard_parallelism.html">SyntaxError</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul class="current">
@@ -76,10 +81,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developer/developer_guide.html">Developer Guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Alpa Tutorials</a></li>
-</ul>
 
         </div>
       </div>
@@ -105,7 +106,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="design-and-architecture">
+  <div class="section" id="design-and-architecture">
 <h1>Design and Architecture<a class="headerlink" href="#design-and-architecture" title="Permalink to this headline"></a></h1>
 <p>This document aims to describe the architecture of Alpa and explain several core concepts and compilation passes introduced by Alpa at a high level.
 This document is organized as follows:</p>
@@ -118,21 +119,19 @@ This document is organized as follows:</p>
 <li><p><a class="reference external" href="https://arxiv.org/pdf/2201.12023.pdf">Alpa research paper</a>.</p></li>
 <li><p><a class="reference external" href="https://youtu.be/Jqz34CV-UqU">12-min introductory talk</a> about Alpa.</p></li>
 </ul>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
 <p><a class="reference internal" href="#architecture"><span class="std std-ref">The figure below</span></a> shows a high-level diagram of Alpa’s architecture.</p>
-<figure class="align-center" id="id5">
+<div class="figure align-center" id="id5">
 <span id="architecture"></span><a class="reference internal image-reference" href="../_images/alpa-arch.png"><img alt="../_images/alpa-arch.png" src="../_images/alpa-arch.png" style="width: 450px;" /></a>
-<figcaption>
-<p><span class="caption-text">Figure 1: Alpa architecture diagram.</span><a class="headerlink" href="#id5" title="Permalink to this image"></a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-text">Figure 1: Alpa architecture diagram.</span><a class="headerlink" href="#id5" title="Permalink to this image"></a></p>
+</div>
 <p>Like many existing machine learning compilers, Alpa parallelizes the ML computation in two steps: a compilation step, followed by a runtime step.</p>
 <p>In the compilation step, Alpa takes a model description, in the form of a <a class="reference internal" href="#cg"><span class="std std-ref">computational graph</span></a>, and a <a class="reference internal" href="#device-cluster"><span class="std std-ref">device cluster</span></a> as inputs, and performs a few compilation passes and optimizations to generate
 a model-parallel execution plan, which is <em>custom-made</em> for the model and cluster. Alpa then generates binary executables based on the training code and parallel execution plan, for each parcipating compute device in the cluster.
 In the runtime step, Alpa orchestrates the parallel execution of these executables on the cluster.</p>
-</section>
-<section id="compilation">
+</div>
+<div class="section" id="compilation">
 <h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline"></a></h2>
 <p>Before we start introducing the compilation architecture, we bring in two important concepts introduced by Alpa.
 Unlike many existing distributed ML training systems, Alpa views existing ML parallelization approaches into two orthogonal categories:
@@ -150,66 +149,62 @@ compilation passes, which we call <strong>intra-op pass</strong>, to generate th
 <p>Alpa can guarantee the plan generated at each individual level is <em>locally optimal</em>.
 Once the two-level plans are generated, Alpa runs a third pass <strong>runtime orchestration pass</strong>. In this pass, Alpa applies the plans on the input computational graph,
 performs some post-processing, and finally compile the original, single-node graph into parallel executables. It then sends the parallel executables to devices on the cluster.</p>
-<section id="important-concepts">
+<div class="section" id="important-concepts">
 <h3>Important concepts<a class="headerlink" href="#important-concepts" title="Permalink to this headline"></a></h3>
 <p>Understanding the following concepts are necessary to understand what each pass is precisely doing during compilation.</p>
-<section id="computational-graph">
+<div class="section" id="computational-graph">
 <span id="cg"></span><h4>Computational graph<a class="headerlink" href="#computational-graph" title="Permalink to this headline"></a></h4>
 <p>Like many machine learning compiler systems, Alpa represents the model computation as a static computational graph.
 For now, this computational graph is first extracted from the user code and expressed using the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jaxpr.html">JaxPR intermediate representation</a>,
 and then lowered to the <a class="reference external" href="https://www.tensorflow.org/xla/operation_semantics">XLA HLO representation</a>.</p>
-</section>
-<section id="device-cluster">
+</div>
+<div class="section" id="device-cluster">
 <span id="id1"></span><h4>Device cluster<a class="headerlink" href="#device-cluster" title="Permalink to this headline"></a></h4>
 <p>Alpa runs on a cluster of compute devices, managed by <a class="reference external" href="https://github.com/ray-project/ray">Ray</a>. For example, a cluster of four AWS p3.16xlarge nodes, with 8 GPUs on each node, form an 4x8 device cluster, illustrated
 in <a class="reference internal" href="#cluster-mesh"><span class="std std-ref">Figure 2</span></a> below. We also call this device cluster <em>the cluster mesh</em>.</p>
-<figure class="align-center" id="id6">
+<div class="figure align-center" id="id6">
 <span id="cluster-mesh"></span><a class="reference internal image-reference" href="../_images/cluster-mesh.png"><img alt="../_images/cluster-mesh.png" src="../_images/cluster-mesh.png" style="width: 450px;" /></a>
-<figcaption>
-<p><span class="caption-text">Figure 2: an M x N cluster mesh.</span><a class="headerlink" href="#id6" title="Permalink to this image"></a></p>
-</figcaption>
-</figure>
-</section>
-<section id="device-mesh">
+<p class="caption"><span class="caption-text">Figure 2: an M x N cluster mesh.</span><a class="headerlink" href="#id6" title="Permalink to this image"></a></p>
+</div>
+</div>
+<div class="section" id="device-mesh">
 <h4>Device mesh<a class="headerlink" href="#device-mesh" title="Permalink to this headline"></a></h4>
 <p>Alpa’s <a class="reference internal" href="#inter-op-pass"><span class="std std-ref">inter-op compilation pass</span></a> will slice the cluster mesh into multiple groups of devices. Each group might contain a number of devices
 with high communication bandwidth, such as <a class="reference external" href="https://www.nvidia.com/en-us/data-center/nvlink/">NVIDIA NVLink</a>. We call each group of devices a device mesh.
 <a class="reference internal" href="#cluster-mesh"><span class="std std-ref">Figure 2</span></a> shows how a cluster mesh is sliced into 4 device meshes.</p>
-</section>
-<section id="worker">
+</div>
+<div class="section" id="worker">
 <h4>Worker<a class="headerlink" href="#worker" title="Permalink to this headline"></a></h4>
 <p>Each device mesh might consist of partial or full devices from a single node or from multiple nodes. Alpa uses a worker to manage multiple devices from a node; hence a device mesh might contain multiple workers, each mapping to a process that manages multiple devices on a node.
 For example, <a class="reference internal" href="#mesh-worker"><span class="std std-ref">Figure 3</span></a> shows a mesh, consisted of 2 workers, and each worker manages 4 devices.
 The workers are implemented as <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/alpa/device_mesh.py#L64">Ray actors</a>.</p>
-<figure class="align-center" id="id7">
+<div class="figure align-center" id="id7">
 <span id="mesh-worker"></span><a class="reference internal image-reference" href="../_images/mesh-worker.png"><img alt="../_images/mesh-worker.png" src="../_images/mesh-worker.png" style="width: 350px;" /></a>
-<figcaption>
-<p><span class="caption-text">Figure 3: A mesh is consisted of multiple workers managing devices.</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
-</figcaption>
-</figure>
-</section>
-<section id="stage">
+<p class="caption"><span class="caption-text">Figure 3: A mesh is consisted of multiple workers managing devices.</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
+</div>
+</div>
+<div class="section" id="stage">
 <h4>Stage<a class="headerlink" href="#stage" title="Permalink to this headline"></a></h4>
 <p>Alpa slices the input computational graph into multiple, adjacent subgraphs. We call each subgraph a stage.</p>
-</section>
-<section id="resharding">
+</div>
+<div class="section" id="resharding">
 <h4>Resharding<a class="headerlink" href="#resharding" title="Permalink to this headline"></a></h4>
 <p># TODO</p>
-</section>
-</section>
-<section id="compilation-passes">
+</div>
+</div>
+<div class="section" id="compilation-passes">
 <h3>Compilation Passes<a class="headerlink" href="#compilation-passes" title="Permalink to this headline"></a></h3>
 <p>With the above concepts, we now explain what each compilation pass is exactly doing.</p>
-<section id="inter-op-pass">
+<div class="section" id="inter-op-pass">
 <span id="id2"></span><h4>Inter-op Pass<a class="headerlink" href="#inter-op-pass" title="Permalink to this headline"></a></h4>
 <p>Inter-op pass slices the computational graph into multiple stages and the cluster mesh into multiple smaller device meshes; it then assigns each stage to a mesh.
 Alpa generates the slicing and assignment scheme optimally using a dynamic programming algorithm to minimize the inter-op parallel execution latency.</p>
-</section>
-<section id="intra-op-pass">
+</div>
+<div class="section" id="intra-op-pass">
 <h4>Intra-op pass<a class="headerlink" href="#intra-op-pass" title="Permalink to this headline"></a></h4>
 <p>Intra-op pass looks at each &lt;stage, mesh&gt; pair generated by the inter-op pass, and generates the optimal intra-op parallelism execution plan for this stage to run on its assigned mesh.</p>
-</section>
-<section id="runtime-orchestratoin-pass">
+</div>
+<div class="section" id="runtime-orchestratoin-pass">
 <h4>Runtime Orchestratoin pass<a class="headerlink" href="#runtime-orchestratoin-pass" title="Permalink to this headline"></a></h4>
 <p>The runtime orchestration pass looks at the pairs of stages and meshes generated by the inter-op pass, and the intra-op parallelism strategy generated for each &lt;stage, mesh&gt; pair by the intra-op pass.
 It analyzes their data dependency, and tries to fullfills some requirements before runtime. These requirements include:</p>
@@ -220,26 +215,26 @@ In that case, cross-mesh resharding is required. Alpa’s runtime orchestration 
 </ul>
 <p>These three compilation passes are implemented on top of <a class="reference external" href="https://www.tensorflow.org/xla">XLA</a> and <a class="reference external" href="https://arxiv.org/pdf/2105.04663.pdf">GSPMD</a>.
 Despite the compilation passes for distributed execution, <a class="reference external" href="https://www.tensorflow.org/xla">XLA</a> and <a class="reference external" href="https://arxiv.org/pdf/2105.04663.pdf">GSPMD</a> additionally perform some other necessary optimizations to improve the single-device execution performance.</p>
-</section>
-</section>
-</section>
-<section id="runtime">
+</div>
+</div>
+</div>
+<div class="section" id="runtime">
 <h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline"></a></h2>
 <p>Alpa implements a <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/alpa/pipeline_parallel/decentralized_distributed_runtime.py">runtime</a> to orchestrate the inter-op parallel execution of different stages on these meshes.
 For each stage, Alpa uses the GSPMD runtime to parallelize its execution on its assigned device mesh, following the intra-op parallelism execution plan generated by the intra-op pass.</p>
 <p>Next, we will walk through the process of how the single-node code of an MLP, such as the <a class="reference external" href="tutorial/getting_started">MLP</a> in the tutorial  is converted to a distributed version by Alpa.</p>
-</section>
-<section id="walking-through-example-distributing-an-mlp">
+</div>
+<div class="section" id="walking-through-example-distributing-an-mlp">
 <h2>Walking-through Example: Distributing an MLP<a class="headerlink" href="#walking-through-example-distributing-an-mlp" title="Permalink to this headline"></a></h2>
 <p># TODO</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../install/from_source.html" class="btn btn-neutral float-left" title="Install Alpa" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/alpa_vs_pmap.html" class="btn btn-neutral float-left" title="Differences between alpa.parallelize and jax.pmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../developer/developer_guide.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
