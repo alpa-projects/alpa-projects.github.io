@@ -18,10 +18,10 @@
 .. _sphx_glr_tutorials_quickstart.py:
 
 
-.. _Alpa Quickstart
+.. _Alpa Quickstart:
 
 Alpa Quickstart
-=========================
+===============
 
 Alpa is built on top of a tensor computation framework `Jax <https://jax.readthedocs.io/en/latest/index.html>`_ .
 Alpa can automatically parallelize jax functions and runs them on a distributed cluster.
@@ -150,7 +150,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
 .. GENERATED FROM PYTHON SOURCE LINES 98-114
 
 Auto-parallelization with ``alpa.parallelize``
----------------------------------------------
+----------------------------------------------
 Alpa provides a transformation ``alpa.parallelize`` to parallelize a jax function.
 ``alpa.parallelize`` is similar to ``jax.jit`` . ``jax.jit`` compiles a jax
 function for a single device, while ``alpa.parallelize`` compiles a jax function
@@ -285,8 +285,8 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 146.04 ms, Std: 0.25 ms
-    Parallel execution time. Mean: 22.73 ms, Std: 0.64 ms
+    Serial execution time. Mean: 146.40 ms, Std: 0.19 ms
+    Parallel execution time. Mean: 22.67 ms, Std: 0.51 ms
 
 
 
@@ -328,7 +328,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  45.467 seconds)
+   **Total running time of the script:** ( 0 minutes  46.181 seconds)
 
 
 .. _sphx_glr_download_tutorials_quickstart.py:

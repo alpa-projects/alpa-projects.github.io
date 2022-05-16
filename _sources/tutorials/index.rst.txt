@@ -32,12 +32,12 @@ Alpa Tutorials
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Example script with invalid Python syntax ">
+    <div class="sphx-glr-thumbcontainer" tooltip="Alpa can automatically parallelizes jax functions with both shard parallelism (a.k.a. intra-ope...">
 
 .. only:: html
 
  .. figure:: /tutorials/images/thumb/sphx_glr_pipeshard_parallelism_thumb.png
-     :alt: SyntaxError
+     :alt: Distributed Training with Both Shard and Pipeline Parallelism
 
      :ref:`sphx_glr_tutorials_pipeshard_parallelism.py`
 
