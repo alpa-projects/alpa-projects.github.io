@@ -100,15 +100,11 @@
 </div>
 <div class="section" id="install-from-source">
 <h2>Install from Source<a class="headerlink" href="#install-from-source" title="Permalink to this headline"></a></h2>
-<p>Alpa depends on its own fork of jax and tensorflow.
-To install alpa from source, we need to build these forks.</p>
 <ol class="arabic simple">
 <li><p>Clone repos</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:alpa-projects/alpa.git
-git clone git@github.com:alpa-projects/jax-alpa.git
-git clone git@github.com:alpa-projects/tensorflow-alpa.git
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive git@github.com:alpa-projects/alpa.git
 </pre></div>
 </div>
 </div></blockquote>
@@ -124,7 +120,7 @@ git clone git@github.com:alpa-projects/tensorflow-alpa.git
 </li>
 <li><p>Python packages:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install cmake tqdm pybind11 numba numpy scipy pulp ray <span class="nv">flax</span><span class="o">==</span><span class="m">0</span>.4.1 tensorstore
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install cmake tqdm pybind11 numba numpy pulp ray tensorstore <span class="nv">flax</span><span class="o">==</span><span class="m">0</span>.4.1 <span class="nv">jax</span><span class="o">==</span><span class="m">0</span>.3.5
 pip3 install cupy-cuda114  <span class="c1"># use your own CUDA version. Here cuda-cuda114 means cuda 11.4.</span>
 </pre></div>
 </div>
@@ -155,24 +151,14 @@ Otherwise, follow the printed instructions to install nccl.</p>
 <li><p>Build and install jaxlib</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> jax-alpa
-<span class="nb">export</span> <span class="nv">TF_PATH</span><span class="o">=</span>~/tensorflow-alpa  <span class="c1"># update this with your path</span>
-python3 build/build.py --enable_cuda --dev_install --tf_path<span class="o">=</span><span class="nv">$TF_PATH</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa/build_jaxlib
+python3 build/build.py --enable_cuda --dev_install --tf_path<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/../third_party/tensorflow-alpa
 <span class="nb">cd</span> dist
 pip3 install -e .
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="4">
-<li><p>Install jax</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> jax-alpa
-pip3 install -e .
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="5">
 <li><p>Install Alpa</p></li>
 </ol>
 <blockquote>
@@ -181,7 +167,7 @@ pip3 install -e .
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="5">
 <li><p>Build XLA pipeline marker custom call</p></li>
 </ol>
 <blockquote>
@@ -194,7 +180,7 @@ bash build.sh
 <p class="admonition-title">Note</p>
 <p>All installations are in development mode, so you can modify python code and it will take effect immediately.
 To modify c++ code in tensorflow, you only need to run the command below from step 3 to recompile jaxlib:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>python3 build/build.py --enable_cuda --dev_install --tf_path=$TF_PATH
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>python3 build/build.py --enable_cuda --dev_install --tf_path=$(pwd)/../third_party/tensorflow-alpa
 </pre></div>
 </div>
 </div>

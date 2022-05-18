@@ -89,7 +89,7 @@ the cluster and disributed workers. We initialize ray and alpa.
 
  .. code-block:: none
 
-    2022-05-16 15:29:26,761 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8266
+    2022-05-17 11:31:44,797 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8266
 
 
 
@@ -320,15 +320,15 @@ partitioning algorithm consists of the following steps:
       0%|          | 0/2 [00:00<?, ?it/s]
                                          
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 31.82it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 33.48it/s]
     - Compile all stages
-      0%|          | 0/1 [00:00<?, ?it/s]    100%|##########| 1/1 [00:02<00:00,  2.22s/it]    100%|##########| 1/1 [00:02<00:00,  2.22s/it]
+      0%|          | 0/1 [00:00<?, ?it/s]    100%|##########| 1/1 [00:02<00:00,  2.21s/it]    100%|##########| 1/1 [00:02<00:00,  2.21s/it]
     - Profile all stages
-      0%|          | 0/1 [00:00<?, ?it/s]                                         cost[0, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.662GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {})
-      0%|          | 0/1 [00:20<?, ?it/s]    100%|##########| 1/1 [00:20<00:00, 20.08s/it]    100%|##########| 1/1 [00:20<00:00, 20.09s/it]
-    Profiling for submesh 3 (1, 8) takes 22.71387529373169 seconds
+      0%|          | 0/1 [00:00<?, ?it/s]                                         cost[0, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {})
+      0%|          | 0/1 [00:20<?, ?it/s]    100%|##########| 1/1 [00:20<00:00, 20.21s/it]    100%|##########| 1/1 [00:20<00:00, 20.21s/it]
+    Profiling for submesh 3 (1, 8) takes 22.792890310287476 seconds
     Profiled costs are: [[[       inf]
-      [0.00204113]]
+      [0.00176382]]
 
      [[       inf]
       [       inf]]]
@@ -344,22 +344,22 @@ partitioning algorithm consists of the following steps:
       0%|          | 0/2 [00:00<?, ?it/s]
                                          
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 15.48it/s]    100%|##########| 2/2 [00:00<00:00, 15.42it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 15.69it/s]    100%|##########| 2/2 [00:00<00:00, 15.64it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:02<00:04,  2.12s/it]    100%|##########| 3/3 [00:02<00:00,  1.66it/s]    100%|##########| 3/3 [00:02<00:00,  1.32it/s]
+      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.98s/it]    100%|##########| 3/3 [00:02<00:00,  1.82it/s]    100%|##########| 3/3 [00:02<00:00,  1.44it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.662GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {})
-      0%|          | 0/3 [00:13<?, ?it/s]     33%|###3      | 1/3 [00:13<00:27, 13.86s/it]                                                 cost[0, 1, 0]=0.002, max_n_succ_stage=2731, Mem: avail=13.662GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {})
-     33%|###3      | 1/3 [00:14<00:27, 13.86s/it]     67%|######6   | 2/3 [00:14<00:05,  5.85s/it]                                                 cost[1, 1, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.662GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {})
-     67%|######6   | 2/3 [00:14<00:05,  5.85s/it]    100%|##########| 3/3 [00:14<00:00,  4.73s/it]
-    Profiling for submesh 2 (1, 4) takes 17.0114324092865 seconds
-    Profiled costs are: [[[0.00106737]
-      [0.00232185]]
+      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {})
+      0%|          | 0/3 [00:13<?, ?it/s]     33%|###3      | 1/3 [00:13<00:26, 13.25s/it]                                                 cost[0, 1, 0]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {})
+     33%|###3      | 1/3 [00:13<00:26, 13.25s/it]     67%|######6   | 2/3 [00:13<00:05,  5.59s/it]                                                 cost[1, 1, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {})
+     67%|######6   | 2/3 [00:13<00:05,  5.59s/it]    100%|##########| 3/3 [00:13<00:00,  4.52s/it]
+    Profiling for submesh 2 (1, 4) takes 16.079757928848267 seconds
+    Profiled costs are: [[[0.00107553]
+      [0.00192597]]
 
      [[       inf]
-      [0.00126256]]]
+      [0.00120123]]]
     Profiled max_n_succ_stages are: [[[4096]
-      [2731]]
+      [2732]]
 
      [[  -1]
       [4096]]]
@@ -370,25 +370,25 @@ partitioning algorithm consists of the following steps:
       0%|          | 0/2 [00:00<?, ?it/s]
                                          
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 15.30it/s]    100%|##########| 2/2 [00:00<00:00, 15.24it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 15.94it/s]    100%|##########| 2/2 [00:00<00:00, 15.88it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:02<00:04,  2.01s/it]    100%|##########| 3/3 [00:02<00:00,  1.76it/s]    100%|##########| 3/3 [00:02<00:00,  1.40it/s]
+      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:02<00:04,  2.12s/it]    100%|##########| 3/3 [00:02<00:00,  1.67it/s]    100%|##########| 3/3 [00:02<00:00,  1.33it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.662GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {})
-      0%|          | 0/3 [00:11<?, ?it/s]     33%|###3      | 1/3 [00:11<00:22, 11.35s/it]                                                 cost[1, 1, 0]=0.002, max_n_succ_stage=3642, Mem: avail=13.662GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {})
-     33%|###3      | 1/3 [00:11<00:22, 11.35s/it]                                                 cost[0, 1, 0]=0.003, max_n_succ_stage=1777, Mem: avail=13.662GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {})
-     33%|###3      | 1/3 [00:11<00:22, 11.35s/it]    100%|##########| 3/3 [00:11<00:00,  3.05s/it]    100%|##########| 3/3 [00:11<00:00,  3.88s/it]
-    Profiling for submesh 1 (1, 2) takes 14.365577697753906 seconds
-    Profiled costs are: [[[0.00179007]
-      [0.00302275]]
+      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[1, 1, 0]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {})
+      0%|          | 0/3 [00:10<?, ?it/s]     33%|###3      | 1/3 [00:10<00:21, 10.90s/it]                                                 cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {})
+     33%|###3      | 1/3 [00:11<00:21, 10.90s/it]     67%|######6   | 2/3 [00:11<00:04,  4.59s/it]                                                 cost[0, 1, 0]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {})
+     67%|######6   | 2/3 [00:11<00:04,  4.59s/it]    100%|##########| 3/3 [00:11<00:00,  2.57s/it]    100%|##########| 3/3 [00:11<00:00,  3.75s/it]
+    Profiling for submesh 1 (1, 2) takes 13.974659442901611 seconds
+    Profiled costs are: [[[0.00157825]
+      [0.00289165]]
 
      [[       inf]
-      [0.00184729]]]
+      [0.00180223]]]
     Profiled max_n_succ_stages are: [[[4096]
-      [1777]]
+      [1778]]
 
      [[  -1]
-      [3642]]]
+      [3643]]]
     --------------------------------------------------
     - Profiling for submesh 0 (1, 1):
     - Generate all stage infos (Jaxpr -> HLO)
@@ -396,27 +396,27 @@ partitioning algorithm consists of the following steps:
       0%|          | 0/2 [00:00<?, ?it/s]
                                          
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 16.42it/s]    100%|##########| 2/2 [00:00<00:00, 16.35it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 15.86it/s]    100%|##########| 2/2 [00:00<00:00, 15.79it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.86s/it]    100%|##########| 3/3 [00:01<00:00,  1.58it/s]
+      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.79s/it]    100%|##########| 3/3 [00:01<00:00,  1.66it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[1, 1, 0]=0.003, max_n_succ_stage=2133, Mem: avail=13.662GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
-      0%|          | 0/3 [00:10<?, ?it/s]     33%|###3      | 1/3 [00:10<00:21, 10.74s/it]                                                 cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.662GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
-     33%|###3      | 1/3 [00:11<00:21, 10.74s/it]     67%|######6   | 2/3 [00:11<00:04,  4.65s/it]                                                 cost[0, 1, 0]=0.007, max_n_succ_stage=1014, Mem: avail=13.662GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
-     67%|######6   | 2/3 [00:11<00:04,  4.65s/it]    100%|##########| 3/3 [00:11<00:00,  2.70s/it]    100%|##########| 3/3 [00:11<00:00,  3.84s/it]
-    Profiling for submesh 0 (1, 1) takes 13.833306789398193 seconds
-    Profiled costs are: [[[0.00244382]
-      [0.00744541]]
+      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
+      0%|          | 0/3 [00:10<?, ?it/s]     33%|###3      | 1/3 [00:10<00:20, 10.23s/it]                                                 cost[1, 1, 0]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
+     33%|###3      | 1/3 [00:10<00:20, 10.23s/it]                                                 cost[0, 1, 0]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
+     33%|###3      | 1/3 [00:10<00:20, 10.23s/it]    100%|##########| 3/3 [00:10<00:00,  2.74s/it]    100%|##########| 3/3 [00:10<00:00,  3.49s/it]
+    Profiling for submesh 0 (1, 1) takes 12.853281259536743 seconds
+    Profiled costs are: [[[0.00236715]
+      [0.00473658]]
 
      [[       inf]
-      [0.00271217]]]
+      [0.00268518]]]
     Profiled max_n_succ_stages are: [[[2540]
       [1014]]
 
      [[  -1]
-      [2133]]]
+      [2134]]]
     --------------------------------------------------
-    Compute cost saved to: compute-cost-2022-05-16-15-31-09.npy
+    Compute cost saved to: compute-cost-2022-05-17-11-33-26.npy
     ----------------------------------------------------------------------
     Result forward_stage_layer_ids: [[0], [1]]
     Result meshes: [(1, 4), (1, 4)]
@@ -429,7 +429,7 @@ partitioning algorithm consists of the following steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  14.144 seconds)
+   **Total running time of the script:** ( 2 minutes  11.227 seconds)
 
 
 .. _sphx_glr_download_tutorials_pipeshard_parallelism.py:

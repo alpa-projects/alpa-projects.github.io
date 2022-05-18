@@ -98,19 +98,20 @@
 <dt>The code in alpa’s repository is organized as follows:</dt><dd><ul class="simple">
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/alpa">alpa</a>: the python source code of Alpa</p></li>
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/benchmark">benchmark</a>: benchmark scripts</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/build_jaxlib">build_jaxlib</a>: build scripts for Alpa’s version of jaxlib</p></li>
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/docs">docs</a>: documentation and tutorials</p></li>
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples">examples</a>: public examples</p></li>
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/playground">playground</a>: experimental scripts</p></li>
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/tests">tests</a>: unit tests</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/third_party">third_party</a>: third party repos</p></li>
 </ul>
 </dd>
 </dl>
-<p>There are two additional repositories:</p>
+<p>In addition, Alpa maintains a tensorflow fork. This is because alpa modifies the XLA compiler, whose code
+is hosted in the tensorflow repo.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/alpa-projects/tensorflow-alpa">tensorflow-alpa</a>: The TensorFlow fork for Alpa.
 The c++ source code of Alpa mainly resides in <code class="docutils literal notranslate"><span class="pre">tensorflow/compiler/xla/service/spmd</span></code>.</p></li>
-<li><p><a class="reference external" href="https://github.com/alpa-projects/jax-alpa">jax-alpa</a>: The JAX fork for Alpa, in which we do not change any
-functionality, but modify the building scripts to make building with tensorflow-alpa easier.</p></li>
 </ul>
 </div>
 <div class="section" id="contribute-to-alpa">
