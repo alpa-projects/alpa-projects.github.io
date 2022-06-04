@@ -113,7 +113,7 @@ Install from Source
 .. note::
 
   All installations are in development mode, so you can modify python code and it will take effect immediately.
-  To modify c++ code in tensorflow, you only need to run the command below from step 3 to recompile jaxlib::
+  To modify c++ code in tensorflow, you only need to run the command below from step 2 to recompile jaxlib::
 
     python3 build/build.py --enable_cuda --dev_install --tf_path=$(pwd)/../third_party/tensorflow-alpa
 
