@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Install Alpa &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,6 +18,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -51,6 +53,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#using-alpa-on-slurm">Using Alpa on Slurm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jaxlib-jax-flax-version-problems">Jaxlib, Jax, Flax Version Problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#numpy-version-problems">Numpy Version Problems</a></li>
 </ul>
 </li>
 </ul>
@@ -95,18 +98,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="install-alpa">
-<h1>Install Alpa<a class="headerlink" href="#install-alpa" title="Permalink to this headline"></a></h1>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+  <section id="install-alpa">
+<h1>Install Alpa<a class="headerlink" href="#install-alpa" title="Permalink to this heading"></a></h1>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>CUDA &gt;= 11.1</p></li>
 <li><p>cuDNN &gt;= 8.0.5</p></li>
 <li><p>python &gt;= 3.7</p></li>
 </ul>
-</div>
-<div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h2>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
 <p>Regardless of installing from wheels or from source, we need to install a few prerequisite packages:</p>
 <ol class="arabic simple">
 <li><p>CUDA toolkit:</p></li>
@@ -126,10 +129,13 @@
 <p>Otherwise, please try to install via <a class="reference external" href="https://projects.coin-or.org/Cbc#DownloadandInstall">binary</a> or <a class="reference external" href="https://anaconda.org/conda-forge/coincbc">conda</a>.</p>
 </div></blockquote>
 </li>
-<li><p>Install cupy:</p></li>
+<li><p>Update pip version and install cupy:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use your own CUDA version. Here cuda-cuda114 means cuda 11.4</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Update pip</span>
+pip3 install --upgrade pip
+
+<span class="c1"># Use your own CUDA version. Here cuda-cuda114 means cuda 11.4</span>
 pip3 install cupy-cuda114
 </pre></div>
 </div>
@@ -140,9 +146,9 @@ pip3 install cupy-cuda114
 <p>If it prints nothing, then NCCL has already been installed.
 Otherwise, follow the printed instructions to install NCCL.</p>
 </div></blockquote>
-</div>
-<div class="section" id="install-from-python-wheels">
-<span id="install-from-wheels"></span><h2>Install from Python Wheels<a class="headerlink" href="#install-from-python-wheels" title="Permalink to this headline"></a></h2>
+</section>
+<section id="install-from-python-wheels">
+<span id="install-from-wheels"></span><h2>Install from Python Wheels<a class="headerlink" href="#install-from-python-wheels" title="Permalink to this heading"></a></h2>
 <p>Alpa provides wheels for the following CUDA (cuDNN) and Python versions:</p>
 <ul class="simple">
 <li><p>CUDA (cuDNN): 11.1 (8.0.5), 11.2 (8.1.0), 11.3 (8.2.0)</p></li>
@@ -153,8 +159,7 @@ Otherwise, follow the printed instructions to install NCCL.</p>
 <li><p>To install from wheels, first install Alpa:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install --upgrade pip
-pip3 install alpa
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install alpa
 </pre></div>
 </div>
 </div></blockquote>
@@ -178,9 +183,9 @@ You can specify a particular CUDA and cuDNN version for jaxlib explicitly via:</
 <p>As of now, Alpa modified the original jaxlib at the version <code class="docutils literal notranslate"><span class="pre">jaxlib==0.3.5</span></code>. Alpa regularly rebases the official jaxlib repository to catch up with the upstream.
 If you need features from newer versions of jaxlib, please open an issue at the <a class="reference external" href="https://github.com/alpa-projects/alpa/issues">Alpa GitHub Issue Page</a>.</p>
 </div>
-</div>
-<div class="section" id="install-from-source">
-<span id="id1"></span><h2>Install from Source<a class="headerlink" href="#install-from-source" title="Permalink to this headline"></a></h2>
+</section>
+<section id="install-from-source">
+<span id="id1"></span><h2>Install from Source<a class="headerlink" href="#install-from-source" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Clone repos</p></li>
 </ol>
@@ -190,6 +195,15 @@ If you need features from newer versions of jaxlib, please open an issue at the 
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="2">
+<li><p>Install Alpa</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa
+pip3 install -e .<span class="o">[</span>dev<span class="o">]</span>  <span class="c1"># Note that the suffix `[dev]` is required to build custom modules.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
 <li><p>Build and install jaxlib</p></li>
 </ol>
 <blockquote>
@@ -201,37 +215,28 @@ pip3 install -e .
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="3">
-<li><p>Install Alpa</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa
-pip3 install -e .<span class="o">[</span>dev<span class="o">]</span>  <span class="c1"># Note that the suffix `[dev]` is required to build custom modules.</span>
-</pre></div>
-</div>
-</div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>All installations are in development mode, so you can modify python code and it will take effect immediately.
-To modify c++ code in tensorflow, you only need to run the command below from step 2 to recompile jaxlib:</p>
+To modify c++ code in tensorflow, you only need to run the command below from step 3 to recompile jaxlib:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>python3 build/build.py --enable_cuda --dev_install --tf_path=$(pwd)/../third_party/tensorflow-alpa
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="check-installation">
-<h2>Check Installation<a class="headerlink" href="#check-installation" title="Permalink to this headline"></a></h2>
+</section>
+<section id="check-installation">
+<h2>Check Installation<a class="headerlink" href="#check-installation" title="Permalink to this heading"></a></h2>
 <p>You can check the installation by running the following test script.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa
 ray start --head
 python3 tests/test_install.py
 </pre></div>
 </div>
-</div>
-<div class="section" id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline"></a></h2>
-<div class="section" id="using-alpa-on-slurm">
-<h3>Using Alpa on Slurm<a class="headerlink" href="#using-alpa-on-slurm" title="Permalink to this headline"></a></h3>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading"></a></h2>
+<section id="using-alpa-on-slurm">
+<h3>Using Alpa on Slurm<a class="headerlink" href="#using-alpa-on-slurm" title="Permalink to this heading"></a></h3>
 <p>Since Alpa relies on Ray to manage the cluster nodes, Alpa can run on a Slurm cluster as long as Ray can run on it.
 If you have trouble running Alpa on a Slurm cluster, we recommend to follow <a class="reference external" href="https://docs.ray.io/en/latest/cluster/slurm.html">this guide</a> to setup Ray on Slurm and make sure simple Ray examples
 can run without any problem, then move forward to install and run Alpa in the same environment.</p>
@@ -243,9 +248,9 @@ The slurm cluster users might need to check and fix those proxies on their slurm
 The users need to adjust the value for the argument <code class="docutils literal notranslate"><span class="pre">--cpus-per-task</span></code> passed to <code class="docutils literal notranslate"><span class="pre">SRUN</span></code> when launching Alpa. See <a class="reference external" href="https://slurm.schedmd.com/srun.html">Slurm documentation</a> for more information.</p></li>
 </ul>
 <p>You might also find the discussion under <a class="reference external" href="https://github.com/alpa-projects/alpa/issues/452">Issue #452</a> helpful.</p>
-</div>
-<div class="section" id="jaxlib-jax-flax-version-problems">
-<h3>Jaxlib, Jax, Flax Version Problems<a class="headerlink" href="#jaxlib-jax-flax-version-problems" title="Permalink to this headline"></a></h3>
+</section>
+<section id="jaxlib-jax-flax-version-problems">
+<h3>Jaxlib, Jax, Flax Version Problems<a class="headerlink" href="#jaxlib-jax-flax-version-problems" title="Permalink to this heading"></a></h3>
 <p>Alpa is compatible with the following Jaxlib, Jax, and Flax versions:
 - Jax==0.3.5
 - Flax==0.4.1
@@ -263,9 +268,29 @@ pip3 install <span class="nv">flax</span><span class="o">==</span><span class="m
 </pre></div>
 </div>
 <p>Make sure you install <strong>Alpa-modified Jaxlib</strong> by either using <a class="reference internal" href="#install-from-wheels"><span class="std std-ref">our prebuilt wheels</span></a> or <a class="reference internal" href="#install-from-source"><span class="std std-ref">Install from Source</span></a>.</p>
+</section>
+<section id="numpy-version-problems">
+<h3>Numpy Version Problems<a class="headerlink" href="#numpy-version-problems" title="Permalink to this heading"></a></h3>
+<p>If you start with a clean Python virtual environment and have followed the procedures in this guide strictly, you should not see problems about Numpy versions.</p>
+<p>However, sometimes due to the installation of other Python packages, another version of numpy might be silently installed before compiling jaxlib,
+and you might see numpy version errors similar to the following one when launching Alpa after installing from source:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; python3 tests/test_install.py
+  ......
+  RuntimeError: module compiled against API version 0xf but this version of numpy is 0xd
+  ImportError: numpy.core._multiarray_umath failed to import
+  ImportError: numpy.core.umath failed to import
+  <span class="m">2022</span>-05-20 <span class="m">21</span>:57:35.710782: F external/org_tensorflow/tensorflow/compiler/xla/python/xla.cc:83<span class="o">]</span> Check failed: tensorflow::RegisterNumpyBfloat16<span class="o">()</span>
+  Aborted <span class="o">(</span>core dumped<span class="o">)</span>
+</pre></div>
 </div>
-</div>
-</div>
+<p>This is because you have used a higher version of numpy when compiling jaxlib, but later used a lower version of numpy to run Alpa.</p>
+<p>To address the problem, please first downgrade the numpy in your Python environment to <code class="docutils literal notranslate"><span class="pre">numpy==1.20</span></code> via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">numpy==1.20</span></code>,
+then follow the procedures in <a class="reference internal" href="#install-from-source"><span class="std std-ref">install from source</span></a> to rebuild and reinstall jaxlib.
+Optionally, you can switch back to use the higher version of numpy (<code class="docutils literal notranslate"><span class="pre">numpy&gt;=1.20</span></code>) to run Alpa and your other applications, thanks to numpy’s backward compatibility.</p>
+<p>See <a class="reference external" href="https://github.com/alpa-projects/alpa/issues/461">Issue#461</a> for more discussion.</p>
+</section>
+</section>
+</section>
 
 
            </div>
