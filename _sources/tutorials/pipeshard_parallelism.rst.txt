@@ -89,7 +89,7 @@ the cluster and disributed workers. We initialize ray and alpa.
 
  .. code-block:: none
 
-    2022-06-10 05:55:54,471 INFO services.py:1470 -- View the Ray dashboard at http://127.0.0.1:8265
+    2022-06-15 12:45:32,540 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8265
 
 
 
@@ -103,9 +103,10 @@ Specifically, we use the model to fit the function: :math:`y = Wx + b`.
 Note that now this model is being executed on CPU because we force the driver
 process to use the CPU.
 
-.. GENERATED FROM PYTHON SOURCE LINES 52-103
+.. GENERATED FROM PYTHON SOURCE LINES 52-108
 
 .. code-block:: default
+
 
 
     class MLPModel(nn.Module):
@@ -122,6 +123,7 @@ process to use the CPU.
             x = nn.Dense(features=self.hidden_dim)(x)
             x = nn.relu(x)
             return x
+
 
     dim = 2048
     batch_size = 2048
@@ -144,8 +146,10 @@ process to use the CPU.
     tx = optax.adam(learning_rate=1e-3)
     state = TrainState.create(apply_fn=model.apply, params=params, tx=tx)
 
+
     # Define training step
     def train_step(state, batch):
+
         def loss_func(params):
             out = model.apply(params, batch["x"])
             loss = jnp.mean((out - batch["y"])**2)
@@ -154,6 +158,7 @@ process to use the CPU.
         grads = jax.grad(loss_func)(state.params)
         new_state = state.apply_gradients(grads=grads)
         return new_state
+
 
     batch = {"x": x, "y": y}
     expected_state = train_step(state, batch)
@@ -165,7 +170,7 @@ process to use the CPU.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 104-111
+.. GENERATED FROM PYTHON SOURCE LINES 109-116
 
 Pipeline Parallelism with Manual Assignment
 -------------------------------------------
@@ -175,7 +180,7 @@ stage, and use the ``@alpa.manual_layer_construction`` decorator to indicate
 that we are manually assigning stages. Note that each the pipeline stage is
 also automatically parallelized by the shard parallel pass.
 
-.. GENERATED FROM PYTHON SOURCE LINES 111-163
+.. GENERATED FROM PYTHON SOURCE LINES 116-173
 
 .. code-block:: default
 
@@ -199,11 +204,14 @@ also automatically parallelized by the shard parallel pass.
             x = nn.relu(x)
             return x
 
+
     # Initialize the train state with the same parameters as the single-device
     # model.
     manual_pipeline_model = ManualPipelineMLPModel(hidden_dim=dim)
     manual_pipeline_state = TrainState.create(apply_fn=manual_pipeline_model.apply,
-                                              params=copy.deepcopy(params), tx=tx)
+                                              params=copy.deepcopy(params),
+                                              tx=tx)
+
 
     # Define the training step with manually parallelized pipeline stages.
     # We use the "alpa.PipeshardParallel" option to let alpa use both
@@ -224,9 +232,11 @@ also automatically parallelized by the shard parallel pass.
         new_state = state.apply_gradients(grads=grads)
         return new_state
 
-    manual_pipeline_actual_state = manual_pipeline_train_step(manual_pipeline_state,
-                                                              batch)
-    assert_allclose(expected_state.params, manual_pipeline_actual_state.params,
+
+    manual_pipeline_actual_state = manual_pipeline_train_step(
+        manual_pipeline_state, batch)
+    assert_allclose(expected_state.params,
+                    manual_pipeline_actual_state.params,
                     atol=5e-3)
 
     alpa.shutdown()
@@ -238,7 +248,7 @@ also automatically parallelized by the shard parallel pass.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 164-179
+.. GENERATED FROM PYTHON SOURCE LINES 174-189
 
 Pipeline Parallelism with Automatic Assignment
 ----------------------------------------------
@@ -256,7 +266,7 @@ partitioning algorithm consists of the following steps:
    layers to submeshes to form pipeline stages to minimize the total
    pipeline execution latency.
 
-.. GENERATED FROM PYTHON SOURCE LINES 179-212
+.. GENERATED FROM PYTHON SOURCE LINES 189-226
 
 .. code-block:: default
 
@@ -268,7 +278,9 @@ partitioning algorithm consists of the following steps:
     # modification required is the two decorators. The stage construction and
     # mesh slicing are performed within the `parallelize` decorator.
 
-    @alpa.parallelize(method=alpa.PipeshardParallel(num_micro_batches=16, stage_mode="auto"))
+
+    @alpa.parallelize(method=alpa.PipeshardParallel(num_micro_batches=16,
+                                                    stage_mode="auto"))
     def auto_pipeline_train_step(state, batch):
         # Indicate that we use automatic layer construction. The `layer_num` here
         # is a hyperparameter to control how many layers we get from the
@@ -285,11 +297,13 @@ partitioning algorithm consists of the following steps:
         new_state = state.apply_gradients(grads=grads)
         return new_state
 
+
     # In the first call, alpa triggers the compilation.
     # The compilation first profiles several costs and solves an optimization
     # problem to get the optimal pipeline assignments.
     auto_pipeline_actual_state = auto_pipeline_train_step(state, batch)
-    assert_allclose(expected_state.params, auto_pipeline_actual_state.params,
+    assert_allclose(expected_state.params,
+                    auto_pipeline_actual_state.params,
                     atol=5e-3)
 
     alpa.shutdown()
@@ -313,15 +327,15 @@ partitioning algorithm consists of the following steps:
       0%|          | 0/2 [00:00<?, ?it/s]
                                          
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 27.48it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 29.36it/s]
     - Compile all stages
-      0%|          | 0/1 [00:00<?, ?it/s]    100%|##########| 1/1 [00:02<00:00,  2.85s/it]    100%|##########| 1/1 [00:02<00:00,  2.85s/it]
+      0%|          | 0/1 [00:00<?, ?it/s]    100%|##########| 1/1 [00:01<00:00,  1.91s/it]    100%|##########| 1/1 [00:01<00:00,  1.91s/it]
     - Profile all stages
-      0%|          | 0/1 [00:00<?, ?it/s]                                         cost[0, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {})
-      0%|          | 0/1 [00:15<?, ?it/s]    100%|##########| 1/1 [00:15<00:00, 15.50s/it]    100%|##########| 1/1 [00:15<00:00, 15.50s/it]
-    Profiling for submesh 3 (1, 8) takes 19.04325294494629 seconds
+      0%|          | 0/1 [00:00<?, ?it/s]                                         cost[0, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {})
+      0%|          | 0/1 [00:19<?, ?it/s]    100%|##########| 1/1 [00:19<00:00, 19.18s/it]    100%|##########| 1/1 [00:19<00:00, 19.18s/it]
+    Profiling for submesh 3 (1, 8) takes 21.522810697555542 seconds
     Profiled costs are: [[[       inf]
-      [0.00241473]]
+      [0.00156238]]
 
      [[       inf]
       [       inf]]]
@@ -335,25 +349,25 @@ partitioning algorithm consists of the following steps:
     - Generate all stage infos (Jaxpr -> HLO)
       0%|          | 0/2 [00:00<?, ?it/s]
       0%|          | 0/2 [00:00<?, ?it/s]
-    100%|##########| 2/2 [00:00<00:00, 16.93it/s]
-                                                      50%|#####     | 1/2 [00:00<00:00,  8.38it/s]
+    100%|##########| 2/2 [00:00<00:00, 19.85it/s]
+                                                      50%|#####     | 1/2 [00:00<00:00,  9.84it/s]
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 12.64it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 14.77it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:02<00:05,  2.92s/it]    100%|##########| 3/3 [00:03<00:00,  1.20it/s]    100%|##########| 3/3 [00:03<00:00,  1.04s/it]
+      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.78s/it]    100%|##########| 3/3 [00:01<00:00,  1.63it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.001, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {})
-      0%|          | 0/3 [00:12<?, ?it/s]     33%|###3      | 1/3 [00:12<00:24, 12.11s/it]                                                 cost[0, 1, 0]=0.003, max_n_succ_stage=2075, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {})
-     33%|###3      | 1/3 [00:12<00:24, 12.11s/it]     67%|######6   | 2/3 [00:12<00:05,  5.09s/it]                                                 cost[1, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {})
-     67%|######6   | 2/3 [00:12<00:05,  5.09s/it]    100%|##########| 3/3 [00:12<00:00,  2.89s/it]    100%|##########| 3/3 [00:12<00:00,  4.18s/it]
-    Profiling for submesh 2 (1, 4) takes 16.271652698516846 seconds
-    Profiled costs are: [[[0.00140956]
-      [0.00305676]]
+      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {})
+      0%|          | 0/3 [00:12<?, ?it/s]     33%|###3      | 1/3 [00:12<00:25, 12.90s/it]                                                 cost[0, 1, 0]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {})
+     33%|###3      | 1/3 [00:13<00:25, 12.90s/it]     67%|######6   | 2/3 [00:13<00:05,  5.40s/it]                                                 cost[1, 1, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {})
+     67%|######6   | 2/3 [00:13<00:05,  5.40s/it]    100%|##########| 3/3 [00:13<00:00,  3.02s/it]    100%|##########| 3/3 [00:13<00:00,  4.41s/it]
+    Profiling for submesh 2 (1, 4) takes 15.514705896377563 seconds
+    Profiled costs are: [[[0.00106239]
+      [0.00202258]]
 
      [[       inf]
-      [0.0019172 ]]]
+      [0.00119106]]]
     Profiled max_n_succ_stages are: [[[4096]
-      [2075]]
+      [2732]]
 
      [[  -1]
       [4096]]]
@@ -362,62 +376,186 @@ partitioning algorithm consists of the following steps:
     - Generate all stage infos (Jaxpr -> HLO)
       0%|          | 0/2 [00:00<?, ?it/s]
       0%|          | 0/2 [00:00<?, ?it/s]
-    100%|##########| 2/2 [00:00<00:00, 17.92it/s]
-                                                      50%|#####     | 1/2 [00:00<00:00,  8.87it/s]
+    100%|##########| 2/2 [00:00<00:00, 19.50it/s]
+                                                      50%|#####     | 1/2 [00:00<00:00,  9.67it/s]
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 13.31it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 14.53it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:02<00:05,  2.84s/it]     67%|######6   | 2/3 [00:02<00:01,  1.24s/it]    100%|##########| 3/3 [00:03<00:00,  1.36it/s]    100%|##########| 3/3 [00:03<00:00,  1.03s/it]
+      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.76s/it]    100%|##########| 3/3 [00:01<00:00,  2.00it/s]    100%|##########| 3/3 [00:01<00:00,  1.60it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.002, max_n_succ_stage=3774, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {})
-      0%|          | 0/3 [00:11<?, ?it/s]     33%|###3      | 1/3 [00:11<00:23, 11.95s/it]                                                 cost[1, 1, 0]=0.003, max_n_succ_stage=2767, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {})
-     33%|###3      | 1/3 [00:12<00:23, 11.95s/it]     67%|######6   | 2/3 [00:12<00:05,  5.01s/it]                                                 cost[0, 1, 0]=0.004, max_n_succ_stage=1340, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {})
-     67%|######6   | 2/3 [00:12<00:05,  5.01s/it]    100%|##########| 3/3 [00:12<00:00,  2.91s/it]    100%|##########| 3/3 [00:12<00:00,  4.17s/it]
-    Profiling for submesh 1 (1, 2) takes 16.32945489883423 seconds
-    Profiled costs are: [[[0.00215724]
-      [0.00445792]]
+      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[1, 1, 0]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {})
+      0%|          | 0/3 [00:11<?, ?it/s]     33%|###3      | 1/3 [00:11<00:22, 11.08s/it]                                                 cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {})
+     33%|###3      | 1/3 [00:11<00:22, 11.08s/it]                                                 cost[0, 1, 0]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {})
+     33%|###3      | 1/3 [00:11<00:22, 11.08s/it]    100%|##########| 3/3 [00:11<00:00,  2.93s/it]    100%|##########| 3/3 [00:11<00:00,  3.75s/it]
+    Profiling for submesh 1 (1, 2) takes 13.545969486236572 seconds
+    Profiled costs are: [[[0.00155976]
+      [0.00317788]]
 
      [[       inf]
-      [0.0025937 ]]]
-    Profiled max_n_succ_stages are: [[[3774]
-      [1340]]
+      [0.00186708]]]
+    Profiled max_n_succ_stages are: [[[4096]
+      [1778]]
 
      [[  -1]
-      [2767]]]
+      [3643]]]
     --------------------------------------------------
     - Profiling for submesh 0 (1, 1):
     - Generate all stage infos (Jaxpr -> HLO)
       0%|          | 0/2 [00:00<?, ?it/s]
       0%|          | 0/2 [00:00<?, ?it/s]
-    100%|##########| 2/2 [00:00<00:00, 16.11it/s]
-                                                      50%|#####     | 1/2 [00:00<00:00,  7.99it/s]
+                                         
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 12.46it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 15.09it/s]    100%|##########| 2/2 [00:00<00:00, 15.05it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:02<00:05,  2.61s/it]    100%|##########| 3/3 [00:02<00:00,  1.14it/s]
+      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.57s/it]    100%|##########| 3/3 [00:01<00:00,  1.90it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 1, 0]=0.007, max_n_succ_stage=752, Mem: avail=10.457GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
-      0%|          | 0/3 [00:12<?, ?it/s]     33%|###3      | 1/3 [00:12<00:25, 12.98s/it]                                                 cost[1, 1, 0]=0.004, max_n_succ_stage=1608, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
-     33%|###3      | 1/3 [00:13<00:25, 12.98s/it]     67%|######6   | 2/3 [00:13<00:05,  5.62s/it]                                                 cost[0, 0, 0]=0.003, max_n_succ_stage=1915, Mem: avail=10.457GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
-     67%|######6   | 2/3 [00:13<00:05,  5.62s/it]    100%|##########| 3/3 [00:13<00:00,  3.12s/it]    100%|##########| 3/3 [00:13<00:00,  4.53s/it]
-    Profiling for submesh 0 (1, 1) takes 16.74079394340515 seconds
-    Profiled costs are: [[[0.00349111]
-      [0.00656319]]
+      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
+      0%|          | 0/3 [00:09<?, ?it/s]     33%|###3      | 1/3 [00:09<00:18,  9.44s/it]                                                 cost[1, 1, 0]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
+     33%|###3      | 1/3 [00:10<00:18,  9.44s/it]     67%|######6   | 2/3 [00:10<00:04,  4.26s/it]                                                 cost[0, 1, 0]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
+     67%|######6   | 2/3 [00:10<00:04,  4.26s/it]    100%|##########| 3/3 [00:10<00:00,  2.42s/it]    100%|##########| 3/3 [00:10<00:00,  3.44s/it]
+    Profiling for submesh 0 (1, 1) takes 12.318020820617676 seconds
+    Profiled costs are: [[[0.00230715]
+      [0.00477505]]
 
      [[       inf]
-      [0.00369294]]]
-    Profiled max_n_succ_stages are: [[[1915]
-      [ 752]]
+      [0.00265498]]]
+    Profiled max_n_succ_stages are: [[[2540]
+      [1014]]
 
      [[  -1]
-      [1608]]]
+      [2134]]]
     --------------------------------------------------
-    Compute cost saved to: compute-cost-2022-06-10-05-57-37.npy
+    2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff2b50e5fcb5f7438e33b58f4901000000 Worker ID: c37be1482a89a383cf32b3381b12b189e62230aac24763ad94c2ebaf Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 34681 Worker PID: 26085
+    2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff3093489d20578febd2db3c9801000000 Worker ID: e694fbf8161b2f5ea901126f0822011add2f4bb400eab9c3564aa756 Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 37083 Worker PID: 26084
+    2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff9c14c0ab7d2effa045db85e301000000 Worker ID: eff4f019342543781e5741d4fff561ebb12bebf037862d799d904452 Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 35371 Worker PID: 26086
+    (pid=26086) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
+    (pid=26086) Traceback (most recent call last):
+    (pid=26086)   File "python/ray/_raylet.pyx", line 757, in ray._raylet.task_execution_handler
+    (pid=26086)   File "python/ray/_raylet.pyx", line 492, in ray._raylet.execute_task
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 444, in load_actor_class
+    (pid=26086)     job_id, actor_creation_function_descriptor)
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 549, in _load_actor_class_from_gcs
+    (pid=26086)     actor_class = pickle.loads(pickled_class)
+    (pid=26086)   File "/home/ubuntu/efs/alpa/alpa/__init__.py", line 3, in <module>
+    (pid=26086)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
+    (pid=26086)   File "/home/ubuntu/efs/alpa/alpa/api.py", line 13, in <module>
+    (pid=26086)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
+    (pid=26086)   File "/home/ubuntu/efs/alpa/alpa/device_mesh.py", line 45, in <module>
+    (pid=26086)     import cupy
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py", line 58, in <module>
+    (pid=26086)     from cupy import testing  # NOQA  # NOQA
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py", line 8, in <module>
+    (pid=26086)     from cupy.testing._attr import gpu  # NOQA
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py", line 5, in <module>
+    (pid=26086)     import pytest
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py", line 3, in <module>
+    (pid=26086)     from . import collect
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py", line 8, in <module>
+    (pid=26086)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py", line 13, in <module>
+    (pid=26086)     from _pytest.warning_types import PytestDeprecationWarning
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py", line 8, in <module>
+    (pid=26086)     from _pytest.compat import final
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py", line 45, in <module>
+    (pid=26086)     import importlib_metadata  # noqa: F401
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/__init__.py", line 17, in <module>
+    (pid=26086)     from . import _adapters, _meta
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/_adapters.py", line 3, in <module>
+    (pid=26086)     import email.message
+    (pid=26086)   File "/usr/lib/python3.7/email/message.py", line 15, in <module>
+    (pid=26086)     from email import utils
+    (pid=26086)   File "/usr/lib/python3.7/email/utils.py", line 33, in <module>
+    (pid=26086)     from email._parseaddr import quote
+    (pid=26086)   File "<frozen importlib._bootstrap>", line 980, in _find_and_load
+    (pid=26086)   File "<frozen importlib._bootstrap>", line 147, in __enter__
+    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py", line 424, in sigterm_handler
+    (pid=26086)     sys.exit(1)
+    (pid=26086) SystemExit: 1
+    (pid=26084) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
+    (pid=26084) Traceback (most recent call last):
+    (pid=26084)   File "python/ray/_raylet.pyx", line 757, in ray._raylet.task_execution_handler
+    (pid=26084)   File "python/ray/_raylet.pyx", line 492, in ray._raylet.execute_task
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 444, in load_actor_class
+    (pid=26084)     job_id, actor_creation_function_descriptor)
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 549, in _load_actor_class_from_gcs
+    (pid=26084)     actor_class = pickle.loads(pickled_class)
+    (pid=26084)   File "/home/ubuntu/efs/alpa/alpa/__init__.py", line 3, in <module>
+    (pid=26084)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
+    (pid=26084)   File "/home/ubuntu/efs/alpa/alpa/api.py", line 13, in <module>
+    (pid=26084)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
+    (pid=26084)   File "/home/ubuntu/efs/alpa/alpa/device_mesh.py", line 45, in <module>
+    (pid=26084)     import cupy
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py", line 58, in <module>
+    (pid=26084)     from cupy import testing  # NOQA  # NOQA
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py", line 8, in <module>
+    (pid=26084)     from cupy.testing._attr import gpu  # NOQA
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py", line 5, in <module>
+    (pid=26084)     import pytest
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py", line 3, in <module>
+    (pid=26084)     from . import collect
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py", line 8, in <module>
+    (pid=26084)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py", line 13, in <module>
+    (pid=26084)     from _pytest.warning_types import PytestDeprecationWarning
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py", line 8, in <module>
+    (pid=26084)     from _pytest.compat import final
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py", line 45, in <module>
+    (pid=26084)     import importlib_metadata  # noqa: F401
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/__init__.py", line 17, in <module>
+    (pid=26084)     from . import _adapters, _meta
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/_adapters.py", line 3, in <module>
+    (pid=26084)     import email.message
+    (pid=26084)   File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+    (pid=26084)   File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+    (pid=26084)   File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 724, in exec_module
+    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 812, in get_code
+    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 953, in path_stats
+    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 81, in _path_stat
+    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py", line 424, in sigterm_handler
+    (pid=26084)     sys.exit(1)
+    (pid=26084) SystemExit: 1
+    (pid=26085) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
+    (pid=26085) Traceback (most recent call last):
+    (pid=26085)   File "python/ray/_raylet.pyx", line 757, in ray._raylet.task_execution_handler
+    (pid=26085)   File "python/ray/_raylet.pyx", line 492, in ray._raylet.execute_task
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 444, in load_actor_class
+    (pid=26085)     job_id, actor_creation_function_descriptor)
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 549, in _load_actor_class_from_gcs
+    (pid=26085)     actor_class = pickle.loads(pickled_class)
+    (pid=26085)   File "/home/ubuntu/efs/alpa/alpa/__init__.py", line 3, in <module>
+    (pid=26085)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
+    (pid=26085)   File "/home/ubuntu/efs/alpa/alpa/api.py", line 13, in <module>
+    (pid=26085)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
+    (pid=26085)   File "/home/ubuntu/efs/alpa/alpa/device_mesh.py", line 45, in <module>
+    (pid=26085)     import cupy
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py", line 58, in <module>
+    (pid=26085)     from cupy import testing  # NOQA  # NOQA
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py", line 8, in <module>
+    (pid=26085)     from cupy.testing._attr import gpu  # NOQA
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py", line 5, in <module>
+    (pid=26085)     import pytest
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py", line 3, in <module>
+    (pid=26085)     from . import collect
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py", line 8, in <module>
+    (pid=26085)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py", line 13, in <module>
+    (pid=26085)     from _pytest.warning_types import PytestDeprecationWarning
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py", line 8, in <module>
+    (pid=26085)     from _pytest.compat import final
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py", line 45, in <module>
+    (pid=26085)     import importlib_metadata  # noqa: F401
+    (pid=26085)   File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+    (pid=26085)   File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+    (pid=26085)   File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+    (pid=26085)   File "<frozen importlib._bootstrap_external>", line 724, in exec_module
+    (pid=26085)   File "<frozen importlib._bootstrap_external>", line 857, in get_code
+    (pid=26085)   File "<frozen importlib._bootstrap_external>", line 525, in _compile_bytecode
+    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py", line 424, in sigterm_handler
+    (pid=26085)     sys.exit(1)
+    (pid=26085) SystemExit: 1
+    Compute cost saved to: compute-cost-2022-06-15-12-47-09.npy
     ----------------------------------------------------------------------
-    2022-06-10 05:57:37,537 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffffe7a9170f8dc74ece3c8a7bf201000000 Worker ID: 2849a6a921ab8e4e4fcb0df60a7a82a47ea50256e3f13bf7022d460a Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 44281 Worker PID: 6066
-    2022-06-10 05:57:37,554 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff99498d3bb05f8db5a5929e1e01000000 Worker ID: ddf4986490a9308be6a8b89e54bbbc66e505931caab786afe35b679f Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 41007 Worker PID: 6067
-    2022-06-10 05:57:37,554 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff562865bd2ca9ce4ed5a23ee201000000 Worker ID: 7de995820b4afb2c0c7238591a643ca2fcddd0aa2096d704cb76a88a Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 45335 Worker PID: 6065
-    2022-06-10 05:57:37,555 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffffeba3737b4caf3ccb34bd6f3901000000 Worker ID: 8a6b3a4883631992d0e224f6fdc88b03616b8806a3f448ca70d2d52c Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 43147 Worker PID: 6064
     Result forward_stage_layer_ids: [[0], [1]]
     Result meshes: [(1, 4), (1, 4)]
     Result logical_mesh_shapes: [(1, 4), (1, 4)]
@@ -429,7 +567,7 @@ partitioning algorithm consists of the following steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  8.482 seconds)
+   **Total running time of the script:** ( 2 minutes  4.493 seconds)
 
 
 .. _sphx_glr_download_tutorials_pipeshard_parallelism.py:

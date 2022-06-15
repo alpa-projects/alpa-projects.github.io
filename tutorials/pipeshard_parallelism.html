@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Distributed Training with Both Shard and Pipeline Parallelism &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -18,7 +17,6 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -98,8 +96,8 @@
 <p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-pipeshard-parallelism-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<section class="sphx-glr-example-title" id="distributed-training-with-both-shard-and-pipeline-parallelism">
-<span id="sphx-glr-tutorials-pipeshard-parallelism-py"></span><h1>Distributed Training with Both Shard and Pipeline Parallelism<a class="headerlink" href="#distributed-training-with-both-shard-and-pipeline-parallelism" title="Permalink to this heading"></a></h1>
+<div class="sphx-glr-example-title section" id="distributed-training-with-both-shard-and-pipeline-parallelism">
+<span id="sphx-glr-tutorials-pipeshard-parallelism-py"></span><h1>Distributed Training with Both Shard and Pipeline Parallelism<a class="headerlink" href="#distributed-training-with-both-shard-and-pipeline-parallelism" title="Permalink to this headline"></a></h1>
 <p>Alpa can automatically parallelizes jax functions with both shard
 parallelism (a.k.a. intra-operator parallelism) and pipeline parallelism
 (a.k.a. inter-operator parallelism). Shard parallelism includes
@@ -108,8 +106,8 @@ The <a class="reference internal" href="quickstart.html#alpa-quickstart"><span c
 <p>In this tutorial, we show how to use Alpa with both shard and pipeline parallelism.
 First, we show how to use Alpa to manually assign stages for pipeline parallelism.
 Then we show how to use Alpa to automate this process.</p>
-<section id="import-libraries-and-initialize-environment">
-<h2>Import Libraries and Initialize Environment<a class="headerlink" href="#import-libraries-and-initialize-environment" title="Permalink to this heading"></a></h2>
+<div class="section" id="import-libraries-and-initialize-environment">
+<h2>Import Libraries and Initialize Environment<a class="headerlink" href="#import-libraries-and-initialize-environment" title="Permalink to this headline"></a></h2>
 <p>We first import the required libraries.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">alpa</span>
 <span class="kn">from</span> <span class="nn">alpa.testing</span> <span class="kn">import</span> <span class="n">assert_allclose</span>
@@ -123,9 +121,9 @@ Then we show how to use Alpa to automate this process.</p>
 <span class="kn">import</span> <span class="nn">ray</span>
 </pre></div>
 </div>
-</section>
-<section id="connect-to-a-ray-cluster">
-<h2>Connect to a Ray Cluster<a class="headerlink" href="#connect-to-a-ray-cluster" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="connect-to-a-ray-cluster">
+<h2>Connect to a Ray Cluster<a class="headerlink" href="#connect-to-a-ray-cluster" title="Permalink to this headline"></a></h2>
 <p>Alpa uses a distributed framework <a class="reference external" href="https://docs.ray.io/">ray</a> to manage
 the cluster and disributed workers. We initialize ray and alpa.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ray</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
@@ -137,12 +135,12 @@ the cluster and disributed workers. We initialize ray and alpa.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2022-06-10 05:55:54,471 INFO services.py:1470 -- View the Ray dashboard at http://127.0.0.1:8265
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2022-06-15 12:45:32,540 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8265
 </pre></div>
 </div>
-</section>
-<section id="train-an-mlp-on-a-single-device">
-<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="train-an-mlp-on-a-single-device">
+<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
 <p>In this tutorial, we use a toy dataset to train an MLP model.
 Specifically, we use the model to fit the function: <span class="math notranslate nohighlight">\(y = Wx + b\)</span>.
 Note that now this model is being executed on CPU because we force the driver
@@ -161,6 +159,7 @@ process to use the CPU.</p>
         <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
+
 
 <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a> <span class="o">=</span> <span class="mi">2048</span>
 <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a> <span class="o">=</span> <span class="mi">2048</span>
@@ -183,8 +182,10 @@ process to use the CPU.</p>
 <span class="n">tx</span> <span class="o">=</span> <span class="n">optax</span><span class="o">.</span><span class="n">adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
 
+
 <span class="c1"># Define training step</span>
 <span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">):</span>
+
     <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -194,13 +195,14 @@ process to use the CPU.</p>
     <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">new_state</span>
 
+
 <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
 <span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="pipeline-parallelism-with-manual-assignment">
-<h2>Pipeline Parallelism with Manual Assignment<a class="headerlink" href="#pipeline-parallelism-with-manual-assignment" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="pipeline-parallelism-with-manual-assignment">
+<h2>Pipeline Parallelism with Manual Assignment<a class="headerlink" href="#pipeline-parallelism-with-manual-assignment" title="Permalink to this headline"></a></h2>
 <p>To manually assign stages for pipeline parallelism, we can use the
 <code class="docutils literal notranslate"><span class="pre">alpa.mark_pipeline_boundary</span></code> function to mark the boundary of each pipeline
 stage, and use the <code class="docutils literal notranslate"><span class="pre">&#64;alpa.manual_layer_construction</span></code> decorator to indicate
@@ -224,11 +226,14 @@ also automatically parallelized by the shard parallel pass.</p>
         <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
 
+
 <span class="c1"># Initialize the train state with the same parameters as the single-device</span>
 <span class="c1"># model.</span>
 <span class="n">manual_pipeline_model</span> <span class="o">=</span> <span class="n">ManualPipelineMLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">)</span>
 <span class="n">manual_pipeline_state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">manual_pipeline_model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span>
-                                          <span class="n">params</span><span class="o">=</span><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span></a><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
+                                          <span class="n">params</span><span class="o">=</span><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span></a><span class="p">(</span><span class="n">params</span><span class="p">),</span>
+                                          <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
+
 
 <span class="c1"># Define the training step with manually parallelized pipeline stages.</span>
 <span class="c1"># We use the &quot;alpa.PipeshardParallel&quot; option to let alpa use both</span>
@@ -249,17 +254,19 @@ also automatically parallelized by the shard parallel pass.</p>
     <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">new_state</span>
 
-<span class="n">manual_pipeline_actual_state</span> <span class="o">=</span> <span class="n">manual_pipeline_train_step</span><span class="p">(</span><span class="n">manual_pipeline_state</span><span class="p">,</span>
-                                                          <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
-<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">manual_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+
+<span class="n">manual_pipeline_actual_state</span> <span class="o">=</span> <span class="n">manual_pipeline_train_step</span><span class="p">(</span>
+    <span class="n">manual_pipeline_state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
+<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">manual_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
                 <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
 
 <span class="n">alpa</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-<section id="pipeline-parallelism-with-automatic-assignment">
-<h2>Pipeline Parallelism with Automatic Assignment<a class="headerlink" href="#pipeline-parallelism-with-automatic-assignment" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="pipeline-parallelism-with-automatic-assignment">
+<h2>Pipeline Parallelism with Automatic Assignment<a class="headerlink" href="#pipeline-parallelism-with-automatic-assignment" title="Permalink to this headline"></a></h2>
 <p>Alpa also supports automatically partitioning the model into multiple
 pipeline stages and assign each pipeline stage a device mesh such that
 the total execution latency is minimized. Specifically, the automatic
@@ -281,7 +288,9 @@ pipeline execution latency.</p></li>
 <span class="c1"># modification required is the two decorators. The stage construction and</span>
 <span class="c1"># mesh slicing are performed within the `parallelize` decorator.</span>
 
-<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">PipeshardParallel</span></a><span class="p">(</span><span class="n">num_micro_batches</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">stage_mode</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">))</span>
+
+<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">PipeshardParallel</span></a><span class="p">(</span><span class="n">num_micro_batches</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                                                <span class="n">stage_mode</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">):</span>
     <span class="c1"># Indicate that we use automatic layer construction. The `layer_num` here</span>
     <span class="c1"># is a hyperparameter to control how many layers we get from the</span>
@@ -298,11 +307,13 @@ pipeline execution latency.</p></li>
     <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">new_state</span>
 
+
 <span class="c1"># In the first call, alpa triggers the compilation.</span>
 <span class="c1"># The compilation first profiles several costs and solves an optimization</span>
 <span class="c1"># problem to get the optimal pipeline assignments.</span>
 <span class="n">auto_pipeline_actual_state</span> <span class="o">=</span> <span class="n">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
-<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">auto_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+<span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">auto_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
                 <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
 
 <span class="n">alpa</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
@@ -325,24 +336,24 @@ submesh_choices: ((1, 1), (1, 2), (1, 4), (1, 8))
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 27.48it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 29.36it/s]
 - Compile all stages
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
-100%|##########| 1/1 [00:02&lt;00:00,  2.85s/it]
-100%|##########| 1/1 [00:02&lt;00:00,  2.85s/it]
+100%|##########| 1/1 [00:01&lt;00:00,  1.91s/it]
+100%|##########| 1/1 [00:01&lt;00:00,  1.91s/it]
 - Profile all stages
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
-cost[0, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {})
+cost[0, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {})
 
-  0%|          | 0/1 [00:15&lt;?, ?it/s]
-100%|##########| 1/1 [00:15&lt;00:00, 15.50s/it]
-100%|##########| 1/1 [00:15&lt;00:00, 15.50s/it]
-Profiling for submesh 3 (1, 8) takes 19.04325294494629 seconds
+  0%|          | 0/1 [00:19&lt;?, ?it/s]
+100%|##########| 1/1 [00:19&lt;00:00, 19.18s/it]
+100%|##########| 1/1 [00:19&lt;00:00, 19.18s/it]
+Profiling for submesh 3 (1, 8) takes 21.522810697555542 seconds
 Profiled costs are: [[[       inf]
-  [0.00241473]]
+  [0.00156238]]
 
  [[       inf]
   [       inf]]]
@@ -359,48 +370,47 @@ Profiled max_n_succ_stages are: [[[  -1]
 
   0%|          | 0/2 [00:00&lt;?, ?it/s]
 
-100%|##########| 2/2 [00:00&lt;00:00, 16.93it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 19.85it/s]
 
 
- 50%|#####     | 1/2 [00:00&lt;00:00,  8.38it/s]
+ 50%|#####     | 1/2 [00:00&lt;00:00,  9.84it/s]
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 12.64it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 14.77it/s]
 - Compile all stages
 
   0%|          | 0/3 [00:00&lt;?, ?it/s]
- 33%|###3      | 1/3 [00:02&lt;00:05,  2.92s/it]
-100%|##########| 3/3 [00:03&lt;00:00,  1.20it/s]
-100%|##########| 3/3 [00:03&lt;00:00,  1.04s/it]
+ 33%|###3      | 1/3 [00:01&lt;00:03,  1.78s/it]
+100%|##########| 3/3 [00:01&lt;00:00,  1.63it/s]
 - Profile all stages
 
   0%|          | 0/3 [00:00&lt;?, ?it/s]
 
-cost[0, 0, 0]=0.001, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {})
+cost[0, 0, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {})
 
   0%|          | 0/3 [00:12&lt;?, ?it/s]
- 33%|###3      | 1/3 [00:12&lt;00:24, 12.11s/it]
+ 33%|###3      | 1/3 [00:12&lt;00:25, 12.90s/it]
 
-cost[0, 1, 0]=0.003, max_n_succ_stage=2075, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {})
+cost[0, 1, 0]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {})
 
- 33%|###3      | 1/3 [00:12&lt;00:24, 12.11s/it]
- 67%|######6   | 2/3 [00:12&lt;00:05,  5.09s/it]
+ 33%|###3      | 1/3 [00:13&lt;00:25, 12.90s/it]
+ 67%|######6   | 2/3 [00:13&lt;00:05,  5.40s/it]
 
-cost[1, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {})
+cost[1, 1, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {})
 
- 67%|######6   | 2/3 [00:12&lt;00:05,  5.09s/it]
-100%|##########| 3/3 [00:12&lt;00:00,  2.89s/it]
-100%|##########| 3/3 [00:12&lt;00:00,  4.18s/it]
-Profiling for submesh 2 (1, 4) takes 16.271652698516846 seconds
-Profiled costs are: [[[0.00140956]
-  [0.00305676]]
+ 67%|######6   | 2/3 [00:13&lt;00:05,  5.40s/it]
+100%|##########| 3/3 [00:13&lt;00:00,  3.02s/it]
+100%|##########| 3/3 [00:13&lt;00:00,  4.41s/it]
+Profiling for submesh 2 (1, 4) takes 15.514705896377563 seconds
+Profiled costs are: [[[0.00106239]
+  [0.00202258]]
 
  [[       inf]
-  [0.0019172 ]]]
+  [0.00119106]]]
 Profiled max_n_succ_stages are: [[[4096]
-  [2075]]
+  [2732]]
 
  [[  -1]
   [4096]]]
@@ -412,52 +422,50 @@ Profiled max_n_succ_stages are: [[[4096]
 
   0%|          | 0/2 [00:00&lt;?, ?it/s]
 
-100%|##########| 2/2 [00:00&lt;00:00, 17.92it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 19.50it/s]
 
 
- 50%|#####     | 1/2 [00:00&lt;00:00,  8.87it/s]
+ 50%|#####     | 1/2 [00:00&lt;00:00,  9.67it/s]
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 13.31it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 14.53it/s]
 - Compile all stages
 
   0%|          | 0/3 [00:00&lt;?, ?it/s]
- 33%|###3      | 1/3 [00:02&lt;00:05,  2.84s/it]
- 67%|######6   | 2/3 [00:02&lt;00:01,  1.24s/it]
-100%|##########| 3/3 [00:03&lt;00:00,  1.36it/s]
-100%|##########| 3/3 [00:03&lt;00:00,  1.03s/it]
+ 33%|###3      | 1/3 [00:01&lt;00:03,  1.76s/it]
+100%|##########| 3/3 [00:01&lt;00:00,  2.00it/s]
+100%|##########| 3/3 [00:01&lt;00:00,  1.60it/s]
 - Profile all stages
 
   0%|          | 0/3 [00:00&lt;?, ?it/s]
 
-cost[0, 0, 0]=0.002, max_n_succ_stage=3774, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {})
+cost[1, 1, 0]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {})
 
   0%|          | 0/3 [00:11&lt;?, ?it/s]
- 33%|###3      | 1/3 [00:11&lt;00:23, 11.95s/it]
+ 33%|###3      | 1/3 [00:11&lt;00:22, 11.08s/it]
 
-cost[1, 1, 0]=0.003, max_n_succ_stage=2767, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {})
+cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {})
 
- 33%|###3      | 1/3 [00:12&lt;00:23, 11.95s/it]
- 67%|######6   | 2/3 [00:12&lt;00:05,  5.01s/it]
+ 33%|###3      | 1/3 [00:11&lt;00:22, 11.08s/it]
 
-cost[0, 1, 0]=0.004, max_n_succ_stage=1340, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {})
+cost[0, 1, 0]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {})
 
- 67%|######6   | 2/3 [00:12&lt;00:05,  5.01s/it]
-100%|##########| 3/3 [00:12&lt;00:00,  2.91s/it]
-100%|##########| 3/3 [00:12&lt;00:00,  4.17s/it]
-Profiling for submesh 1 (1, 2) takes 16.32945489883423 seconds
-Profiled costs are: [[[0.00215724]
-  [0.00445792]]
+ 33%|###3      | 1/3 [00:11&lt;00:22, 11.08s/it]
+100%|##########| 3/3 [00:11&lt;00:00,  2.93s/it]
+100%|##########| 3/3 [00:11&lt;00:00,  3.75s/it]
+Profiling for submesh 1 (1, 2) takes 13.545969486236572 seconds
+Profiled costs are: [[[0.00155976]
+  [0.00317788]]
 
  [[       inf]
-  [0.0025937 ]]]
-Profiled max_n_succ_stages are: [[[3774]
-  [1340]]
+  [0.00186708]]]
+Profiled max_n_succ_stages are: [[[4096]
+  [1778]]
 
  [[  -1]
-  [2767]]]
+  [3643]]]
 --------------------------------------------------
 - Profiling for submesh 0 (1, 1):
 - Generate all stage infos (Jaxpr -&gt; HLO)
@@ -466,64 +474,187 @@ Profiled max_n_succ_stages are: [[[3774]
 
   0%|          | 0/2 [00:00&lt;?, ?it/s]
 
-100%|##########| 2/2 [00:00&lt;00:00, 16.11it/s]
 
-
- 50%|#####     | 1/2 [00:00&lt;00:00,  7.99it/s]
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 12.46it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 15.09it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 15.05it/s]
 - Compile all stages
 
   0%|          | 0/3 [00:00&lt;?, ?it/s]
- 33%|###3      | 1/3 [00:02&lt;00:05,  2.61s/it]
-100%|##########| 3/3 [00:02&lt;00:00,  1.14it/s]
+ 33%|###3      | 1/3 [00:01&lt;00:03,  1.57s/it]
+100%|##########| 3/3 [00:01&lt;00:00,  1.90it/s]
 - Profile all stages
 
   0%|          | 0/3 [00:00&lt;?, ?it/s]
 
-cost[0, 1, 0]=0.007, max_n_succ_stage=752, Mem: avail=10.457GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
+cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
 
-  0%|          | 0/3 [00:12&lt;?, ?it/s]
- 33%|###3      | 1/3 [00:12&lt;00:25, 12.98s/it]
+  0%|          | 0/3 [00:09&lt;?, ?it/s]
+ 33%|###3      | 1/3 [00:09&lt;00:18,  9.44s/it]
 
-cost[1, 1, 0]=0.004, max_n_succ_stage=1608, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
+cost[1, 1, 0]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
 
- 33%|###3      | 1/3 [00:13&lt;00:25, 12.98s/it]
- 67%|######6   | 2/3 [00:13&lt;00:05,  5.62s/it]
+ 33%|###3      | 1/3 [00:10&lt;00:18,  9.44s/it]
+ 67%|######6   | 2/3 [00:10&lt;00:04,  4.26s/it]
 
-cost[0, 0, 0]=0.003, max_n_succ_stage=1915, Mem: avail=10.457GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
+cost[0, 1, 0]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
 
- 67%|######6   | 2/3 [00:13&lt;00:05,  5.62s/it]
-100%|##########| 3/3 [00:13&lt;00:00,  3.12s/it]
-100%|##########| 3/3 [00:13&lt;00:00,  4.53s/it]
-Profiling for submesh 0 (1, 1) takes 16.74079394340515 seconds
-Profiled costs are: [[[0.00349111]
-  [0.00656319]]
+ 67%|######6   | 2/3 [00:10&lt;00:04,  4.26s/it]
+100%|##########| 3/3 [00:10&lt;00:00,  2.42s/it]
+100%|##########| 3/3 [00:10&lt;00:00,  3.44s/it]
+Profiling for submesh 0 (1, 1) takes 12.318020820617676 seconds
+Profiled costs are: [[[0.00230715]
+  [0.00477505]]
 
  [[       inf]
-  [0.00369294]]]
-Profiled max_n_succ_stages are: [[[1915]
-  [ 752]]
+  [0.00265498]]]
+Profiled max_n_succ_stages are: [[[2540]
+  [1014]]
 
  [[  -1]
-  [1608]]]
+  [2134]]]
 --------------------------------------------------
-Compute cost saved to: compute-cost-2022-06-10-05-57-37.npy
+2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff2b50e5fcb5f7438e33b58f4901000000 Worker ID: c37be1482a89a383cf32b3381b12b189e62230aac24763ad94c2ebaf Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 34681 Worker PID: 26085
+2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff3093489d20578febd2db3c9801000000 Worker ID: e694fbf8161b2f5ea901126f0822011add2f4bb400eab9c3564aa756 Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 37083 Worker PID: 26084
+2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff9c14c0ab7d2effa045db85e301000000 Worker ID: eff4f019342543781e5741d4fff561ebb12bebf037862d799d904452 Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 35371 Worker PID: 26086
+(pid=26086) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
+(pid=26086) Traceback (most recent call last):
+(pid=26086)   File &quot;python/ray/_raylet.pyx&quot;, line 757, in ray._raylet.task_execution_handler
+(pid=26086)   File &quot;python/ray/_raylet.pyx&quot;, line 492, in ray._raylet.execute_task
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py&quot;, line 444, in load_actor_class
+(pid=26086)     job_id, actor_creation_function_descriptor)
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py&quot;, line 549, in _load_actor_class_from_gcs
+(pid=26086)     actor_class = pickle.loads(pickled_class)
+(pid=26086)   File &quot;/home/ubuntu/efs/alpa/alpa/__init__.py&quot;, line 3, in &lt;module&gt;
+(pid=26086)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
+(pid=26086)   File &quot;/home/ubuntu/efs/alpa/alpa/api.py&quot;, line 13, in &lt;module&gt;
+(pid=26086)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
+(pid=26086)   File &quot;/home/ubuntu/efs/alpa/alpa/device_mesh.py&quot;, line 45, in &lt;module&gt;
+(pid=26086)     import cupy
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py&quot;, line 58, in &lt;module&gt;
+(pid=26086)     from cupy import testing  # NOQA  # NOQA
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py&quot;, line 8, in &lt;module&gt;
+(pid=26086)     from cupy.testing._attr import gpu  # NOQA
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py&quot;, line 5, in &lt;module&gt;
+(pid=26086)     import pytest
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py&quot;, line 3, in &lt;module&gt;
+(pid=26086)     from . import collect
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py&quot;, line 8, in &lt;module&gt;
+(pid=26086)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py&quot;, line 13, in &lt;module&gt;
+(pid=26086)     from _pytest.warning_types import PytestDeprecationWarning
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py&quot;, line 8, in &lt;module&gt;
+(pid=26086)     from _pytest.compat import final
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py&quot;, line 45, in &lt;module&gt;
+(pid=26086)     import importlib_metadata  # noqa: F401
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/__init__.py&quot;, line 17, in &lt;module&gt;
+(pid=26086)     from . import _adapters, _meta
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/_adapters.py&quot;, line 3, in &lt;module&gt;
+(pid=26086)     import email.message
+(pid=26086)   File &quot;/usr/lib/python3.7/email/message.py&quot;, line 15, in &lt;module&gt;
+(pid=26086)     from email import utils
+(pid=26086)   File &quot;/usr/lib/python3.7/email/utils.py&quot;, line 33, in &lt;module&gt;
+(pid=26086)     from email._parseaddr import quote
+(pid=26086)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 980, in _find_and_load
+(pid=26086)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 147, in __enter__
+(pid=26086)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py&quot;, line 424, in sigterm_handler
+(pid=26086)     sys.exit(1)
+(pid=26086) SystemExit: 1
+(pid=26084) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
+(pid=26084) Traceback (most recent call last):
+(pid=26084)   File &quot;python/ray/_raylet.pyx&quot;, line 757, in ray._raylet.task_execution_handler
+(pid=26084)   File &quot;python/ray/_raylet.pyx&quot;, line 492, in ray._raylet.execute_task
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py&quot;, line 444, in load_actor_class
+(pid=26084)     job_id, actor_creation_function_descriptor)
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py&quot;, line 549, in _load_actor_class_from_gcs
+(pid=26084)     actor_class = pickle.loads(pickled_class)
+(pid=26084)   File &quot;/home/ubuntu/efs/alpa/alpa/__init__.py&quot;, line 3, in &lt;module&gt;
+(pid=26084)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
+(pid=26084)   File &quot;/home/ubuntu/efs/alpa/alpa/api.py&quot;, line 13, in &lt;module&gt;
+(pid=26084)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
+(pid=26084)   File &quot;/home/ubuntu/efs/alpa/alpa/device_mesh.py&quot;, line 45, in &lt;module&gt;
+(pid=26084)     import cupy
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py&quot;, line 58, in &lt;module&gt;
+(pid=26084)     from cupy import testing  # NOQA  # NOQA
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py&quot;, line 8, in &lt;module&gt;
+(pid=26084)     from cupy.testing._attr import gpu  # NOQA
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py&quot;, line 5, in &lt;module&gt;
+(pid=26084)     import pytest
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py&quot;, line 3, in &lt;module&gt;
+(pid=26084)     from . import collect
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py&quot;, line 8, in &lt;module&gt;
+(pid=26084)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py&quot;, line 13, in &lt;module&gt;
+(pid=26084)     from _pytest.warning_types import PytestDeprecationWarning
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py&quot;, line 8, in &lt;module&gt;
+(pid=26084)     from _pytest.compat import final
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py&quot;, line 45, in &lt;module&gt;
+(pid=26084)     import importlib_metadata  # noqa: F401
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/__init__.py&quot;, line 17, in &lt;module&gt;
+(pid=26084)     from . import _adapters, _meta
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/_adapters.py&quot;, line 3, in &lt;module&gt;
+(pid=26084)     import email.message
+(pid=26084)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 983, in _find_and_load
+(pid=26084)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 967, in _find_and_load_unlocked
+(pid=26084)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 677, in _load_unlocked
+(pid=26084)   File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 724, in exec_module
+(pid=26084)   File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 812, in get_code
+(pid=26084)   File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 953, in path_stats
+(pid=26084)   File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 81, in _path_stat
+(pid=26084)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py&quot;, line 424, in sigterm_handler
+(pid=26084)     sys.exit(1)
+(pid=26084) SystemExit: 1
+(pid=26085) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
+(pid=26085) Traceback (most recent call last):
+(pid=26085)   File &quot;python/ray/_raylet.pyx&quot;, line 757, in ray._raylet.task_execution_handler
+(pid=26085)   File &quot;python/ray/_raylet.pyx&quot;, line 492, in ray._raylet.execute_task
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py&quot;, line 444, in load_actor_class
+(pid=26085)     job_id, actor_creation_function_descriptor)
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py&quot;, line 549, in _load_actor_class_from_gcs
+(pid=26085)     actor_class = pickle.loads(pickled_class)
+(pid=26085)   File &quot;/home/ubuntu/efs/alpa/alpa/__init__.py&quot;, line 3, in &lt;module&gt;
+(pid=26085)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
+(pid=26085)   File &quot;/home/ubuntu/efs/alpa/alpa/api.py&quot;, line 13, in &lt;module&gt;
+(pid=26085)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
+(pid=26085)   File &quot;/home/ubuntu/efs/alpa/alpa/device_mesh.py&quot;, line 45, in &lt;module&gt;
+(pid=26085)     import cupy
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py&quot;, line 58, in &lt;module&gt;
+(pid=26085)     from cupy import testing  # NOQA  # NOQA
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py&quot;, line 8, in &lt;module&gt;
+(pid=26085)     from cupy.testing._attr import gpu  # NOQA
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py&quot;, line 5, in &lt;module&gt;
+(pid=26085)     import pytest
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py&quot;, line 3, in &lt;module&gt;
+(pid=26085)     from . import collect
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py&quot;, line 8, in &lt;module&gt;
+(pid=26085)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py&quot;, line 13, in &lt;module&gt;
+(pid=26085)     from _pytest.warning_types import PytestDeprecationWarning
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py&quot;, line 8, in &lt;module&gt;
+(pid=26085)     from _pytest.compat import final
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py&quot;, line 45, in &lt;module&gt;
+(pid=26085)     import importlib_metadata  # noqa: F401
+(pid=26085)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 983, in _find_and_load
+(pid=26085)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 967, in _find_and_load_unlocked
+(pid=26085)   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 677, in _load_unlocked
+(pid=26085)   File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 724, in exec_module
+(pid=26085)   File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 857, in get_code
+(pid=26085)   File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 525, in _compile_bytecode
+(pid=26085)   File &quot;/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py&quot;, line 424, in sigterm_handler
+(pid=26085)     sys.exit(1)
+(pid=26085) SystemExit: 1
+Compute cost saved to: compute-cost-2022-06-15-12-47-09.npy
 ----------------------------------------------------------------------
-2022-06-10 05:57:37,537 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffffe7a9170f8dc74ece3c8a7bf201000000 Worker ID: 2849a6a921ab8e4e4fcb0df60a7a82a47ea50256e3f13bf7022d460a Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 44281 Worker PID: 6066
-2022-06-10 05:57:37,554 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff99498d3bb05f8db5a5929e1e01000000 Worker ID: ddf4986490a9308be6a8b89e54bbbc66e505931caab786afe35b679f Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 41007 Worker PID: 6067
-2022-06-10 05:57:37,554 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff562865bd2ca9ce4ed5a23ee201000000 Worker ID: 7de995820b4afb2c0c7238591a643ca2fcddd0aa2096d704cb76a88a Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 45335 Worker PID: 6065
-2022-06-10 05:57:37,555 WARNING worker.py:1404 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffffeba3737b4caf3ccb34bd6f3901000000 Worker ID: 8a6b3a4883631992d0e224f6fdc88b03616b8806a3f448ca70d2d52c Node ID: 37246389952c14306d4b793616a3eaefa8e46f74cffe3d4dd447ec56 Worker IP address: 172.17.0.2 Worker port: 43147 Worker PID: 6064
 Result forward_stage_layer_ids: [[0], [1]]
 Result meshes: [(1, 4), (1, 4)]
 Result logical_mesh_shapes: [(1, 4), (1, 4)]
 Result autosharding_option_dicts: [{}, {}]
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 2 minutes  8.482 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 2 minutes  4.493 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-pipeshard-parallelism-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a3ca1faed62a74bef9de2bc3edfc7d0a/pipeshard_parallelism.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">pipeshard_parallelism.py</span></code></a></p>
@@ -533,8 +664,8 @@ Result autosharding_option_dicts: [{}, {}]
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
