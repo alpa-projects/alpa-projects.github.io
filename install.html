@@ -48,7 +48,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#install-from-python-wheels">Install from Python Wheels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#install-from-source">Install from Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-installation">Check Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#using-alpa-for-pytorch-experimental">Using Alpa for PyTorch [Experimental]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pytorch-frontend-experimental">PyTorch Frontend [Experimental]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#using-alpa-on-slurm">Using Alpa on Slurm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jaxlib-jax-flax-version-problems">Jaxlib, Jax, Flax Version Problems</a></li>
@@ -232,9 +232,10 @@ python3 tests/test_install.py
 </pre></div>
 </div>
 </div>
-<div class="section" id="using-alpa-for-pytorch-experimental">
-<h2>Using Alpa for PyTorch [Experimental]<a class="headerlink" href="#using-alpa-for-pytorch-experimental" title="Permalink to this headline"></a></h2>
-<p>Alpa supports PyTorch models that meet the following requirements:</p>
+<div class="section" id="pytorch-frontend-experimental">
+<h2>PyTorch Frontend [Experimental]<a class="headerlink" href="#pytorch-frontend-experimental" title="Permalink to this headline"></a></h2>
+<p>While Alpa is mainly designed for Jax, Alpa also provides an experimental PyTorch frontend.
+Alpa supports PyTorch models that meet the following requirements:</p>
 <ol class="arabic simple">
 <li><p>No input-dependent control flow</p></li>
 <li><p>No weight sharing</p></li>
@@ -253,7 +254,6 @@ python3 setup.py install
 </div>
 </div></blockquote>
 <p>Please look at tests/test_torch_simple.py for usage example.</p>
-<p>TODO: add PyTorch examples in examples/ or tutorials/</p>
 </div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline"></a></h2>
