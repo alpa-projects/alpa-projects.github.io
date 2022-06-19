@@ -89,7 +89,7 @@ the cluster and disributed workers. We initialize ray and alpa.
 
  .. code-block:: none
 
-    2022-06-15 12:45:32,540 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8265
+    2022-06-19 00:56:03,020 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8266
 
 
 
@@ -327,77 +327,95 @@ partitioning algorithm consists of the following steps:
       0%|          | 0/2 [00:00<?, ?it/s]
                                          
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 29.36it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 30.46it/s]
     - Compile all stages
-      0%|          | 0/1 [00:00<?, ?it/s]    100%|##########| 1/1 [00:01<00:00,  1.91s/it]    100%|##########| 1/1 [00:01<00:00,  1.91s/it]
+      0%|          | 0/5 [00:00<?, ?it/s]     20%|##        | 1/5 [00:01<00:07,  1.75s/it]     60%|######    | 3/5 [00:01<00:01,  1.97it/s]     80%|########  | 4/5 [00:02<00:00,  1.93it/s]    100%|##########| 5/5 [00:02<00:00,  2.05it/s]
     - Profile all stages
-      0%|          | 0/1 [00:00<?, ?it/s]                                         cost[0, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {})
-      0%|          | 0/1 [00:19<?, ?it/s]    100%|##########| 1/1 [00:19<00:00, 19.18s/it]    100%|##########| 1/1 [00:19<00:00, 19.18s/it]
-    Profiling for submesh 3 (1, 8) takes 21.522810697555542 seconds
-    Profiled costs are: [[[       inf]
-      [0.00156238]]
+      0%|          | 0/5 [00:00<?, ?it/s]                                         cost[0, 1, 0]=0.004, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.000GB, init=0.500GB, as_config=((8, 1), {'force_batch_dim_to_mesh_dim': 0})
+      0%|          | 0/5 [00:22<?, ?it/s]     20%|##        | 1/5 [00:22<01:31, 22.89s/it]                                                 cost[0, 1, 1]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.000GB, init=0.250GB, as_config=((4, 2), {'force_batch_dim_to_mesh_dim': 0})
+     20%|##        | 1/5 [00:25<01:31, 22.89s/it]     40%|####      | 2/5 [00:25<00:32, 10.84s/it]                                                 cost[0, 1, 2]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.251GB, intermediate=0.000GB, init=0.125GB, as_config=((2, 4), {'force_batch_dim_to_mesh_dim': 0})
+     40%|####      | 2/5 [00:28<00:32, 10.84s/it]     60%|######    | 3/5 [00:28<00:14,  7.20s/it]                                                 cost[0, 1, 3]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {'force_batch_dim_to_mesh_dim': 0})
+     60%|######    | 3/5 [00:28<00:14,  7.20s/it]     80%|########  | 4/5 [00:28<00:04,  4.54s/it]                                                 cost[0, 1, 4]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((8, 1), {})
+     80%|########  | 4/5 [00:28<00:04,  4.54s/it]    100%|##########| 5/5 [00:28<00:00,  2.97s/it]    100%|##########| 5/5 [00:28<00:00,  5.76s/it]
+    Profiling for submesh 3 (1, 8) takes 31.75 seconds
+    Profiled costs are: [[[       inf        inf        inf        inf        inf]
+      [0.00444471 0.00276081 0.002253   0.00161812 0.00163656]]
 
-     [[       inf]
-      [       inf]]]
-    Profiled max_n_succ_stages are: [[[  -1]
-      [4096]]
+     [[       inf        inf        inf        inf        inf]
+      [       inf        inf        inf        inf        inf]]]
+    Profiled max_n_succ_stages are: [[[  -1   -1   -1   -1   -1]
+      [4096 4096 4096 4096 4096]]
 
-     [[  -1]
-      [  -1]]]
+     [[  -1   -1   -1   -1   -1]
+      [  -1   -1   -1   -1   -1]]]
     --------------------------------------------------
     - Profiling for submesh 2 (1, 4):
     - Generate all stage infos (Jaxpr -> HLO)
       0%|          | 0/2 [00:00<?, ?it/s]
       0%|          | 0/2 [00:00<?, ?it/s]
-    100%|##########| 2/2 [00:00<00:00, 19.85it/s]
-                                                      50%|#####     | 1/2 [00:00<00:00,  9.84it/s]
+    100%|##########| 2/2 [00:00<00:00, 19.84it/s]
+                                                      50%|#####     | 1/2 [00:00<00:00,  9.83it/s]
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 14.77it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 14.68it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.78s/it]    100%|##########| 3/3 [00:01<00:00,  1.63it/s]
+      0%|          | 0/12 [00:00<?, ?it/s]      8%|8         | 1/12 [00:01<00:18,  1.71s/it]     50%|#####     | 6/12 [00:01<00:01,  4.35it/s]     75%|#######5  | 9/12 [00:01<00:00,  6.64it/s]    100%|##########| 12/12 [00:02<00:00,  5.75it/s]    100%|##########| 12/12 [00:02<00:00,  4.62it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {})
-      0%|          | 0/3 [00:12<?, ?it/s]     33%|###3      | 1/3 [00:12<00:25, 12.90s/it]                                                 cost[0, 1, 0]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {})
-     33%|###3      | 1/3 [00:13<00:25, 12.90s/it]     67%|######6   | 2/3 [00:13<00:05,  5.40s/it]                                                 cost[1, 1, 0]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {})
-     67%|######6   | 2/3 [00:13<00:05,  5.40s/it]    100%|##########| 3/3 [00:13<00:00,  3.02s/it]    100%|##########| 3/3 [00:13<00:00,  4.41s/it]
-    Profiling for submesh 2 (1, 4) takes 15.514705896377563 seconds
-    Profiled costs are: [[[0.00106239]
-      [0.00202258]]
+      0%|          | 0/12 [00:00<?, ?it/s]                                          cost[0, 0, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.252GB, intermediate=0.001GB, init=0.125GB, as_config=((2, 2), {'force_batch_dim_to_mesh_dim': 0})
+      0%|          | 0/12 [00:12<?, ?it/s]      8%|8         | 1/12 [00:12<02:14, 12.21s/it]                                                  cost[0, 0, 2]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {'force_batch_dim_to_mesh_dim': 0})
+      8%|8         | 1/12 [00:14<02:14, 12.21s/it]     17%|#6        | 2/12 [00:14<01:01,  6.12s/it]                                                  cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.001GB, init=0.250GB, as_config=((4, 1), {'force_batch_dim_to_mesh_dim': 0})
+     17%|#6        | 2/12 [00:14<01:01,  6.12s/it]                                                  cost[0, 0, 3]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((4, 1), {})
+     17%|#6        | 2/12 [00:14<01:01,  6.12s/it]     33%|###3      | 4/12 [00:14<00:18,  2.32s/it]                                                  cost[0, 1, 1]=0.003, max_n_succ_stage=3525, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.004GB, init=0.250GB, as_config=((2, 2), {'force_batch_dim_to_mesh_dim': 0})
+     33%|###3      | 4/12 [00:14<00:18,  2.32s/it]                                                  cost[0, 1, 0]=0.004, max_n_succ_stage=3984, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.003GB, init=0.500GB, as_config=((4, 1), {'force_batch_dim_to_mesh_dim': 0})
+     33%|###3      | 4/12 [00:15<00:18,  2.32s/it]     50%|#####     | 6/12 [00:15<00:08,  1.45s/it]                                                  cost[0, 1, 2]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {'force_batch_dim_to_mesh_dim': 0})
+     50%|#####     | 6/12 [00:15<00:08,  1.45s/it]                                                  cost[0, 1, 3]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((4, 1), {})
+     50%|#####     | 6/12 [00:15<00:08,  1.45s/it]     67%|######6   | 8/12 [00:15<00:03,  1.04it/s]                                                  cost[1, 1, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.252GB, intermediate=0.002GB, init=0.125GB, as_config=((2, 2), {'force_batch_dim_to_mesh_dim': 0})
+     67%|######6   | 8/12 [00:16<00:03,  1.04it/s]     75%|#######5  | 9/12 [00:16<00:02,  1.01it/s]                                                  cost[1, 1, 2]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {'force_batch_dim_to_mesh_dim': 0})
+     75%|#######5  | 9/12 [00:16<00:02,  1.01it/s]     83%|########3 | 10/12 [00:16<00:01,  1.26it/s]                                                   cost[1, 1, 3]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((4, 1), {})
+     83%|########3 | 10/12 [00:16<00:01,  1.26it/s]     92%|#########1| 11/12 [00:16<00:00,  1.61it/s]                                                   cost[1, 1, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.002GB, init=0.250GB, as_config=((4, 1), {'force_batch_dim_to_mesh_dim': 0})
+     92%|#########1| 11/12 [00:17<00:00,  1.61it/s]    100%|##########| 12/12 [00:17<00:00,  1.42s/it]
+    Profiling for submesh 2 (1, 4) takes 20.18 seconds
+    Profiled costs are: [[[0.00224797 0.00160077 0.00104411 0.00103945        inf]
+      [0.00438248 0.00306161 0.00200306 0.00191789        inf]]
 
-     [[       inf]
-      [0.00119106]]]
-    Profiled max_n_succ_stages are: [[[4096]
-      [2732]]
+     [[       inf        inf        inf        inf        inf]
+      [0.00251436 0.00178419 0.00121297 0.00210998        inf]]]
+    Profiled max_n_succ_stages are: [[[4096 4096 4096 4096   -1]
+      [3984 3525 2732 2732   -1]]
 
-     [[  -1]
-      [4096]]]
+     [[  -1   -1   -1   -1   -1]
+      [4096 4096 4096 4096   -1]]]
     --------------------------------------------------
     - Profiling for submesh 1 (1, 2):
     - Generate all stage infos (Jaxpr -> HLO)
       0%|          | 0/2 [00:00<?, ?it/s]
       0%|          | 0/2 [00:00<?, ?it/s]
-    100%|##########| 2/2 [00:00<00:00, 19.50it/s]
-                                                      50%|#####     | 1/2 [00:00<00:00,  9.67it/s]
+                                         
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 14.53it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 15.09it/s]    100%|##########| 2/2 [00:00<00:00, 15.06it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.76s/it]    100%|##########| 3/3 [00:01<00:00,  2.00it/s]    100%|##########| 3/3 [00:01<00:00,  1.60it/s]
+      0%|          | 0/9 [00:00<?, ?it/s]     11%|#1        | 1/9 [00:01<00:13,  1.69s/it]     89%|########8 | 8/9 [00:01<00:00,  5.93it/s]    100%|##########| 9/9 [00:01<00:00,  4.84it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[1, 1, 0]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {})
-      0%|          | 0/3 [00:11<?, ?it/s]     33%|###3      | 1/3 [00:11<00:22, 11.08s/it]                                                 cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {})
-     33%|###3      | 1/3 [00:11<00:22, 11.08s/it]                                                 cost[0, 1, 0]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {})
-     33%|###3      | 1/3 [00:11<00:22, 11.08s/it]    100%|##########| 3/3 [00:11<00:00,  2.93s/it]    100%|##########| 3/3 [00:11<00:00,  3.75s/it]
-    Profiling for submesh 1 (1, 2) takes 13.545969486236572 seconds
-    Profiled costs are: [[[0.00155976]
-      [0.00317788]]
+      0%|          | 0/9 [00:00<?, ?it/s]                                         cost[0, 0, 2]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((2, 1), {})
+      0%|          | 0/9 [00:10<?, ?it/s]     11%|#1        | 1/9 [00:10<01:20, 10.03s/it]                                                 cost[0, 0, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {'force_batch_dim_to_mesh_dim': 0})
+     11%|#1        | 1/9 [00:10<01:20, 10.03s/it]     22%|##2       | 2/9 [00:10<00:29,  4.21s/it]                                                 cost[0, 1, 1]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {'force_batch_dim_to_mesh_dim': 0})
+     22%|##2       | 2/9 [00:10<00:29,  4.21s/it]     33%|###3      | 3/9 [00:10<00:14,  2.44s/it]                                                 cost[0, 1, 2]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((2, 1), {})
+     33%|###3      | 3/9 [00:10<00:14,  2.44s/it]     44%|####4     | 4/9 [00:10<00:07,  1.54s/it]                                                 cost[0, 0, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.502GB, intermediate=0.003GB, init=0.250GB, as_config=((2, 1), {'force_batch_dim_to_mesh_dim': 0})
+     44%|####4     | 4/9 [00:10<00:07,  1.54s/it]                                                 cost[1, 1, 1]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {'force_batch_dim_to_mesh_dim': 0})
+     44%|####4     | 4/9 [00:10<00:07,  1.54s/it]     67%|######6   | 6/9 [00:10<00:02,  1.28it/s]                                                 cost[0, 1, 0]=0.005, max_n_succ_stage=1991, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.006GB, init=0.500GB, as_config=((2, 1), {'force_batch_dim_to_mesh_dim': 0})
+     67%|######6   | 6/9 [00:11<00:02,  1.28it/s]     78%|#######7  | 7/9 [00:11<00:01,  1.53it/s]                                                 cost[1, 1, 2]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((2, 1), {})
+     78%|#######7  | 7/9 [00:11<00:01,  1.53it/s]     89%|########8 | 8/9 [00:11<00:00,  1.79it/s]                                                 cost[1, 1, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.502GB, intermediate=0.003GB, init=0.250GB, as_config=((2, 1), {'force_batch_dim_to_mesh_dim': 0})
+     89%|########8 | 8/9 [00:12<00:00,  1.79it/s]    100%|##########| 9/9 [00:12<00:00,  1.79it/s]    100%|##########| 9/9 [00:12<00:00,  1.34s/it]
+    Profiling for submesh 1 (1, 2) takes 14.41 seconds
+    Profiled costs are: [[[0.00260342 0.00153573 0.0014992         inf        inf]
+      [0.00507098 0.00300699 0.00296113        inf        inf]]
 
-     [[       inf]
-      [0.00186708]]]
-    Profiled max_n_succ_stages are: [[[4096]
-      [1778]]
+     [[       inf        inf        inf        inf        inf]
+      [0.00280817 0.00182258 0.00180128        inf        inf]]]
+    Profiled max_n_succ_stages are: [[[4096 4096 4096   -1   -1]
+      [1991 1778 1778   -1   -1]]
 
-     [[  -1]
-      [3643]]]
+     [[  -1   -1   -1   -1   -1]
+      [4096 3643 3643   -1   -1]]]
     --------------------------------------------------
     - Profiling for submesh 0 (1, 1):
     - Generate all stage infos (Jaxpr -> HLO)
@@ -405,161 +423,35 @@ partitioning algorithm consists of the following steps:
       0%|          | 0/2 [00:00<?, ?it/s]
                                          
       0%|          | 0/1 [00:00<?, ?it/s]
-                                             100%|##########| 2/2 [00:00<00:00, 15.09it/s]    100%|##########| 2/2 [00:00<00:00, 15.05it/s]
+                                             100%|##########| 2/2 [00:00<00:00, 15.59it/s]    100%|##########| 2/2 [00:00<00:00, 15.55it/s]
     - Compile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]     33%|###3      | 1/3 [00:01<00:03,  1.57s/it]    100%|##########| 3/3 [00:01<00:00,  1.90it/s]
+      0%|          | 0/6 [00:00<?, ?it/s]     17%|#6        | 1/6 [00:01<00:07,  1.50s/it]    100%|##########| 6/6 [00:01<00:00,  3.91it/s]
     - Profile all stages
-      0%|          | 0/3 [00:00<?, ?it/s]                                         cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
-      0%|          | 0/3 [00:09<?, ?it/s]     33%|###3      | 1/3 [00:09<00:18,  9.44s/it]                                                 cost[1, 1, 0]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
-     33%|###3      | 1/3 [00:10<00:18,  9.44s/it]     67%|######6   | 2/3 [00:10<00:04,  4.26s/it]                                                 cost[0, 1, 0]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
-     67%|######6   | 2/3 [00:10<00:04,  4.26s/it]    100%|##########| 3/3 [00:10<00:00,  2.42s/it]    100%|##########| 3/3 [00:10<00:00,  3.44s/it]
-    Profiling for submesh 0 (1, 1) takes 12.318020820617676 seconds
-    Profiled costs are: [[[0.00230715]
-      [0.00477505]]
+      0%|          | 0/6 [00:00<?, ?it/s]                                         cost[0, 1, 1]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
+      0%|          | 0/6 [00:10<?, ?it/s]     17%|#6        | 1/6 [00:10<00:54, 10.82s/it]                                                 cost[0, 1, 0]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {'force_batch_dim_to_mesh_dim': 0})
+     17%|#6        | 1/6 [00:10<00:54, 10.82s/it]     33%|###3      | 2/6 [00:10<00:18,  4.53s/it]                                                 cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {'force_batch_dim_to_mesh_dim': 0})
+     33%|###3      | 2/6 [00:11<00:18,  4.53s/it]     50%|#####     | 3/6 [00:11<00:07,  2.57s/it]                                                 cost[0, 0, 1]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
+     50%|#####     | 3/6 [00:11<00:07,  2.57s/it]                                                 cost[1, 1, 0]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {'force_batch_dim_to_mesh_dim': 0})
+     50%|#####     | 3/6 [00:11<00:07,  2.57s/it]     83%|########3 | 5/6 [00:11<00:01,  1.18s/it]                                                 cost[1, 1, 1]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
+     83%|########3 | 5/6 [00:11<00:01,  1.18s/it]    100%|##########| 6/6 [00:11<00:00,  1.92s/it]
+    Profiling for submesh 0 (1, 1) takes 13.46 seconds
+    Profiled costs are: [[[0.00238363 0.00234103        inf        inf        inf]
+      [0.00487892 0.00477113        inf        inf        inf]]
 
-     [[       inf]
-      [0.00265498]]]
-    Profiled max_n_succ_stages are: [[[2540]
-      [1014]]
+     [[       inf        inf        inf        inf        inf]
+      [0.00265569 0.00270878        inf        inf        inf]]]
+    Profiled max_n_succ_stages are: [[[2540 2540   -1   -1   -1]
+      [1014 1014   -1   -1   -1]]
 
-     [[  -1]
-      [2134]]]
+     [[  -1   -1   -1   -1   -1]
+      [2134 2134   -1   -1   -1]]]
     --------------------------------------------------
-    2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff2b50e5fcb5f7438e33b58f4901000000 Worker ID: c37be1482a89a383cf32b3381b12b189e62230aac24763ad94c2ebaf Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 34681 Worker PID: 26085
-    2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff3093489d20578febd2db3c9801000000 Worker ID: e694fbf8161b2f5ea901126f0822011add2f4bb400eab9c3564aa756 Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 37083 Worker PID: 26084
-    2022-06-15 12:47:09,530 WARNING worker.py:1243 -- A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. RayTask ID: ffffffffffffffff9c14c0ab7d2effa045db85e301000000 Worker ID: eff4f019342543781e5741d4fff561ebb12bebf037862d799d904452 Node ID: 93a187b063904e99214225bbc0d18e656ae7102d06deb2cccb04ead2 Worker IP address: 172.31.34.216 Worker port: 35371 Worker PID: 26086
-    (pid=26086) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
-    (pid=26086) Traceback (most recent call last):
-    (pid=26086)   File "python/ray/_raylet.pyx", line 757, in ray._raylet.task_execution_handler
-    (pid=26086)   File "python/ray/_raylet.pyx", line 492, in ray._raylet.execute_task
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 444, in load_actor_class
-    (pid=26086)     job_id, actor_creation_function_descriptor)
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 549, in _load_actor_class_from_gcs
-    (pid=26086)     actor_class = pickle.loads(pickled_class)
-    (pid=26086)   File "/home/ubuntu/efs/alpa/alpa/__init__.py", line 3, in <module>
-    (pid=26086)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
-    (pid=26086)   File "/home/ubuntu/efs/alpa/alpa/api.py", line 13, in <module>
-    (pid=26086)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
-    (pid=26086)   File "/home/ubuntu/efs/alpa/alpa/device_mesh.py", line 45, in <module>
-    (pid=26086)     import cupy
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py", line 58, in <module>
-    (pid=26086)     from cupy import testing  # NOQA  # NOQA
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py", line 8, in <module>
-    (pid=26086)     from cupy.testing._attr import gpu  # NOQA
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py", line 5, in <module>
-    (pid=26086)     import pytest
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py", line 3, in <module>
-    (pid=26086)     from . import collect
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py", line 8, in <module>
-    (pid=26086)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py", line 13, in <module>
-    (pid=26086)     from _pytest.warning_types import PytestDeprecationWarning
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py", line 8, in <module>
-    (pid=26086)     from _pytest.compat import final
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py", line 45, in <module>
-    (pid=26086)     import importlib_metadata  # noqa: F401
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/__init__.py", line 17, in <module>
-    (pid=26086)     from . import _adapters, _meta
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/_adapters.py", line 3, in <module>
-    (pid=26086)     import email.message
-    (pid=26086)   File "/usr/lib/python3.7/email/message.py", line 15, in <module>
-    (pid=26086)     from email import utils
-    (pid=26086)   File "/usr/lib/python3.7/email/utils.py", line 33, in <module>
-    (pid=26086)     from email._parseaddr import quote
-    (pid=26086)   File "<frozen importlib._bootstrap>", line 980, in _find_and_load
-    (pid=26086)   File "<frozen importlib._bootstrap>", line 147, in __enter__
-    (pid=26086)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py", line 424, in sigterm_handler
-    (pid=26086)     sys.exit(1)
-    (pid=26086) SystemExit: 1
-    (pid=26084) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
-    (pid=26084) Traceback (most recent call last):
-    (pid=26084)   File "python/ray/_raylet.pyx", line 757, in ray._raylet.task_execution_handler
-    (pid=26084)   File "python/ray/_raylet.pyx", line 492, in ray._raylet.execute_task
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 444, in load_actor_class
-    (pid=26084)     job_id, actor_creation_function_descriptor)
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 549, in _load_actor_class_from_gcs
-    (pid=26084)     actor_class = pickle.loads(pickled_class)
-    (pid=26084)   File "/home/ubuntu/efs/alpa/alpa/__init__.py", line 3, in <module>
-    (pid=26084)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
-    (pid=26084)   File "/home/ubuntu/efs/alpa/alpa/api.py", line 13, in <module>
-    (pid=26084)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
-    (pid=26084)   File "/home/ubuntu/efs/alpa/alpa/device_mesh.py", line 45, in <module>
-    (pid=26084)     import cupy
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py", line 58, in <module>
-    (pid=26084)     from cupy import testing  # NOQA  # NOQA
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py", line 8, in <module>
-    (pid=26084)     from cupy.testing._attr import gpu  # NOQA
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py", line 5, in <module>
-    (pid=26084)     import pytest
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py", line 3, in <module>
-    (pid=26084)     from . import collect
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py", line 8, in <module>
-    (pid=26084)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py", line 13, in <module>
-    (pid=26084)     from _pytest.warning_types import PytestDeprecationWarning
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py", line 8, in <module>
-    (pid=26084)     from _pytest.compat import final
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py", line 45, in <module>
-    (pid=26084)     import importlib_metadata  # noqa: F401
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/__init__.py", line 17, in <module>
-    (pid=26084)     from . import _adapters, _meta
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/importlib_metadata/_adapters.py", line 3, in <module>
-    (pid=26084)     import email.message
-    (pid=26084)   File "<frozen importlib._bootstrap>", line 983, in _find_and_load
-    (pid=26084)   File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
-    (pid=26084)   File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
-    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 724, in exec_module
-    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 812, in get_code
-    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 953, in path_stats
-    (pid=26084)   File "<frozen importlib._bootstrap_external>", line 81, in _path_stat
-    (pid=26084)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py", line 424, in sigterm_handler
-    (pid=26084)     sys.exit(1)
-    (pid=26084) SystemExit: 1
-    (pid=26085) 2022-06-15 12:47:09,400        ERROR worker.py:427 -- SystemExit was raised from the worker
-    (pid=26085) Traceback (most recent call last):
-    (pid=26085)   File "python/ray/_raylet.pyx", line 757, in ray._raylet.task_execution_handler
-    (pid=26085)   File "python/ray/_raylet.pyx", line 492, in ray._raylet.execute_task
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 444, in load_actor_class
-    (pid=26085)     job_id, actor_creation_function_descriptor)
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/_private/function_manager.py", line 549, in _load_actor_class_from_gcs
-    (pid=26085)     actor_class = pickle.loads(pickled_class)
-    (pid=26085)   File "/home/ubuntu/efs/alpa/alpa/__init__.py", line 3, in <module>
-    (pid=26085)     from alpa.api import (init, shutdown, parallelize, grad, value_and_grad,
-    (pid=26085)   File "/home/ubuntu/efs/alpa/alpa/api.py", line 13, in <module>
-    (pid=26085)     from alpa.device_mesh import init_global_cluster, shutdown_global_cluster
-    (pid=26085)   File "/home/ubuntu/efs/alpa/alpa/device_mesh.py", line 45, in <module>
-    (pid=26085)     import cupy
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/__init__.py", line 58, in <module>
-    (pid=26085)     from cupy import testing  # NOQA  # NOQA
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/__init__.py", line 8, in <module>
-    (pid=26085)     from cupy.testing._attr import gpu  # NOQA
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/cupy/testing/_attr.py", line 5, in <module>
-    (pid=26085)     import pytest
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/__init__.py", line 3, in <module>
-    (pid=26085)     from . import collect
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/pytest/collect.py", line 8, in <module>
-    (pid=26085)     from _pytest.deprecated import PYTEST_COLLECT_MODULE
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/deprecated.py", line 13, in <module>
-    (pid=26085)     from _pytest.warning_types import PytestDeprecationWarning
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/warning_types.py", line 8, in <module>
-    (pid=26085)     from _pytest.compat import final
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/_pytest/compat.py", line 45, in <module>
-    (pid=26085)     import importlib_metadata  # noqa: F401
-    (pid=26085)   File "<frozen importlib._bootstrap>", line 983, in _find_and_load
-    (pid=26085)   File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
-    (pid=26085)   File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
-    (pid=26085)   File "<frozen importlib._bootstrap_external>", line 724, in exec_module
-    (pid=26085)   File "<frozen importlib._bootstrap_external>", line 857, in get_code
-    (pid=26085)   File "<frozen importlib._bootstrap_external>", line 525, in _compile_bytecode
-    (pid=26085)   File "/home/ubuntu/.local/lib/python3.7/site-packages/ray/worker.py", line 424, in sigterm_handler
-    (pid=26085)     sys.exit(1)
-    (pid=26085) SystemExit: 1
-    Compute cost saved to: compute-cost-2022-06-15-12-47-09.npy
+    Compute cost saved to: compute-cost-2022-06-19-00-57-58.npy
     ----------------------------------------------------------------------
     Result forward_stage_layer_ids: [[0], [1]]
-    Result meshes: [(1, 4), (1, 4)]
-    Result logical_mesh_shapes: [(1, 4), (1, 4)]
-    Result autosharding_option_dicts: [{}, {}]
+    Result mesh_shapes: [(1, 4), (1, 4)]
+    Result logical_mesh_shapes: [(4, 1), (1, 4)]
+    Result autosharding_option_dicts: [{}, {'force_batch_dim_to_mesh_dim': 0}]
 
 
 
@@ -567,7 +459,7 @@ partitioning algorithm consists of the following steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  4.493 seconds)
+   **Total running time of the script:** ( 2 minutes  24.735 seconds)
 
 
 .. _sphx_glr_download_tutorials_pipeshard_parallelism.py:
