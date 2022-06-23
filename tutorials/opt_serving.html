@@ -120,6 +120,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 </div>
 <div class="section" id="demo">
 <h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
+<p>Use huggingface/transformers interface and Alpa backend for distributed inference.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
 <span class="kn">from</span> <span class="nn">examples.opt_serving.model.wrapper</span> <span class="kn">import</span> <span class="n">get_model</span>
 
@@ -169,9 +170,12 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
 <p>1. You can download the original OPT weights released by <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">Metaseq</a>,
 then use our script <a class="reference external" href="scripts/convert_to_numpy_weights.p">convert_to_numpy_weight.py</a> to convert it into Alpa-compatible formats.</p>
 <ol class="arabic simple" start="2">
-<li><p>We provide links to download the preprocessed 125M and 2.7B model below. For other sizes of OPT, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> to request a copy from the Alpa developer team.
-- <a class="reference external" href="https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing">OPT-125M weights</a>
-- <a class="reference external" href="https://drive.google.com/file/d/1ayIaKRhxF9osZWgcFG-3vSkjcepSWdQd/view?usp=sharing">OPT-2.7B weights</a></p></li>
+<li><p>We provide links to download the preprocessed 125M and 2.7B model below. For other sizes of OPT, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> to request a copy from the Alpa developer team.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing">OPT-125M weights</a></p></li>
+<li><p><a class="reference external" href="https://drive.google.com/file/d/1ayIaKRhxF9osZWgcFG-3vSkjcepSWdQd/view?usp=sharing">OPT-2.7B weights</a></p></li>
+</ul>
+</li>
 </ol>
 </div>
 <div class="section" id="run-and-benchmark-generation-in-command-line">
@@ -217,7 +221,7 @@ python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001
 </div>
 <div class="section" id="id1">
 <h2>License<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
-<p>The Use of the OPT pretrained weights are subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model Licence</a> by Metaseq.</p>
+<p>The use of the OPT pretrained weights are subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model Licence</a> by Metaseq.</p>
 </div>
 </div>
 

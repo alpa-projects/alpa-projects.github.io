@@ -30,6 +30,7 @@ Specifically, Alpa provides:
 
 Demo
 ----
+Use huggingface/transformers interface and Alpa backend for distributed inference.
 
 .. code:: python
 
@@ -82,6 +83,7 @@ There are two ways you can obtain the pretrained OPT weights.
 then use our script `convert_to_numpy_weight.py <scripts/convert_to_numpy_weights.p>`_ to convert it into Alpa-compatible formats.
 
 2. We provide links to download the preprocessed 125M and 2.7B model below. For other sizes of OPT, please join `Alpa slack <https://forms.gle/YEZTCrtZD6EAVNBQ7>`_ to request a copy from the Alpa developer team.
+
    - `OPT-125M weights <https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing>`_
    - `OPT-2.7B weights <https://drive.google.com/file/d/1ayIaKRhxF9osZWgcFG-3vSkjcepSWdQd/view?usp=sharing>`_
 
@@ -134,4 +136,4 @@ Then open ``https://[IP-ADDRESS]:10001`` in your browser to try out the model!
 License
 -------
 
-The Use of the OPT pretrained weights are subject to the `Model Licence <https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md>`_ by Metaseq.
+The use of the OPT pretrained weights are subject to the `Model Licence <https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md>`_ by Metaseq.
