@@ -9,7 +9,6 @@ As a serving system, Alpa provides the following unique advantages:
 
 - **Flexible parallelism strategies**: Alpa will automatically figure out the appropriate model-parallel strategies based on your cluster setup.
 
-
 In this example, we use Alpa to serve the open-source OPT model, supporting all sizes ranging from 125M to 175B.
 Specifically, Alpa provides:
 
@@ -30,7 +29,7 @@ Specifically, Alpa provides:
 
 Demo
 ----
-Use huggingface/transformers interface and Alpa backend for distributed inference.
+Use huggingface/transformers interface and Alpa backend for distributed inference on a Ray cluster.
 
 .. code:: python
 
@@ -87,40 +86,37 @@ then use our script `convert_to_numpy_weight.py <scripts/convert_to_numpy_weight
    - `OPT-125M weights <https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing>`_
    - `OPT-2.7B weights <https://drive.google.com/file/d/1ayIaKRhxF9osZWgcFG-3vSkjcepSWdQd/view?usp=sharing>`_
 
-Run and Benchmark Generation in Command Line
---------------------------------------------
+Run and Benchmark Generation in The Command Line
+------------------------------------------------
 
-For a small model that can fit into one GPU, such as the OPT-125M, we can run single-GPU generation using either PyTorch backend or JAX backend.
-For examples:
-
-1. Run generation using the 125M OPT model with PyTorch/HuggingFace backend:
+- Run generation using the 125M model with PyTorch/HuggingFace backend:
 
 .. code:: bash
 
     cd benchmark
     python3 benchmark_text_gen.py --model facebook/opt-125m --path [PATH_TO_WEIGHT]
 
-2. Run generation using the OPT-125M model with JAX backend in debug model to output the generated text：
+- Run generation using the 125M model with JAX backend in debug model to output the generated text：
 
 .. code:: bash
 
     python3 benchmark_text_gen.py --model jax/opt-125m --path [PATH_TO_WEIGHT] --debug
 
-3. Run model-parallel generation using the 2.7B model with Alpa:
+- Run model-parallel generation using the 2.7B model with Alpa:
 
 .. code:: bash
 
     ray start --head
     python3 benchmark_text_gen.py --model alpa/opt-2.7b --path [PATH_TO_WEIGHT] --debug
 
-4. Run distributed generation with the 175B model using Alpa; Note you will need >350Gb total GPU memory in the entire cluster to successfully run the inference.
+- Run distributed generation with the 175B model using Alpa. Note you will need >350GB total GPU memory in the entire cluster to successfully run the inference.
 
 .. code:: bash
 
-    # Remember to start ray on the entire cluster before running the generation
+    # Remember to start Ray on the entire cluster before running the generation
     python3 benchmark_text_gen.py --model alpa/opt-175b --path [PATH_TO_WEIGHT] --debug
 
-Launch a web server to serve the OPT models
+Launch a Web Server to Serve the OPT models
 -------------------------------------------
 
 Launch the web server:

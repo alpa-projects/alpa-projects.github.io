@@ -54,8 +54,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-opt-weights">Get OPT Weights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-and-benchmark-generation-in-command-line">Run and Benchmark Generation in Command Line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a web server to serve the OPT models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-and-benchmark-generation-in-the-command-line">Run and Benchmark Generation in The Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a Web Server to Serve the OPT models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">License</a></li>
 </ul>
 </li>
@@ -120,7 +120,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 </div>
 <div class="section" id="demo">
 <h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
-<p>Use huggingface/transformers interface and Alpa backend for distributed inference.</p>
+<p>Use huggingface/transformers interface and Alpa backend for distributed inference on a Ray cluster.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
 <span class="kn">from</span> <span class="nn">examples.opt_serving.model.wrapper</span> <span class="kn">import</span> <span class="n">get_model</span>
 
@@ -178,40 +178,38 @@ then use our script <a class="reference external" href="scripts/convert_to_numpy
 </li>
 </ol>
 </div>
-<div class="section" id="run-and-benchmark-generation-in-command-line">
-<h2>Run and Benchmark Generation in Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-command-line" title="Permalink to this headline"></a></h2>
-<p>For a small model that can fit into one GPU, such as the OPT-125M, we can run single-GPU generation using either PyTorch backend or JAX backend.
-For examples:</p>
-<ol class="arabic simple">
-<li><p>Run generation using the 125M OPT model with PyTorch/HuggingFace backend:</p></li>
-</ol>
+<div class="section" id="run-and-benchmark-generation-in-the-command-line">
+<h2>Run and Benchmark Generation in The Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-the-command-line" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Run generation using the 125M model with PyTorch/HuggingFace backend:</p></li>
+</ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> benchmark
 python3 benchmark_text_gen.py --model facebook/opt-125m --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>Run generation using the OPT-125M model with JAX backend in debug model to output the generated text：</p></li>
-</ol>
+<ul class="simple">
+<li><p>Run generation using the 125M model with JAX backend in debug model to output the generated text：</p></li>
+</ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model jax/opt-125m --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
-<ol class="arabic simple" start="3">
+<ul class="simple">
 <li><p>Run model-parallel generation using the 2.7B model with Alpa:</p></li>
-</ol>
+</ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray start --head
 python3 benchmark_text_gen.py --model alpa/opt-2.7b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
-<ol class="arabic simple" start="4">
-<li><p>Run distributed generation with the 175B model using Alpa; Note you will need &gt;350Gb total GPU memory in the entire cluster to successfully run the inference.</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remember to start ray on the entire cluster before running the generation</span>
+<ul class="simple">
+<li><p>Run distributed generation with the 175B model using Alpa. Note you will need &gt;350GB total GPU memory in the entire cluster to successfully run the inference.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remember to start Ray on the entire cluster before running the generation</span>
 python3 benchmark_text_gen.py --model alpa/opt-175b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
 </div>
 <div class="section" id="launch-a-web-server-to-serve-the-opt-models">
-<h2>Launch a web server to serve the OPT models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this headline"></a></h2>
+<h2>Launch a Web Server to Serve the OPT models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this headline"></a></h2>
 <p>Launch the web server:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Serve the OPT-175B model at port 10001</span>
 python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001</span> --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span>
