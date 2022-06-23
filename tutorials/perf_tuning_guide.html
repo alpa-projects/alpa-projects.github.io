@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Performance Tuning Guide &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,11 +18,12 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Design and Architecture" href="../architecture/overview.html" />
+    <link rel="next" title="Serving OPT-175B using Alpa" href="opt_serving.html" />
     <link rel="prev" title="Differences between alpa.parallelize and jax.pmap" href="alpa_vs_pmap.html" /> 
 </head>
 
@@ -54,6 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#reducing-runtime-overhead">Reducing Runtime Overhead</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -88,11 +91,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="performance-tuning-guide">
-<h1>Performance Tuning Guide<a class="headerlink" href="#performance-tuning-guide" title="Permalink to this headline"></a></h1>
+  <section id="performance-tuning-guide">
+<h1>Performance Tuning Guide<a class="headerlink" href="#performance-tuning-guide" title="Permalink to this heading"></a></h1>
 <p>This tutorial provides some tips for performance tuning and debugging.</p>
-<div class="section" id="choosing-parallel-methods">
-<h2>Choosing Parallel Methods<a class="headerlink" href="#choosing-parallel-methods" title="Permalink to this headline"></a></h2>
+<section id="choosing-parallel-methods">
+<h2>Choosing Parallel Methods<a class="headerlink" href="#choosing-parallel-methods" title="Permalink to this heading"></a></h2>
 <p>Alpa relies on analyses of primitives tensor operators to perform auto-parallelization.
 These analyses can be tricky for complicated computational graphs, especially those with many indexing/slicing/concatenating operators.
 To make sure Alpa can perform auto-parallelization correctly, we can start with simple parallel methods and gradually move to more advanced ones.</p>
@@ -124,9 +127,9 @@ You can also do layer construction manually by using <code class="docutils liter
 </ol>
 </li>
 </ol>
-</div>
-<div class="section" id="reducing-runtime-overhead">
-<h2>Reducing Runtime Overhead<a class="headerlink" href="#reducing-runtime-overhead" title="Permalink to this headline"></a></h2>
+</section>
+<section id="reducing-runtime-overhead">
+<h2>Reducing Runtime Overhead<a class="headerlink" href="#reducing-runtime-overhead" title="Permalink to this heading"></a></h2>
 <p>Alpa uses a single-controller architecture. In this architecture, the user script runs on a CPU driver and sends commands to GPU workers. Users can just think of the device cluster as a single big device.</p>
 <p>This architecture is easier to use and understand but can potentially lead to significant runtime overhead. The runtime overhead includes:</p>
 <ul class="simple">
@@ -137,15 +140,15 @@ You can also do layer construction manually by using <code class="docutils liter
 <p>To reduce the overhead, we should avoid frequent synchronization, so we can overlap the computation with runtime scheduling.
 Printing or accessing the value of a <code class="docutils literal notranslate"><span class="pre">DistributedArray</span></code> is a case of synchronization because we have to fetch the data from workers’ GPUs to the driver’s CPU.
 However, accessing metadata such as <cite>shape</cite> and <cite>dtype</cite> does not need synchronization because the metadata is stored on the driver.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="alpa_vs_pmap.html" class="btn btn-neutral float-left" title="Differences between alpa.parallelize and jax.pmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../architecture/overview.html" class="btn btn-neutral float-right" title="Design and Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="opt_serving.html" class="btn btn-neutral float-right" title="Serving OPT-175B using Alpa" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

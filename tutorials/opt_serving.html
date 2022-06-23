@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Design and Architecture" href="../architecture/overview.html" />
+    <link rel="prev" title="Performance Tuning Guide" href="perf_tuning_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Alpa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Alpa Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Serving OPT-175B using Alpa</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-opt-weights">Get OPT Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-generation-in-command-line">Run Generation in Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a web server to serve the OPT models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">License</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/overview.html">Design and Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer_guide.html">Developer Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Alpa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Serving OPT-175B using Alpa</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/opt_serving.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="serving-opt-175b-using-alpa">
+<h1>Serving OPT-175B using Alpa<a class="headerlink" href="#serving-opt-175b-using-alpa" title="Permalink to this heading"></a></h1>
+<p>This tutorial provides guides to setup a serving system to serve the largest available pretrained language model OPT-175B.</p>
+<p>As a serving system, Alpa provides the following unique advantages:</p>
+<ul class="simple">
+<li><p><strong>Support commodity hardware</strong>: With Alpa, you can serve OPT-175B using your in-house GPU cluster, without needing the latest generations of A100 80GB GPUs nor fancy InfiniBand connections – no hardware constraints!</p></li>
+<li><p><strong>Flexible parallelism strategies</strong>: Alpa will automatically figure out the appropriate model-parallelism strategies based on your cluster setup.</p></li>
+</ul>
+<p>In this example, we use Alpa to serve the open-source OPT model, supporting all sizes ranging from 125M to 175B.
+Specifically, Alpa provides:</p>
+<ul class="simple">
+<li><p>A <strong>backend</strong> to perform model-parallel distributed inference for the large OPT models;</p></li>
+<li><p>A <strong>web frontend</strong> to collect and batch inference requests from users.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The trained OPT model weights can be obtained from <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">Metaseq download page</a>. Usages of
+the pretrained model weights are subject to their <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">license</a> .</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You will need at least 350GB memory to to serve the OPT-175B model. You can also follow this guide to setup a serving system to serve smaller versions of OPT,
+such as OPT-66B, OPT-30B, etc. Pick an appropriate size from <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT weight release page</a> based on
+your available resources.</p>
+</div>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Install Alpa following the <a class="reference external" href="https://alpa-projects.github.io/install.html">installation guide</a>.</p></li>
+<li><p>Install additional requirements for serving:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install transformers flask cython
+
+<span class="c1"># Install torch corresponding to your CUDA version, e.g., for CUDA 11.3:</span>
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Compile several cython files for faster data processing:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> examples/opt_serving <span class="o">&amp;&amp;</span> bash build.sh
+</pre></div>
+</div>
+</section>
+<section id="get-opt-weights">
+<h2>Get OPT Weights<a class="headerlink" href="#get-opt-weights" title="Permalink to this heading"></a></h2>
+<p>There are two ways you can obtain the pretrained OPT weights.</p>
+<p>1. You can download the original OPT weights released by <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">Metaseq</a>,
+then use our script <a class="reference external" href="scripts/convert_to_numpy_weights.p">convert_to_numpy_weight.py</a> to convert it into Alpa-compatible formats.</p>
+<ol class="arabic simple" start="2">
+<li><p>We provide links to download the preprocessed 125M and 2.7B model below. For other sizes of OPT, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> to request a copy from the Alpa developer team.
+- <a class="reference external" href="https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing">OPT-125M weights</a>
+- <a class="reference external" href="https://drive.google.com/file/d/1ayIaKRhxF9osZWgcFG-3vSkjcepSWdQd/view?usp=sharing">OPT-2.7B weights</a></p></li>
+</ol>
+</section>
+<section id="run-generation-in-command-line">
+<h2>Run Generation in Command Line<a class="headerlink" href="#run-generation-in-command-line" title="Permalink to this heading"></a></h2>
+<p>For a small model that can fit into one GPU, such as the OPT-125M, we can run single-GPU generation using either PyTorch backend or JAX backend.
+For examples:</p>
+<ol class="arabic simple">
+<li><p>Run generation using the 125M OPT model with PyTorch/HuggingFace backend:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> benchmark
+python3 benchmark_text_gen.py --model facebook/opt-125m --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Run generation using the OPT-125M model with JAX backend in debug model to output the generated text：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model jax/opt-125m --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Run model-parallel generation using the 2.7B model with Alpa:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray start --head
+python3 benchmark_text_gen.py --model alpa/opt-2.7b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Run distributed generation with the 175B model using Alpa; Note you will need &gt;350Gb total GPU memory in the entire cluster to successfully run the inference.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remember to start ray on the entire cluster before running the generation</span>
+python3 benchmark_text_gen.py --model alpa/opt-175b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
+</pre></div>
+</div>
+</section>
+<section id="launch-a-web-server-to-serve-the-opt-models">
+<h2>Launch a web server to serve the OPT models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this heading"></a></h2>
+<p>Launch the web server:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Serve the OPT-175B model at port 10001</span>
+python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001</span> --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span>
+</pre></div>
+</div>
+<p>Then open <code class="docutils literal notranslate"><span class="pre">https://[IP-ADDRESS]:10001</span></code> in your browser to try out the model!</p>
+</section>
+<section id="id1">
+<h2>License<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<p>The Use of the OPT pretrained weights are subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model Licence</a> by Metaseq.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="perf_tuning_guide.html" class="btn btn-neutral float-left" title="Performance Tuning Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../architecture/overview.html" class="btn btn-neutral float-right" title="Design and Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
