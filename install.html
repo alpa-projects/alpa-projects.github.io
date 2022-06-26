@@ -43,12 +43,14 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Install Alpa</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#install-from-python-wheels">Install from Python Wheels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#install-from-source">Install from Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#method-1-install-from-python-wheels">Method 1: Install from Python Wheels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-2-install-from-source">Method 2: Install from Source</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#check-installation">Check Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pytorch-frontend-experimental">PyTorch Frontend [Experimental]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-pytorch-frontend">[Optional] PyTorch Frontend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#using-alpa-on-slurm">Using Alpa on Slurm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jaxlib-jax-flax-version-problems">Jaxlib, Jax, Flax Version Problems</a></li>
@@ -101,22 +103,16 @@
              
   <div class="section" id="install-alpa">
 <h1>Install Alpa<a class="headerlink" href="#install-alpa" title="Permalink to this headline"></a></h1>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
-<ul class="simple">
-<li><p>CUDA &gt;= 11.1</p></li>
-<li><p>cuDNN &gt;= 8.0.5</p></li>
-<li><p>python &gt;= 3.7</p></li>
-</ul>
-</div>
+<p>This page provides instructions to install alpa from Python wheels or from source. The minimum supported python version is 3.7.</p>
 <div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h2>
-<p>Regardless of installing from wheels or from source, we need to install a few prerequisite packages:</p>
+<p>Regardless of installing from wheels or from source, there are a few prerequisite packages:</p>
 <ol class="arabic simple">
 <li><p>CUDA toolkit:</p></li>
 </ol>
 <blockquote>
-<div><p>Follow the official guides to install <a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">CUDA</a> and <a class="reference external" href="https://developer.nvidia.com/cudnn">cuDNN</a>.</p>
+<div><p>Follow the official guides to install <a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">CUDA</a> and <a class="reference external" href="https://developer.nvidia.com/cudnn">cuDNN</a>.
+Alpa requires CUDA &gt;= 11.1 and  cuDNN &gt;= 8.0.5.</p>
 </div></blockquote>
 <ol class="arabic" start="2">
 <li><p>Install the ILP solver used by Alpa:</p>
@@ -148,8 +144,11 @@ pip3 install cupy-cuda114
 Otherwise, follow the printed instructions to install NCCL.</p>
 </div></blockquote>
 </div>
-<div class="section" id="install-from-python-wheels">
-<span id="install-from-wheels"></span><h2>Install from Python Wheels<a class="headerlink" href="#install-from-python-wheels" title="Permalink to this headline"></a></h2>
+<div class="section" id="methods">
+<span id="install-from-wheels"></span><h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<p>Choose one of the methods below.</p>
+<div class="section" id="method-1-install-from-python-wheels">
+<h3>Method 1: Install from Python Wheels<a class="headerlink" href="#method-1-install-from-python-wheels" title="Permalink to this headline"></a></h3>
 <p>Alpa provides wheels for the following CUDA (cuDNN) and Python versions:</p>
 <ul class="simple">
 <li><p>CUDA (cuDNN): 11.1 (8.0.5), 11.2 (8.1.0), 11.3 (8.2.0)</p></li>
@@ -185,8 +184,8 @@ You can specify a particular CUDA and cuDNN version for jaxlib explicitly via:</
 If you need features from newer versions of jaxlib, please open an issue at the <a class="reference external" href="https://github.com/alpa-projects/alpa/issues">Alpa GitHub Issue Page</a>.</p>
 </div>
 </div>
-<div class="section" id="install-from-source">
-<span id="id1"></span><h2>Install from Source<a class="headerlink" href="#install-from-source" title="Permalink to this headline"></a></h2>
+<div class="section" id="method-2-install-from-source">
+<span id="install-from-source"></span><h3>Method 2: Install from Source<a class="headerlink" href="#method-2-install-from-source" title="Permalink to this headline"></a></h3>
 <ol class="arabic simple">
 <li><p>Clone repos</p></li>
 </ol>
@@ -200,7 +199,7 @@ If you need features from newer versions of jaxlib, please open an issue at the 
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa
-pip3 install -e .<span class="o">[</span>dev<span class="o">]</span>  <span class="c1"># Note that the suffix `[dev]` is required to build custom modules.</span>
+pip3 install -e <span class="s2">&quot;.[dev]&quot;</span>  <span class="c1"># Note that the suffix `[dev]` is required to build custom modules.</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -225,6 +224,7 @@ To modify c++ code in tensorflow, you only need to run the command below from st
 </div>
 </div>
 </div>
+</div>
 <div class="section" id="check-installation">
 <h2>Check Installation<a class="headerlink" href="#check-installation" title="Permalink to this headline"></a></h2>
 <p>You can check the installation by running the following test script.</p>
@@ -234,8 +234,8 @@ python3 tests/test_install.py
 </pre></div>
 </div>
 </div>
-<div class="section" id="pytorch-frontend-experimental">
-<h2>PyTorch Frontend [Experimental]<a class="headerlink" href="#pytorch-frontend-experimental" title="Permalink to this headline"></a></h2>
+<div class="section" id="optional-pytorch-frontend">
+<h2>[Optional] PyTorch Frontend<a class="headerlink" href="#optional-pytorch-frontend" title="Permalink to this headline"></a></h2>
 <p>While Alpa is mainly designed for Jax, Alpa also provides an experimental PyTorch frontend.
 Alpa supports PyTorch models that meet the following requirements:</p>
 <ol class="arabic simple">
@@ -255,7 +255,7 @@ python3 setup.py install
 </pre></div>
 </div>
 </div></blockquote>
-<p>Please look at tests/test_torch_simple.py for usage examples.</p>
+<p>Please look at <code class="docutils literal notranslate"><span class="pre">tests/torch_frontend/test_simple.py</span></code> for usage examples.</p>
 </div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline"></a></h2>
