@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Performance Tuning Guide &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -89,10 +90,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="performance-tuning-guide">
+  <section id="performance-tuning-guide">
 <h1>Performance Tuning Guide<a class="headerlink" href="#performance-tuning-guide" title="Permalink to this headline"></a></h1>
 <p>This tutorial provides some tips for performance tuning and debugging.</p>
-<div class="section" id="choosing-parallel-methods">
+<section id="choosing-parallel-methods">
 <h2>Choosing Parallel Methods<a class="headerlink" href="#choosing-parallel-methods" title="Permalink to this headline"></a></h2>
 <p>Alpa relies on analyses of primitives tensor operators to perform auto-parallelization.
 These analyses can be tricky for complicated computational graphs, especially those with many indexing/slicing/concatenating operators.
@@ -125,8 +126,8 @@ You can also do layer construction manually by using <code class="docutils liter
 </ol>
 </li>
 </ol>
-</div>
-<div class="section" id="reducing-runtime-overhead">
+</section>
+<section id="reducing-runtime-overhead">
 <h2>Reducing Runtime Overhead<a class="headerlink" href="#reducing-runtime-overhead" title="Permalink to this headline"></a></h2>
 <p>Alpa uses a single-controller architecture. In this architecture, the user script runs on a CPU driver and sends commands to GPU workers. Users can just think of the device cluster as a single big device.</p>
 <p>This architecture is easier to use and understand but can potentially lead to significant runtime overhead. The runtime overhead includes:</p>
@@ -138,8 +139,8 @@ You can also do layer construction manually by using <code class="docutils liter
 <p>To reduce the overhead, we should avoid frequent synchronization, so we can overlap the computation with runtime scheduling.
 Printing or accessing the value of a <code class="docutils literal notranslate"><span class="pre">DistributedArray</span></code> is a case of synchronization because we have to fetch the data from workers’ GPUs to the driver’s CPU.
 However, accessing metadata such as <cite>shape</cite> and <cite>dtype</cite> does not need synchronization because the metadata is stored on the driver.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
