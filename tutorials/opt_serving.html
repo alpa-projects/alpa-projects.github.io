@@ -18,6 +18,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -52,9 +53,14 @@
 <li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Serving OPT-175B using Alpa</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-opt-weights">Get OPT Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-alpa-compatible-opt-weights">Get Alpa-compatible OPT Weights</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convert-weights-into-alpa-formats-by-yourself">Convert weights into Alpa formats by yourself</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-alpa-compatible-weights">Download Alpa-compatible weights</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#run-and-benchmark-generation-in-the-command-line">Run and Benchmark Generation in the Command Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a Web Server to Serve the OPT Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#code-structure">Code structure</a></li>
@@ -87,7 +93,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Serving OPT-175B using Alpa</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/opt_serving.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/opt_serving.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -96,26 +102,36 @@
            <div itemprop="articleBody">
              
   <section id="serving-opt-175b-using-alpa">
-<h1>Serving OPT-175B using Alpa<a class="headerlink" href="#serving-opt-175b-using-alpa" title="Permalink to this headline"></a></h1>
-<p>This tutorial shows how to setup a serving system to serve the largest available pretrained language model OPT-175B.</p>
-<p>As a serving system, Alpa provides the following unique advantages:</p>
+<h1>Serving OPT-175B using Alpa<a class="headerlink" href="#serving-opt-175b-using-alpa" title="Permalink to this heading"></a></h1>
+<p>This tutorial shows how to setup a serving system to serve the largest available pretrained language model <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT-175B</a>.</p>
+<p>This tutorial is best to be read in its rendered version on the <a class="reference external" href="https://alpa-projects.github.io/tutorials/opt_serving.html">Alpa documentation page</a>.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>As a serving system, Alpa offers the following unique advantages:</p>
 <ul class="simple">
+<li><p><strong>Designed for large models</strong>: Cannot fit the model into a single GPU? Not a problem, Alpa is designed for training and serving big models like GPT-3.</p></li>
 <li><p><strong>Support commodity hardware</strong>: With Alpa, you can serve OPT-175B using your in-house GPU cluster, without needing the latest generations of A100 80GB GPUs nor fancy InfiniBand connections – no hardware constraints!</p></li>
-<li><p><strong>Flexible parallelism strategies</strong>: Alpa will automatically figure out the appropriate model-parallel strategies based on your cluster setup.</p></li>
+<li><p><strong>Flexible parallelism strategies</strong>: Alpa will automatically figure out the appropriate model-parallel strategies based on your cluster setup and your model architecture.</p></li>
 </ul>
-<p>In this example, we use Alpa to serve the open-source OPT model, supporting all sizes ranging from 125M to 175B.
-Specifically, Alpa provides:</p>
+<p>In this example, we use Alpa to serve the open-source OPT model, supporting all sizes ranging from 125M to 175B. Specifically, Alpa provides:</p>
 <ul class="simple">
-<li><p>A backend to perform model-parallel distributed inference for the large OPT models;</p></li>
-<li><p>A web frontend to collect and batch inference requests from users.</p></li>
+<li><p>A distributed backend to perform efficient model-parallel inference for the large OPT models.</p></li>
+<li><p>An web frontend to collect and batch inference requests from users.</p></li>
 </ul>
-<p><strong>Note</strong>: the pre-trained OPT model weights can be obtained from <a class="reference external" href="https://github.com/facebookresearch/metaseq">Metaseq</a>, subject to their license.
-<strong>Note</strong>: You will need at least 350GB memory to to serve the OPT-175B model. For example, you can use 4 x AWS p3.16xlarge instance,
-which provide 4 instance x 8 (GPU/instance) x 16 (GB/GPU) = 512 GB memory.
-You can also follow this guide to setup a serving system to serve smaller versions of OPT, such as OPT-66B, OPT-30B, etc.
-Pick an appropriate size from <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT weight release page</a> based on your available resources.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The pre-trained OPT model weights can be obtained from <a class="reference external" href="https://github.com/facebookresearch/metaseq">Metaseq</a>, subject to their license.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You will need at least 350GB memory on your entire cluster to to serve the OPT-175B model.
+For example, you can use 4 x AWS p3.16xlarge instances, which provide 4 (instance) x 8 (GPU/instance) x 16 (GB/GPU) = 512 GB memory.</p>
+<p>You can also follow this guide to setup a serving system to serve smaller versions of OPT, such as OPT-66B, OPT-30B, etc.
+Pick an appropriate size from <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT weight downloading page</a> based on your available resources.</p>
+</div>
+</section>
 <section id="demo">
-<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
+<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this heading"></a></h2>
 <p>Use huggingface/transformers interface and Alpa backend for distributed inference on a Ray cluster.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
 <span class="kn">from</span> <span class="nn">examples.opt_serving.model.wrapper</span> <span class="kn">import</span> <span class="n">get_model</span>
@@ -142,73 +158,129 @@ Pick an appropriate size from <a class="reference external" href="https://github
 </div>
 </section>
 <section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p>Install Alpa following the <a class="reference external" href="https://alpa-projects.github.io/install.html">installation guide</a>.<br />
-You can either install by python wheel or build from source, but you always need to clone
-the <a class="reference external" href="https://github.com/alpa-projects/alpa">Alpa repo</a> to fetch the code for examples below.</p></li>
+<li><p>Install Alpa following the <a class="reference external" href="https://alpa-projects.github.io/install.html">installation guide</a>.</p></li>
 <li><p>Install additional requirements for serving:</p></li>
 </ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install transformers flask cython
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install transformers flask cython omegaconf
 
 <span class="c1"># Install torch corresponding to your CUDA version, e.g., for CUDA 11.3:</span>
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
 </pre></div>
 </div>
+</div></blockquote>
 <ol class="arabic simple" start="3">
 <li><p>Compile several cython files for faster data processing:</p></li>
 </ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> examples/opt_serving <span class="o">&amp;&amp;</span> bash build.sh
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> examples/opt_serving <span class="o">&amp;&amp;</span> bash build.sh
 </pre></div>
 </div>
+</div></blockquote>
 </section>
-<section id="get-opt-weights">
-<h2>Get OPT Weights<a class="headerlink" href="#get-opt-weights" title="Permalink to this headline"></a></h2>
-<p>There are two ways you can obtain the pretrained OPT weights.</p>
+<section id="get-alpa-compatible-opt-weights">
+<h2>Get Alpa-compatible OPT Weights<a class="headerlink" href="#get-alpa-compatible-opt-weights" title="Permalink to this heading"></a></h2>
+<p>There are two ways to obtain Alpa-compatible OPT weights: converting the weights by yourself or downloading a copy of processed weights provided by the Alpa team.</p>
+<section id="convert-weights-into-alpa-formats-by-yourself">
+<span id="process-weights"></span><h3>Convert weights into Alpa formats by yourself<a class="headerlink" href="#convert-weights-into-alpa-formats-by-yourself" title="Permalink to this heading"></a></h3>
+<p>We provide detailed instructions below on how to convert the original OPT-175B weights into Alpa-compatible formats. You can follow the same procedures to get Alpa-compatible weights for other model sizes.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The procedures below for converting OPT-175B weights will take about 1 hour.</p>
+</div>
+</div></blockquote>
 <ol class="arabic simple">
-<li><p>You can download the original OPT weights released by <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">Metaseq</a>,
-then use our script <span class="xref myst">convert_to_numpy_weight.py</span> to convert it into Alpa-compatible formats.</p></li>
-<li><p>We provide links to download the preprocessed 125M and 2.7B model below. For other sizes of OPT, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> to request a copy from the Alpa developer team.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing">OPT-125M weights</a></p></li>
-<li><p><a class="reference external" href="https://drive.google.com/file/d/1ayIaKRhxF9osZWgcFG-3vSkjcepSWdQd/view?usp=sharing">OPT-2.7B weights</a></p></li>
-</ul>
+<li><dl class="simple">
+<dt>Download and verify the original weights</dt><dd><p>First, download Metaseq’s original OPT-175B weights in 992 shards, verify the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/assets/opt175b_md5sum_shards.csv">MD5 of each shard</a> , and put the shards under a folder, say, <code class="docutils literal notranslate"><span class="pre">PATH_TO_992_SHARDS/</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Consolidate the weights from 992 shards into one single checkpoint</dt><dd><p>Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/scripts/step_2_consolidate_992_shards_to_singleton.py">step_2_consolidate_992_shards_to_singleton.py</a> as:</p>
+</dd>
+</dl>
 </li>
 </ol>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python step_2_consolidate_992_shards_to_singleton.py --read-prefix <span class="o">[</span>PATH_TO_992_SHARDS<span class="o">]</span>/checkpoint_last --save-prefix <span class="o">[</span>PATH_TO_SAVE_CHECKPOINT<span class="o">]</span>
+</pre></div>
+</div>
+<p>The consolidated checkpoint will be saved at <code class="docutils literal notranslate"><span class="pre">PATH_TO_SAVE_CHECKPOINT</span></code> as specified in the command.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above script will require a peak memory (RAM) usage as large as twice of the model size.
+For example, if you are performing consolidation for the 175B model, it will approximately have a peak memory usage of 175B x 2 bytes x 2 = 700GB.
+Please make sure you RAM is sufficient to run the script without throwing an OOM exception.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above script will save the model weights as a single consolidated checkpoint at <code class="docutils literal notranslate"><span class="pre">PATH_TO_SAVE_CHECKPOINT</span></code>, hence will require at least 350GB disk space available.</p>
+</div>
+</div></blockquote>
+<ol class="arabic" start="3">
+<li><dl>
+<dt>Convert the single checkpoint into Alpa-compatible formats</dt><dd><p>Alpa ingests weights simply from numpy formats. Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/scripts/step_3_convert_to_numpy_weights.py">step_3_convert_to_numpy_weights.py</a> to convert the
+single checkpoint into numpy formats:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python step_3_convert_to_numpy_weights.py --ckpt_path PATH_TO_SAVE_CHECKPOINT --output-folder OUTPUT_PATH
+</pre></div>
+</div>
+<p>The weights will be saved at the folder <code class="docutils literal notranslate"><span class="pre">OUTPUT_PATH</span></code> as specified in the command.</p>
+</dd>
+</dl>
+</li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above script also require 350GB free disk space to write the numpy-formatted weights.</p>
+</div>
+</div></blockquote>
+</section>
+<section id="download-alpa-compatible-weights">
+<h3>Download Alpa-compatible weights<a class="headerlink" href="#download-alpa-compatible-weights" title="Permalink to this heading"></a></h3>
+<p>Alternatively, we provide links to download the preprocessed 125M, 2.7B, 30B model weights below.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing">OPT-125M weights</a></p></li>
+<li><p><a class="reference external" href="https://drive.google.com/file/d/1ayIaKRhxF9osZWgcFG-3vSkjcepSWdQd/view?usp=sharing">OPT-2.7B weights</a></p></li>
+<li><p><a class="reference external" href="https://drive.google.com/file/d/1_MBcgwTqHFboV0JkGWR03AOHusrxcHlu/view?usp=sharing">OPT-30B weights</a></p></li>
+</ul>
+</div></blockquote>
+<p>Due to Meta’s license on the OPT-175B model, we are not able to provide public links for downloading the preprocessed OPT-175B weights.
+If you need the weights for other model sizes but have trouble following <a class="reference internal" href="#process-weights"><span class="std std-ref">the guide</span></a> to perform the conversion by yourself,
+please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> to request a copy from the Alpa developer team.</p>
+</section>
 </section>
 <section id="run-and-benchmark-generation-in-the-command-line">
-<h2>Run and Benchmark Generation in the Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-the-command-line" title="Permalink to this headline"></a></h2>
-<p>The code of this tutorial is under <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving">examples/opt_serving</a>.
-Add the root directory of Alpa repo to the environment variable <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> if you install Alpa by wheel (Not required if you install Alpa from source).</p>
-<ul>
-<li><p>Run generation using the 125M model with PyTorch/HuggingFace backend:</p>
+<h2>Run and Benchmark Generation in the Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-the-command-line" title="Permalink to this heading"></a></h2>
+<p>Run generation using the 125M model with PyTorch/HuggingFace backend:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> benchmark
 python3 benchmark_text_gen.py --model facebook/opt-125m
 </pre></div>
 </div>
-</li>
-<li><p>Run generation using the 125M model with JAX backend in debug model to output the generated text:</p>
+<p>Run generation using the 125M model with JAX backend in debug mode to see the generated text:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model jax/opt-125m --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
-</li>
-<li><p>Run model-parallel generation using the 2.7B model with Alpa:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ray start --head
+<p>Run model-parallel generation on multiple GPUs using the 2.7B model with Alpa:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start ray on the node</span>
+ray start --head
 
 python3 benchmark_text_gen.py --model alpa/opt-2.7b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
-</li>
-<li><p>Run distributed generation with the 175B model using Alpa. Note you will need &gt;350GB total GPU memory in the entire cluster to successfully run the inference.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remember to start Ray on the entire cluster before running the generation</span>
+<p>Run distributed generation with the 175B model using Alpa on a cluster of GPUs. Note you will need &gt;350GB total GPU memory in the entire cluster to successfully run the inference.</p>
+<p>Before running the command below, start Ray on the cluster following <a class="reference external" href="https://docs.ray.io/en/latest/cluster/cloud.html#manual-cluster">this guide</a>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remember to start Ray on all nodes of the cluster</span>
 python3 benchmark_text_gen.py --model alpa/opt-175b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
-</li>
-</ul>
 </section>
 <section id="launch-a-web-server-to-serve-the-opt-models">
-<h2>Launch a Web Server to Serve the OPT Models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this headline"></a></h2>
+<h2>Launch a Web Server to Serve the OPT Models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this heading"></a></h2>
 <p>Launch the web server:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Serve the OPT-175B model at port 10001</span>
 python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001</span> --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span>
@@ -217,18 +289,18 @@ python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001
 <p>Then open <code class="docutils literal notranslate"><span class="pre">https://[IP-ADDRESS]:10001</span></code> in your browser to try out the model!</p>
 </section>
 <section id="code-structure">
-<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this headline"></a></h2>
+<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p><span class="xref myst">examples/opt_serving/benchmark</span>: Benchmark scripts for generation in the command line.</p></li>
-<li><p><span class="xref myst">examples/opt_serving/dataset</span>: Data loaders for serving.</p></li>
-<li><p><span class="xref myst">examples/opt_serving/service</span>: Model serving web server.</p></li>
-<li><p><span class="xref myst">examples/opt_serving/generator.py</span>: Backend for web server.</p></li>
-<li><p><span class="xref myst">examples/opt_serving/interactive_hosted.py</span>: Web server entry point.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/benchmark">examples/opt_serving/benchmark</a>: Benchmark scripts for generation in the command line.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/dataset">examples/opt_serving/dataset</a>: Data loaders for serving.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/service">examples/opt_serving/service</a>: Model serving web server.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/examples/opt_serving/generator.py">examples/opt_serving/generator.py</a>: Backend for web server.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/examples/opt_serving/interactive_hosted.py">examples/opt_serving/interactive_hosted.py</a>: Web server entry point.</p></li>
 </ul>
 </section>
 <section id="license">
-<h2>License<a class="headerlink" href="#license" title="Permalink to this headline"></a></h2>
-<p>The use of the OPT pretrained weights are subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model License</a> by Metaseq.</p>
+<h2>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h2>
+<p>The use of the OPT pretrained weights is subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model License</a> by Metaseq.</p>
 </section>
 </section>
 
