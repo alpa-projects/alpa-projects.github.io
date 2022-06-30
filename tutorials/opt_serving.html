@@ -161,7 +161,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 <ol class="arabic simple">
 <li><p>Install Alpa following the <a class="reference external" href="https://alpa-projects.github.io/install.html">installation guide</a>.
 You can either install by python wheel or build from source, but you always need to clone
-the [Alpa repo](<a class="reference external" href="https://github.com/alpa-projects/alpa">https://github.com/alpa-projects/alpa</a>) to fetch the code for examples below.</p></li>
+the <a class="reference external" href="https://github.com/alpa-projects/alpa">Alpa repo</a> to fetch the code for examples below.</p></li>
 <li><p>Install additional requirements for serving:</p></li>
 </ol>
 <blockquote>
@@ -257,30 +257,36 @@ please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVN
 </section>
 <section id="run-and-benchmark-generation-in-the-command-line">
 <h2>Run and Benchmark Generation in the Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-the-command-line" title="Permalink to this headline"></a></h2>
-<p>The code of this tutorial is under [examples/opt_serving](<a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving">https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving</a>).
+<p>The code of this tutorial is under <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving">examples/opt_serving</a>.
 Add the root directory of Alpa repo to the environment variable <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> if you install Alpa by wheel (Not required if you install Alpa from source).</p>
-<p>Run generation using the 125M model with PyTorch/HuggingFace backend:</p>
+<ul>
+<li><p>Run generation using the 125M model with PyTorch/HuggingFace backend:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> benchmark
 python3 benchmark_text_gen.py --model facebook/opt-125m
 </pre></div>
 </div>
-<p>Run generation using the 125M model with JAX backend in debug mode to see the generated text:</p>
+</li>
+<li><p>Run generation using the 125M model with JAX backend in debug mode to see the generated text:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model jax/opt-125m --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
-<p>Run model-parallel generation on multiple GPUs using the 2.7B model with Alpa:</p>
+</li>
+<li><p>Run model-parallel generation on multiple GPUs using the 2.7B model with Alpa:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start ray on the node</span>
 ray start --head
 
 python3 benchmark_text_gen.py --model alpa/opt-2.7b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
-<p>Run distributed generation with the 175B model using Alpa on a cluster of GPUs. Note you will need &gt;350GB total GPU memory in the entire cluster to successfully run the inference.</p>
+</li>
+<li><p>Run distributed generation with the 175B model using Alpa on a cluster of GPUs. Note you will need &gt;350GB total GPU memory in the entire cluster to successfully run the inference.</p>
 <p>Before running the command below, start Ray on the cluster following <a class="reference external" href="https://docs.ray.io/en/latest/cluster/cloud.html#manual-cluster">this guide</a>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remember to start Ray on all nodes of the cluster</span>
 python3 benchmark_text_gen.py --model alpa/opt-175b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
 </pre></div>
 </div>
+</li>
+</ul>
 </section>
 <section id="launch-a-web-server-to-serve-the-opt-models">
 <h2>Launch a Web Server to Serve the OPT Models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this headline"></a></h2>
