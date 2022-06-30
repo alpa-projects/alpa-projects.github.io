@@ -141,7 +141,7 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
 
  .. code-block:: none
 
-    /home/ubuntu/.local/lib/python3.7/site-packages/jax/_src/numpy/lax_numpy.py:1866: UserWarning: Explicitly requested dtype <class 'numpy.float64'> requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/google/jax#current-gotchas for more.
+    /python3.8-env/lib/python3.8/site-packages/jax/_src/numpy/lax_numpy.py:1866: UserWarning: Explicitly requested dtype <class 'numpy.float64'> requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/google/jax#current-gotchas for more.
       lax_internal._check_user_dtype_supported(dtype, "asarray")
 
 
@@ -285,8 +285,8 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 148.94 ms, Std: 0.07 ms
-    Parallel execution time. Mean: 22.75 ms, Std: 0.41 ms
+    Serial execution time. Mean: 208.32 ms, Std: 0.71 ms
+    Parallel execution time. Mean: 164.08 ms, Std: 0.03 ms
 
 
 
@@ -328,7 +328,7 @@ We can also compare the memory usage per GPU.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  44.330 seconds)
+   **Total running time of the script:** ( 0 minutes  55.811 seconds)
 
 
 .. _sphx_glr_download_tutorials_quickstart.py:
