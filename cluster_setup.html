@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Alpa 0.0.1 documentation</title>
+  <title>AWS Cluster Setup Guide &mdash; Alpa 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
@@ -19,7 +20,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
@@ -73,8 +74,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Index</li>
+      <li>AWS Cluster Setup Guide</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cluster_setup.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -82,12 +84,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-
-<h1 id="index">Index</h1>
-
-<div class="genindex-jumpbox">
- 
+  <section id="aws-cluster-setup-guide">
+<h1>AWS Cluster Setup Guide<a class="headerlink" href="#aws-cluster-setup-guide" title="Permalink to this headline"></a></h1>
+<ol class="arabic">
+<li><p>Create a <a class="reference external" href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html">placement group</a> on the AWS Management Console. Choose the <code class="docutils literal notranslate"><span class="pre">Cluster</span></code> placement strategy. This can make sure the interconnection bandwidth among different nodes in the cluster are high.</p></li>
+<li><p>Create a securiy group on the AWS Management Console (EC2 -&gt; Network &amp; Security -&gt; Security Groups).</p></li>
+<li><p>Create an <a class="reference external" href="https://console.aws.amazon.com/efs">EFS</a>. This is used as an NFS for all nodes in the cluster. Please add the security group ID of the node you just started (can be found on the AWS Management Console) to the EFS to make sure your node can access the EFS. After that, you need to install the <a class="reference external" href="https://docs.aws.amazon.com/efs/latest/ug/installing-other-distro.html">efs-utils</a> to mount the EFS on the node:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/aws/efs-utils
+<span class="nb">cd</span> efs-utils
+./build-deb.sh
+sudo apt-get -y install ./build/amazon-efs-utils*deb
+</pre></div>
 </div>
+<p>You can try to mount the EFS on the node by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p ~/efs
+sudo mount -t efs <span class="o">{</span>Your EFS file system ID<span class="o">}</span>:/ ~/efs
+sudo chmod <span class="m">777</span> ~/efs
+</pre></div>
+</div>
+<p>If this takes forever, make sure you configure the sercurity groups right.</p>
+</li>
+</ol>
+<p>Clone the git repos under <code class="docutils literal notranslate"><span class="pre">~/efs</span></code>.</p>
+</section>
 
 
            </div>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alpa Documentation &mdash; Alpa 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Alpa
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/quickstart.html">Alpa Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/perf_tuning_guide.html">Performance Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/opt_serving.html">Serving OPT-175B using Alpa</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture/overview.html">Design and Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer/developer_guide.html">Developer Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Alpa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Alpa Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="alpa-documentation">
+<h1>Alpa Documentation<a class="headerlink" href="#alpa-documentation" title="Permalink to this headline"></a></h1>
+<section id="build-the-documentation-website">
+<h2>Build the documentation website<a class="headerlink" href="#build-the-documentation-website" title="Permalink to this headline"></a></h2>
+<section id="dependency">
+<h3>Dependency<a class="headerlink" href="#dependency" title="Permalink to this headline"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">sphinx</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">rtd</span><span class="o">-</span><span class="n">theme</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">gallery</span> <span class="n">matplotlib</span>
+</pre></div>
+</div>
+</section>
+<section id="build">
+<h3>Build<a class="headerlink" href="#build" title="Permalink to this headline"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>The build process will execute all tutorial scripts to generate the gallery.
+This may cause failures if the build machine does not have necessary environment.
+This may also result in a very long build time.
+You can set <code class="docutils literal notranslate"><span class="pre">ALPA_TUTORIAL_EXEC_PATTERN</span></code> to only execute the files that match the regular expression pattern.
+For example, to build one specific file, do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">ALPA_TUTORIAL_EXEC_PATTERN</span><span class="o">=</span><span class="n">filename</span><span class="o">.</span><span class="n">py</span>
+<span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>To skip execution of all tutorials, do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">ALPA_TUTORIAL_EXEC_PATTERN</span><span class="o">=</span><span class="n">none</span>
+<span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+</section>
+<section id="clean">
+<h3>Clean<a class="headerlink" href="#clean" title="Permalink to this headline"></a></h3>
+<p>To remove all generated files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span>
+</pre></div>
+</div>
+</section>
+<section id="serve">
+<h3>Serve<a class="headerlink" href="#serve" title="Permalink to this headline"></a></h3>
+<p>Run an HTTP server and visit http://localhost:8000 in your browser.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span> <span class="o">--</span><span class="n">d</span> <span class="n">_build</span><span class="o">/</span><span class="n">html</span>
+</pre></div>
+</div>
+</section>
+<section id="publish">
+<h3>Publish<a class="headerlink" href="#publish" title="Permalink to this headline"></a></h3>
+<p>Clone <a class="reference external" href="https://github.com/alpa-projects/alpa-projects.github.io">alpa-projects.github.io</a> and make sure you have write access.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ALPA_SITE_PATH</span><span class="o">=</span>~/efs/alpa-projects.github.io   <span class="c1"># update this with your path</span>
+./publish.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="add-new-documentations">
+<h2>Add new documentations<a class="headerlink" href="#add-new-documentations" title="Permalink to this headline"></a></h2>
+<p>Alpa uses <a class="reference external" href="https://www.sphinx-doc.org/en/master/index.html">Sphinx</a> to generate static documentation website and use <a class="reference external" href="https://sphinx-gallery.github.io/stable/index.html">Sphinx-gallery</a> to generate gallery examples.</p>
+<p>Your new example should be created under <code class="docutils literal notranslate"><span class="pre">docs/gallery</span></code>.</p>
+<section id="define-the-order-of-tutorials">
+<h3>Define the Order of Tutorials<a class="headerlink" href="#define-the-order-of-tutorials" title="Permalink to this headline"></a></h3>
+<p>You can define the order of tutorials with <code class="docutils literal notranslate"><span class="pre">subsection_order</span></code> and
+<code class="docutils literal notranslate"><span class="pre">within_subsection_order</span></code> in <a class="reference download internal" download="" href="_downloads/fb0d0d7ff27f33697ba3b787ec894677/conf.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">conf.py</span></code></span></a>.
+By default, the tutorials within one subsection are sorted by filename.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

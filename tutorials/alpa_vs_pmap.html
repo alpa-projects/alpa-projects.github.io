@@ -18,7 +18,6 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -98,7 +97,7 @@
 to download the full example code</p>
 </div>
 <section class="sphx-glr-example-title" id="differences-between-alpa-parallelize-and-jax-pmap">
-<span id="sphx-glr-tutorials-alpa-vs-pmap-py"></span><h1>Differences between alpa.parallelize and jax.pmap<a class="headerlink" href="#differences-between-alpa-parallelize-and-jax-pmap" title="Permalink to this heading"></a></h1>
+<span id="sphx-glr-tutorials-alpa-vs-pmap-py"></span><h1>Differences between alpa.parallelize and jax.pmap<a class="headerlink" href="#differences-between-alpa-parallelize-and-jax-pmap" title="Permalink to this headline"></a></h1>
 <p>The most common tool for parallelization or distributed computing in jax is
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.html#parallelization-pmap">pmap</a>.
 With several lines of code change, we can use <code class="docutils literal notranslate"><span class="pre">pmap</span></code> for data parallel
@@ -115,19 +114,19 @@ and uses less memory than <code class="docutils literal notranslate"><span class
 workloads. A more detailed comparison among <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">xmap</span></code>
 is also attached at the end of the article.</p>
 <section id="when-data-parallelism-is-prefered">
-<h2>When data parallelism is prefered<a class="headerlink" href="#when-data-parallelism-is-prefered" title="Permalink to this heading"></a></h2>
+<h2>When data parallelism is prefered<a class="headerlink" href="#when-data-parallelism-is-prefered" title="Permalink to this headline"></a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
 </pre></div>
 </div>
 </section>
 <section id="when-model-parallelism-is-prefered">
-<h2>When model parallelism is prefered<a class="headerlink" href="#when-model-parallelism-is-prefered" title="Permalink to this heading"></a></h2>
+<h2>When model parallelism is prefered<a class="headerlink" href="#when-model-parallelism-is-prefered" title="Permalink to this headline"></a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
 </pre></div>
 </div>
 </section>
 <section id="comparing-alpa-parallelize-pmap-xmap-and-pjit">
-<h2>Comparing <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, <code class="docutils literal notranslate"><span class="pre">xmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">pjit</span></code><a class="headerlink" href="#comparing-alpa-parallelize-pmap-xmap-and-pjit" title="Permalink to this heading"></a></h2>
+<h2>Comparing <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, <code class="docutils literal notranslate"><span class="pre">xmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">pjit</span></code><a class="headerlink" href="#comparing-alpa-parallelize-pmap-xmap-and-pjit" title="Permalink to this headline"></a></h2>
 <p>Besides <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, jax also provides
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/notebooks/xmap_tutorial.html">xmap</a> and
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax-101/08-pjit.html">pjit</a>
