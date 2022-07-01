@@ -18,7 +18,6 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -100,7 +99,7 @@
 to download the full example code</p>
 </div>
 <section class="sphx-glr-example-title" id="alpa-quickstart">
-<span id="sphx-glr-tutorials-quickstart-py"></span><span id="id1"></span><h1>Alpa Quickstart<a class="headerlink" href="#alpa-quickstart" title="Permalink to this heading"></a></h1>
+<span id="sphx-glr-tutorials-quickstart-py"></span><span id="id1"></span><h1>Alpa Quickstart<a class="headerlink" href="#alpa-quickstart" title="Permalink to this headline"></a></h1>
 <p>Alpa is built on top of a tensor computation framework <a class="reference external" href="https://jax.readthedocs.io/en/latest/index.html">Jax</a> .
 Alpa can automatically parallelize jax functions and runs them on a distributed cluster.
 Alpa analyses the computational graph and generates a distributed execution plan
@@ -112,7 +111,7 @@ plan by solving optimization problems. Therefore, you can efficiently scale your
 on a distributed cluster, without any expertise in distributed computing.</p>
 <p>In this tutorial, we show the usage of Alpa with an MLP example.</p>
 <section id="import-libraries">
-<h2>Import Libraries<a class="headerlink" href="#import-libraries" title="Permalink to this heading"></a></h2>
+<h2>Import Libraries<a class="headerlink" href="#import-libraries" title="Permalink to this headline"></a></h2>
 <p>We first import the required libraries.
 Flax and optax are libraries on top of jax for training neural networks.
 Although we use these libraries in this example, Alpa works on jax’s and XLA’s internal
@@ -132,7 +131,7 @@ intermediate representations and does not depend on any specific high-level libr
 </div>
 </section>
 <section id="train-an-mlp-on-a-single-device">
-<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this heading"></a></h2>
+<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
 <p>To begin with, we implement the model and training loop on a single device. We will
 parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MLPModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -186,13 +185,13 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/python3.8-env/lib/python3.8/site-packages/jax/_src/numpy/lax_numpy.py:1866: UserWarning: Explicitly requested dtype &lt;class &#39;numpy.float64&#39;&gt; requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/google/jax#current-gotchas for more.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/ubuntu/.local/lib/python3.7/site-packages/jax/_src/numpy/lax_numpy.py:1866: UserWarning: Explicitly requested dtype &lt;class &#39;numpy.float64&#39;&gt; requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/google/jax#current-gotchas for more.
   lax_internal._check_user_dtype_supported(dtype, &quot;asarray&quot;)
 </pre></div>
 </div>
 </section>
 <section id="auto-parallelization-with-alpa-parallelize">
-<h2>Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code><a class="headerlink" href="#auto-parallelization-with-alpa-parallelize" title="Permalink to this heading"></a></h2>
+<h2>Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code><a class="headerlink" href="#auto-parallelization-with-alpa-parallelize" title="Permalink to this headline"></a></h2>
 <p>Alpa provides a transformation <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> to parallelize a jax function.
 <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> is similar to <code class="docutils literal notranslate"><span class="pre">jax.jit</span></code> . <code class="docutils literal notranslate"><span class="pre">jax.jit</span></code> compiles a jax
 function for a single device, while <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> compiles a jax function
@@ -246,7 +245,7 @@ Output parameter type: &lt;class &#39;jaxlib.xla_extension.pmap_lib.ShardedDevic
 </div>
 </section>
 <section id="execution-speed-comparison">
-<h2>Execution Speed Comparison<a class="headerlink" href="#execution-speed-comparison" title="Permalink to this heading"></a></h2>
+<h2>Execution Speed Comparison<a class="headerlink" href="#execution-speed-comparison" title="Permalink to this headline"></a></h2>
 <p>By parallelizing a jax function, we can accelerate the computation and reduce
 the memory usage per GPU, so we can train large models faster.
 We benchmark the execution speed of <code class="docutils literal notranslate"><span class="pre">jax.jit</span></code> and <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>
@@ -282,13 +281,13 @@ on a 8-GPU machine.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 208.32 ms, Std: 0.71 ms
-Parallel execution time. Mean: 164.08 ms, Std: 0.03 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 156.05 ms, Std: 0.33 ms
+Parallel execution time. Mean: 22.97 ms, Std: 0.33 ms
 </pre></div>
 </div>
 </section>
 <section id="memory-usage-comparison">
-<h2>Memory Usage Comparison<a class="headerlink" href="#memory-usage-comparison" title="Permalink to this heading"></a></h2>
+<h2>Memory Usage Comparison<a class="headerlink" href="#memory-usage-comparison" title="Permalink to this headline"></a></h2>
 <p>We can also compare the memory usage per GPU.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a> <span class="o">=</span> <span class="mi">1024</span> <span class="o">**</span> <span class="mi">3</span>
 
@@ -304,7 +303,7 @@ Parallel execution time. Mean: 164.08 ms, Std: 0.03 ms
 Parallel execution per GPU memory usage: 0.50 GB
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  55.811 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  50.520 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-quickstart-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a526f4c21167c30e565f6eef2922968a/quickstart.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">quickstart.py</span></code></a></p>

@@ -18,7 +18,6 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -92,10 +91,10 @@
            <div itemprop="articleBody">
              
   <section id="performance-tuning-guide">
-<h1>Performance Tuning Guide<a class="headerlink" href="#performance-tuning-guide" title="Permalink to this heading"></a></h1>
+<h1>Performance Tuning Guide<a class="headerlink" href="#performance-tuning-guide" title="Permalink to this headline"></a></h1>
 <p>This tutorial provides some tips for performance tuning and debugging.</p>
 <section id="choosing-parallel-methods">
-<h2>Choosing Parallel Methods<a class="headerlink" href="#choosing-parallel-methods" title="Permalink to this heading"></a></h2>
+<h2>Choosing Parallel Methods<a class="headerlink" href="#choosing-parallel-methods" title="Permalink to this headline"></a></h2>
 <p>Alpa relies on analyses of primitives tensor operators to perform auto-parallelization.
 These analyses can be tricky for complicated computational graphs, especially those with many indexing/slicing/concatenating operators.
 To make sure Alpa can perform auto-parallelization correctly, we can start with simple parallel methods and gradually move to more advanced ones.</p>
@@ -120,16 +119,16 @@ If you see warnings like “Detect unexpected behaviors in the auto-sharding pas
 <li><p>Try <code class="docutils literal notranslate"><span class="pre">PipeshardParallel</span></code></p>
 <p>Try to combine pipeline parallelism and shard parallelism.</p>
 <ol class="arabic simple">
-<li><p>Layer construction. You can use the automatic layer construction by using <code class="docutils literal notranslate"><span class="pre">&#64;automatic_layer_construction</span></code>.
+<li><p>Layer construction. You can use the automatic layer construction by using <code class="docutils literal notranslate"><span class="pre">layer_option=AutoLayerOption(layer_num=...)</span></code>.
 You can try a few choices of the <code class="docutils literal notranslate"><span class="pre">layer_num</span></code> argument and see the performance. The best choice of this value depends on the number of nodes in your cluster and the number of repetitive blocks in your model.
-You can also do layer construction manually by using <code class="docutils literal notranslate"><span class="pre">&#64;manual_layer_construction</span></code> and <code class="docutils literal notranslate"><span class="pre">mark_pipeline_boundary</span></code></p></li>
+You can also do layer construction manually by using <code class="docutils literal notranslate"><span class="pre">layer_option=&quot;manual&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">mark_pipeline_boundary</span></code></p></li>
 <li><p>Number of micro batches. The <code class="docutils literal notranslate"><span class="pre">num_micro_batches</span></code> also affects the performance a lot. You can fix a large global batch size and try a few choices of <code class="docutils literal notranslate"><span class="pre">num_micro_batches</span></code>.</p></li>
 </ol>
 </li>
 </ol>
 </section>
 <section id="reducing-runtime-overhead">
-<h2>Reducing Runtime Overhead<a class="headerlink" href="#reducing-runtime-overhead" title="Permalink to this heading"></a></h2>
+<h2>Reducing Runtime Overhead<a class="headerlink" href="#reducing-runtime-overhead" title="Permalink to this headline"></a></h2>
 <p>Alpa uses a single-controller architecture. In this architecture, the user script runs on a CPU driver and sends commands to GPU workers. Users can just think of the device cluster as a single big device.</p>
 <p>This architecture is easier to use and understand but can potentially lead to significant runtime overhead. The runtime overhead includes:</p>
 <ul class="simple">

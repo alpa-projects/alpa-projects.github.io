@@ -18,7 +18,6 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -102,11 +101,11 @@
            <div itemprop="articleBody">
              
   <section id="serving-opt-175b-using-alpa">
-<h1>Serving OPT-175B using Alpa<a class="headerlink" href="#serving-opt-175b-using-alpa" title="Permalink to this heading"></a></h1>
+<h1>Serving OPT-175B using Alpa<a class="headerlink" href="#serving-opt-175b-using-alpa" title="Permalink to this headline"></a></h1>
 <p>This tutorial shows how to setup a serving system to serve the largest available pretrained language model <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT-175B</a>.</p>
 <p>This tutorial is best to be read in its rendered version on the <a class="reference external" href="https://alpa-projects.github.io/tutorials/opt_serving.html">Alpa documentation page</a>.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
 <p>As a serving system, Alpa offers the following unique advantages:</p>
 <ul class="simple">
 <li><p><strong>Designed for large models</strong>: Cannot fit the model into a single GPU? Not a problem, Alpa is designed for training and serving big models like GPT-3.</p></li>
@@ -131,7 +130,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 </div>
 </section>
 <section id="demo">
-<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this heading"></a></h2>
+<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
 <p>Use huggingface/transformers interface and Alpa backend for distributed inference on a Ray cluster.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
 <span class="kn">from</span> <span class="nn">examples.opt_serving.model.wrapper</span> <span class="kn">import</span> <span class="n">get_model</span>
@@ -158,7 +157,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 </div>
 </section>
 <section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
 <ol class="arabic simple">
 <li><p>Install Alpa following the <a class="reference external" href="https://alpa-projects.github.io/install.html">installation guide</a>.
 You can either install by python wheel or build from source, but you always need to clone
@@ -183,10 +182,10 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
 </div></blockquote>
 </section>
 <section id="get-alpa-compatible-opt-weights">
-<h2>Get Alpa-compatible OPT Weights<a class="headerlink" href="#get-alpa-compatible-opt-weights" title="Permalink to this heading"></a></h2>
+<h2>Get Alpa-compatible OPT Weights<a class="headerlink" href="#get-alpa-compatible-opt-weights" title="Permalink to this headline"></a></h2>
 <p>There are two ways to obtain Alpa-compatible OPT weights: converting the weights by yourself or downloading a copy of processed weights provided by the Alpa team.</p>
 <section id="convert-weights-into-alpa-formats-by-yourself">
-<span id="process-weights"></span><h3>Convert weights into Alpa formats by yourself<a class="headerlink" href="#convert-weights-into-alpa-formats-by-yourself" title="Permalink to this heading"></a></h3>
+<span id="process-weights"></span><h3>Convert weights into Alpa formats by yourself<a class="headerlink" href="#convert-weights-into-alpa-formats-by-yourself" title="Permalink to this headline"></a></h3>
 <p>We provide detailed instructions below on how to convert the original OPT-175B weights into Alpa-compatible formats.
 For processing other sizes of OPT (125M - 66B), you can skip Step 1 and start from <a class="reference internal" href="#download-singleton"><span class="std std-ref">the latter part of Step 2</span></a>.</p>
 <blockquote>
@@ -261,7 +260,7 @@ single checkpoint into numpy formats:</p>
 </div></blockquote>
 </section>
 <section id="download-alpa-compatible-weights">
-<h3>Download Alpa-compatible weights<a class="headerlink" href="#download-alpa-compatible-weights" title="Permalink to this heading"></a></h3>
+<h3>Download Alpa-compatible weights<a class="headerlink" href="#download-alpa-compatible-weights" title="Permalink to this headline"></a></h3>
 <p>Alternatively, we provide links to download the preprocessed 125M, 2.7B, 30B model weights below.</p>
 <blockquote>
 <div><ul class="simple">
@@ -276,7 +275,7 @@ please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVN
 </section>
 </section>
 <section id="run-and-benchmark-generation-in-the-command-line">
-<h2>Run and Benchmark Generation in the Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-the-command-line" title="Permalink to this heading"></a></h2>
+<h2>Run and Benchmark Generation in the Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-the-command-line" title="Permalink to this headline"></a></h2>
 <p>The code of this tutorial is under <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving">examples/opt_serving</a>.
 Add the root directory of Alpa repo to the environment variable <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> if you install Alpa by wheel (Not required if you install Alpa from source).</p>
 <ul>
@@ -309,7 +308,7 @@ python3 benchmark_text_gen.py --model alpa/opt-175b --path <span class="o">[</sp
 </ul>
 </section>
 <section id="launch-a-web-server-to-serve-the-opt-models">
-<h2>Launch a Web Server to Serve the OPT Models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this heading"></a></h2>
+<h2>Launch a Web Server to Serve the OPT Models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this headline"></a></h2>
 <p>Launch the web server:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Serve the OPT-175B model at port 10001</span>
 python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001</span> --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span>
@@ -318,7 +317,7 @@ python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001
 <p>Then open <code class="docutils literal notranslate"><span class="pre">https://[IP-ADDRESS]:10001</span></code> in your browser to try out the model!</p>
 </section>
 <section id="code-structure">
-<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this heading"></a></h2>
+<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/benchmark">examples/opt_serving/benchmark</a>: Benchmark scripts for generation in the command line.</p></li>
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/dataset">examples/opt_serving/dataset</a>: Data loaders for serving.</p></li>
@@ -328,7 +327,7 @@ python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">10001
 </ul>
 </section>
 <section id="license">
-<h2>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h2>
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline"></a></h2>
 <p>The use of the OPT pretrained weights is subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model License</a> by Metaseq.</p>
 </section>
 </section>
