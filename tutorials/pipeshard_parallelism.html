@@ -18,6 +18,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -100,7 +101,7 @@
 to download the full example code</p>
 </div>
 <section class="sphx-glr-example-title" id="distributed-training-with-both-shard-and-pipeline-parallelism">
-<span id="sphx-glr-tutorials-pipeshard-parallelism-py"></span><h1>Distributed Training with Both Shard and Pipeline Parallelism<a class="headerlink" href="#distributed-training-with-both-shard-and-pipeline-parallelism" title="Permalink to this headline"></a></h1>
+<span id="sphx-glr-tutorials-pipeshard-parallelism-py"></span><h1>Distributed Training with Both Shard and Pipeline Parallelism<a class="headerlink" href="#distributed-training-with-both-shard-and-pipeline-parallelism" title="Permalink to this heading"></a></h1>
 <p>Alpa can automatically parallelizes jax functions with both shard
 parallelism (a.k.a. intra-operator parallelism) and pipeline parallelism
 (a.k.a. inter-operator parallelism). Shard parallelism includes
@@ -110,7 +111,7 @@ The <a class="reference internal" href="quickstart.html#alpa-quickstart"><span c
 First, we show how to use Alpa to manually assign stages for pipeline parallelism.
 Then we show how to use Alpa to automate this process.</p>
 <section id="import-libraries-and-initialize-environment">
-<h2>Import Libraries and Initialize Environment<a class="headerlink" href="#import-libraries-and-initialize-environment" title="Permalink to this headline"></a></h2>
+<h2>Import Libraries and Initialize Environment<a class="headerlink" href="#import-libraries-and-initialize-environment" title="Permalink to this heading"></a></h2>
 <p>First, import the required libraries.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">alpa</span>
 <span class="kn">from</span> <span class="nn">alpa.testing</span> <span class="kn">import</span> <span class="n">assert_allclose</span>
@@ -126,7 +127,7 @@ Then we show how to use Alpa to automate this process.</p>
 </div>
 </section>
 <section id="connect-to-a-ray-cluster">
-<h2>Connect to a Ray Cluster<a class="headerlink" href="#connect-to-a-ray-cluster" title="Permalink to this headline"></a></h2>
+<h2>Connect to a Ray Cluster<a class="headerlink" href="#connect-to-a-ray-cluster" title="Permalink to this heading"></a></h2>
 <p>Alpa uses a distributed framework <a class="reference external" href="https://docs.ray.io/">ray</a> to manage
 the cluster and disributed workers. We initialize ray and alpa.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ray</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
@@ -138,12 +139,12 @@ the cluster and disributed workers. We initialize ray and alpa.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2022-07-01 23:11:40,545 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8265
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2022-07-02 09:07:57,833 INFO services.py:1470 -- View the Ray dashboard at http://127.0.0.1:8265
 </pre></div>
 </div>
 </section>
 <section id="train-an-mlp-on-a-single-device">
-<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this headline"></a></h2>
+<h2>Train an MLP on a Single Device<a class="headerlink" href="#train-an-mlp-on-a-single-device" title="Permalink to this heading"></a></h2>
 <p>In this tutorial, we use a toy dataset to train an MLP model.
 Specifically, we use the model to fit the function: <span class="math notranslate nohighlight">\(y = Wx + b\)</span>.
 Note that now this model is being executed on CPU because we force the driver
@@ -205,7 +206,7 @@ process to use the CPU.</p>
 </div>
 </section>
 <section id="pipeline-parallelism-with-manual-assignment">
-<h2>Pipeline Parallelism with Manual Assignment<a class="headerlink" href="#pipeline-parallelism-with-manual-assignment" title="Permalink to this headline"></a></h2>
+<h2>Pipeline Parallelism with Manual Assignment<a class="headerlink" href="#pipeline-parallelism-with-manual-assignment" title="Permalink to this heading"></a></h2>
 <p>Pipeline paralleism requires partitioning the model into several pipeline
 stages. To manually assign stages, we can use <code class="docutils literal notranslate"><span class="pre">alpa.mark_pipeline_boundary</span></code>
 to mark the boundary of each pipeline stage in the forward function.
@@ -279,7 +280,7 @@ device assignment of each stage, you can use the more advanced
 </div>
 </section>
 <section id="pipeline-parallelism-with-automatic-assignment">
-<h2>Pipeline Parallelism with Automatic Assignment<a class="headerlink" href="#pipeline-parallelism-with-automatic-assignment" title="Permalink to this headline"></a></h2>
+<h2>Pipeline Parallelism with Automatic Assignment<a class="headerlink" href="#pipeline-parallelism-with-automatic-assignment" title="Permalink to this heading"></a></h2>
 <p>Alpa also supports automatically partitioning the model into multiple
 pipeline stages and assign each pipeline stage a device mesh such that
 the total execution latency is minimized. Specifically, the automatic
@@ -349,46 +350,46 @@ submesh_choices: ((1, 1), (1, 2), (1, 4), (1, 8))
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 31.98it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 29.54it/s]
 - Compile all stages
 
   0%|          | 0/5 [00:00&lt;?, ?it/s]
- 20%|##        | 1/5 [00:01&lt;00:07,  1.79s/it]
- 60%|######    | 3/5 [00:01&lt;00:01,  1.98it/s]
-100%|##########| 5/5 [00:02&lt;00:00,  2.50it/s]
-100%|##########| 5/5 [00:02&lt;00:00,  1.99it/s]
+ 20%|##        | 1/5 [00:03&lt;00:12,  3.02s/it]
+ 60%|######    | 3/5 [00:03&lt;00:01,  1.22it/s]
+100%|##########| 5/5 [00:03&lt;00:00,  1.72it/s]
+100%|##########| 5/5 [00:03&lt;00:00,  1.30it/s]
 - Profile all stages
 
   0%|          | 0/5 [00:00&lt;?, ?it/s]
 
-cost[0, 1, 0]=0.004, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.000GB, init=0.500GB, as_config=((8, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 0]=0.008, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=1.001GB, intermediate=0.000GB, init=0.500GB, as_config=((8, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
-  0%|          | 0/5 [00:22&lt;?, ?it/s]
- 20%|##        | 1/5 [00:22&lt;01:31, 22.96s/it]
+  0%|          | 0/5 [00:21&lt;?, ?it/s]
+ 20%|##        | 1/5 [00:21&lt;01:26, 21.55s/it]
 
-cost[0, 1, 1]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.000GB, init=0.250GB, as_config=((4, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 1]=0.004, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.501GB, intermediate=0.000GB, init=0.250GB, as_config=((4, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 20%|##        | 1/5 [00:25&lt;01:31, 22.96s/it]
- 40%|####      | 2/5 [00:25&lt;00:32, 10.86s/it]
+ 20%|##        | 1/5 [00:23&lt;01:26, 21.55s/it]
+ 40%|####      | 2/5 [00:23&lt;00:29,  9.82s/it]
 
-cost[0, 1, 2]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.251GB, intermediate=0.000GB, init=0.125GB, as_config=((2, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 2]=0.004, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.251GB, intermediate=0.000GB, init=0.125GB, as_config=((2, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 40%|####      | 2/5 [00:28&lt;00:32, 10.86s/it]
- 60%|######    | 3/5 [00:28&lt;00:14,  7.15s/it]
+ 40%|####      | 2/5 [00:24&lt;00:29,  9.82s/it]
+ 60%|######    | 3/5 [00:24&lt;00:11,  5.92s/it]
 
-cost[0, 1, 3]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 3]=0.004, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 60%|######    | 3/5 [00:28&lt;00:14,  7.15s/it]
- 80%|########  | 4/5 [00:28&lt;00:04,  4.52s/it]
+ 60%|######    | 3/5 [00:25&lt;00:11,  5.92s/it]
+ 80%|########  | 4/5 [00:25&lt;00:03,  3.85s/it]
 
-cost[0, 1, 4]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((8, 1), {})
+cost[0, 1, 4]=0.005, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.098GB, intermediate=0.000GB, init=0.063GB, as_config=((8, 1), {})
 
- 80%|########  | 4/5 [00:28&lt;00:04,  4.52s/it]
-100%|##########| 5/5 [00:28&lt;00:00,  2.96s/it]
-100%|##########| 5/5 [00:28&lt;00:00,  5.75s/it]
-Profiling for submesh 3 (1, 8) takes 31.67 seconds
+ 80%|########  | 4/5 [00:25&lt;00:03,  3.85s/it]
+100%|##########| 5/5 [00:25&lt;00:00,  2.57s/it]
+100%|##########| 5/5 [00:25&lt;00:00,  5.08s/it]
+Profiling for submesh 3 (1, 8) takes 29.71 seconds
 Profiled costs are: [[[       inf        inf        inf        inf        inf]
-  [0.0044566  0.00284976 0.00207575 0.00167309 0.00159558]]
+  [0.00766142 0.00427175 0.00359819 0.00435511 0.00483327]]
 
  [[       inf        inf        inf        inf        inf]
   [       inf        inf        inf        inf        inf]]]
@@ -405,89 +406,94 @@ Profiled max_n_succ_stages are: [[[  -1   -1   -1   -1   -1]
 
   0%|          | 0/2 [00:00&lt;?, ?it/s]
 
+100%|##########| 2/2 [00:00&lt;00:00, 15.75it/s]
 
+
+ 50%|#####     | 1/2 [00:00&lt;00:00,  7.80it/s]
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 15.61it/s]
-100%|##########| 2/2 [00:00&lt;00:00, 15.58it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 11.62it/s]
 - Compile all stages
 
   0%|          | 0/12 [00:00&lt;?, ?it/s]
-  8%|8         | 1/12 [00:01&lt;00:18,  1.72s/it]
- 50%|#####     | 6/12 [00:01&lt;00:01,  4.36it/s]
- 83%|########3 | 10/12 [00:02&lt;00:00,  6.90it/s]
-100%|##########| 12/12 [00:02&lt;00:00,  4.61it/s]
+  8%|8         | 1/12 [00:02&lt;00:32,  2.96s/it]
+ 33%|###3      | 4/12 [00:03&lt;00:04,  1.70it/s]
+ 58%|#####8    | 7/12 [00:03&lt;00:01,  3.42it/s]
+ 83%|########3 | 10/12 [00:03&lt;00:00,  5.19it/s]
+100%|##########| 12/12 [00:04&lt;00:00,  4.25it/s]
+100%|##########| 12/12 [00:04&lt;00:00,  2.97it/s]
 - Profile all stages
 
   0%|          | 0/12 [00:00&lt;?, ?it/s]
 
-cost[0, 0, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.252GB, intermediate=0.001GB, init=0.125GB, as_config=((2, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 0, 1]=0.002, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.252GB, intermediate=0.001GB, init=0.125GB, as_config=((2, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
-  0%|          | 0/12 [00:12&lt;?, ?it/s]
-  8%|8         | 1/12 [00:12&lt;02:13, 12.13s/it]
+  0%|          | 0/12 [00:14&lt;?, ?it/s]
+  8%|8         | 1/12 [00:14&lt;02:42, 14.82s/it]
 
-cost[0, 0, 2]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 0, 2]=0.002, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
-  8%|8         | 1/12 [00:13&lt;02:13, 12.13s/it]
- 17%|#6        | 2/12 [00:13&lt;00:58,  5.87s/it]
+  8%|8         | 1/12 [00:15&lt;02:42, 14.82s/it]
+ 17%|#6        | 2/12 [00:15&lt;01:04,  6.40s/it]
 
-cost[0, 0, 3]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((4, 1), {})
+cost[0, 0, 3]=0.002, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((4, 1), {})
 
- 17%|#6        | 2/12 [00:13&lt;00:58,  5.87s/it]
- 25%|##5       | 3/12 [00:13&lt;00:29,  3.24s/it]
+ 17%|#6        | 2/12 [00:15&lt;01:04,  6.40s/it]
+ 25%|##5       | 3/12 [00:15&lt;00:31,  3.55s/it]
 
-cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.001GB, init=0.250GB, as_config=((4, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 0, 0]=0.004, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.501GB, intermediate=0.001GB, init=0.250GB, as_config=((4, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 25%|##5       | 3/12 [00:14&lt;00:29,  3.24s/it]
- 33%|###3      | 4/12 [00:14&lt;00:16,  2.07s/it]
+ 25%|##5       | 3/12 [00:15&lt;00:31,  3.55s/it]
+ 33%|###3      | 4/12 [00:15&lt;00:18,  2.31s/it]
 
-cost[0, 1, 1]=0.004, max_n_succ_stage=3525, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.004GB, init=0.250GB, as_config=((2, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 1]=0.005, max_n_succ_stage=2649, Mem: avail=10.457GB, peak=0.501GB, intermediate=0.004GB, init=0.250GB, as_config=((2, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 33%|###3      | 4/12 [00:15&lt;00:16,  2.07s/it]
- 42%|####1     | 5/12 [00:15&lt;00:14,  2.01s/it]
+ 33%|###3      | 4/12 [00:18&lt;00:18,  2.31s/it]
+ 42%|####1     | 5/12 [00:18&lt;00:15,  2.29s/it]
 
-cost[0, 1, 0]=0.004, max_n_succ_stage=3984, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.003GB, init=0.500GB, as_config=((4, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 0]=0.007, max_n_succ_stage=2933, Mem: avail=10.457GB, peak=1.001GB, intermediate=0.003GB, init=0.500GB, as_config=((4, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 42%|####1     | 5/12 [00:16&lt;00:14,  2.01s/it]
- 50%|#####     | 6/12 [00:16&lt;00:08,  1.37s/it]
+ 42%|####1     | 5/12 [00:18&lt;00:15,  2.29s/it]
 
-cost[0, 1, 3]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((4, 1), {})
+cost[0, 1, 3]=0.006, max_n_succ_stage=2075, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((4, 1), {})
 
- 50%|#####     | 6/12 [00:16&lt;00:08,  1.37s/it]
- 58%|#####8    | 7/12 [00:16&lt;00:05,  1.02s/it]
+ 42%|####1     | 5/12 [00:18&lt;00:15,  2.29s/it]
+ 58%|#####8    | 7/12 [00:18&lt;00:06,  1.26s/it]
 
-cost[0, 1, 2]=0.002, max_n_succ_stage=2732, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 2]=0.004, max_n_succ_stage=2075, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.005GB, init=0.125GB, as_config=((1, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 58%|#####8    | 7/12 [00:16&lt;00:05,  1.02s/it]
+ 58%|#####8    | 7/12 [00:18&lt;00:06,  1.26s/it]
+ 67%|######6   | 8/12 [00:18&lt;00:03,  1.03it/s]
 
-cost[1, 1, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.002GB, init=0.250GB, as_config=((4, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[1, 1, 0]=0.004, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.501GB, intermediate=0.002GB, init=0.250GB, as_config=((4, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 58%|#####8    | 7/12 [00:16&lt;00:05,  1.02s/it]
- 75%|#######5  | 9/12 [00:16&lt;00:01,  1.69it/s]
+ 67%|######6   | 8/12 [00:19&lt;00:03,  1.03it/s]
+ 75%|#######5  | 9/12 [00:19&lt;00:02,  1.27it/s]
 
-cost[1, 1, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.252GB, intermediate=0.002GB, init=0.125GB, as_config=((2, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[1, 1, 1]=0.004, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.252GB, intermediate=0.002GB, init=0.125GB, as_config=((2, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 75%|#######5  | 9/12 [00:16&lt;00:01,  1.69it/s]
+ 75%|#######5  | 9/12 [00:19&lt;00:02,  1.27it/s]
 
-cost[1, 1, 2]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[1, 1, 2]=0.003, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 75%|#######5  | 9/12 [00:16&lt;00:01,  1.69it/s]
- 92%|#########1| 11/12 [00:16&lt;00:00,  2.58it/s]
+ 75%|#######5  | 9/12 [00:19&lt;00:02,  1.27it/s]
+ 92%|#########1| 11/12 [00:19&lt;00:00,  1.98it/s]
 
-cost[1, 1, 3]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((4, 1), {})
+cost[1, 1, 3]=0.003, max_n_succ_stage=4096, Mem: avail=10.457GB, peak=0.099GB, intermediate=0.002GB, init=0.063GB, as_config=((4, 1), {})
 
- 92%|#########1| 11/12 [00:16&lt;00:00,  2.58it/s]
-100%|##########| 12/12 [00:16&lt;00:00,  1.40s/it]
-Profiling for submesh 2 (1, 4) takes 19.97 seconds
-Profiled costs are: [[[0.00230087 0.00237221 0.00150524 0.0012798         inf]
-  [0.00436388 0.00430009 0.00203482 0.00226185        inf]]
+ 92%|#########1| 11/12 [00:19&lt;00:00,  1.98it/s]
+100%|##########| 12/12 [00:19&lt;00:00,  2.45it/s]
+100%|##########| 12/12 [00:19&lt;00:00,  1.63s/it]
+Profiling for submesh 2 (1, 4) takes 24.15 seconds
+Profiled costs are: [[[0.00360494 0.00241113 0.00190377 0.00189781        inf]
+  [0.0068211  0.00500711 0.00441935 0.0059317         inf]]
 
  [[       inf        inf        inf        inf        inf]
-  [0.00299427 0.00184274 0.00125347 0.00129188        inf]]]
+  [0.00379237 0.00415519 0.00270171 0.00274571        inf]]]
 Profiled max_n_succ_stages are: [[[4096 4096 4096 4096   -1]
-  [3984 3525 2732 2732   -1]]
+  [2933 2649 2075 2075   -1]]
 
  [[  -1   -1   -1   -1   -1]
   [4096 4096 4096 4096   -1]]]
@@ -499,76 +505,82 @@ Profiled max_n_succ_stages are: [[[4096 4096 4096 4096   -1]
 
   0%|          | 0/2 [00:00&lt;?, ?it/s]
 
+100%|##########| 2/2 [00:00&lt;00:00, 15.66it/s]
 
+
+ 50%|#####     | 1/2 [00:00&lt;00:00,  7.76it/s]
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 13.85it/s]
-100%|##########| 2/2 [00:00&lt;00:00, 13.82it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 11.90it/s]
 - Compile all stages
 
   0%|          | 0/9 [00:00&lt;?, ?it/s]
- 11%|#1        | 1/9 [00:01&lt;00:13,  1.63s/it]
- 89%|########8 | 8/9 [00:01&lt;00:00,  6.02it/s]
-100%|##########| 9/9 [00:01&lt;00:00,  5.06it/s]
+ 11%|#1        | 1/9 [00:02&lt;00:23,  2.90s/it]
+ 44%|####4     | 4/9 [00:03&lt;00:02,  1.72it/s]
+ 78%|#######7  | 7/9 [00:03&lt;00:00,  3.37it/s]
+100%|##########| 9/9 [00:03&lt;00:00,  4.65it/s]
+100%|##########| 9/9 [00:03&lt;00:00,  2.74it/s]
 - Profile all stages
 
   0%|          | 0/9 [00:00&lt;?, ?it/s]
 
-cost[0, 0, 2]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((2, 1), {})
+cost[0, 0, 2]=0.002, max_n_succ_stage=3774, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((2, 1), {})
 
-  0%|          | 0/9 [00:10&lt;?, ?it/s]
- 11%|#1        | 1/9 [00:10&lt;01:22, 10.34s/it]
+  0%|          | 0/9 [00:11&lt;?, ?it/s]
+ 11%|#1        | 1/9 [00:11&lt;01:32, 11.61s/it]
 
-cost[0, 0, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 0, 1]=0.002, max_n_succ_stage=3774, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 11%|#1        | 1/9 [00:10&lt;01:22, 10.34s/it]
+ 11%|#1        | 1/9 [00:12&lt;01:32, 11.61s/it]
+ 22%|##2       | 2/9 [00:12&lt;00:35,  5.04s/it]
 
-cost[0, 1, 1]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 1]=0.005, max_n_succ_stage=1340, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 11%|#1        | 1/9 [00:10&lt;01:22, 10.34s/it]
- 33%|###3      | 3/9 [00:10&lt;00:17,  2.86s/it]
+ 22%|##2       | 2/9 [00:12&lt;00:35,  5.04s/it]
+ 33%|###3      | 3/9 [00:12&lt;00:16,  2.81s/it]
 
-cost[0, 1, 2]=0.003, max_n_succ_stage=1778, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((2, 1), {})
+cost[0, 1, 2]=0.005, max_n_succ_stage=1340, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((2, 1), {})
 
- 33%|###3      | 3/9 [00:10&lt;00:17,  2.86s/it]
+ 33%|###3      | 3/9 [00:12&lt;00:16,  2.81s/it]
+ 44%|####4     | 4/9 [00:12&lt;00:09,  1.90s/it]
 
-cost[1, 1, 1]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 0, 0]=0.004, max_n_succ_stage=3785, Mem: avail=10.457GB, peak=0.502GB, intermediate=0.003GB, init=0.250GB, as_config=((2, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 33%|###3      | 3/9 [00:11&lt;00:17,  2.86s/it]
- 56%|#####5    | 5/9 [00:11&lt;00:05,  1.46s/it]
+ 44%|####4     | 4/9 [00:12&lt;00:09,  1.90s/it]
+ 56%|#####5    | 5/9 [00:12&lt;00:05,  1.30s/it]
 
-cost[0, 0, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.502GB, intermediate=0.003GB, init=0.250GB, as_config=((2, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[1, 1, 1]=0.003, max_n_succ_stage=2767, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 2), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 56%|#####5    | 5/9 [00:11&lt;00:05,  1.46s/it]
+ 56%|#####5    | 5/9 [00:13&lt;00:05,  1.30s/it]
 
-cost[1, 1, 2]=0.002, max_n_succ_stage=3643, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((2, 1), {})
+cost[0, 1, 0]=0.007, max_n_succ_stage=1466, Mem: avail=10.457GB, peak=1.001GB, intermediate=0.006GB, init=0.500GB, as_config=((2, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 56%|#####5    | 5/9 [00:11&lt;00:05,  1.46s/it]
- 78%|#######7  | 7/9 [00:11&lt;00:01,  1.14it/s]
+ 56%|#####5    | 5/9 [00:13&lt;00:05,  1.30s/it]
+ 78%|#######7  | 7/9 [00:13&lt;00:01,  1.26it/s]
 
-cost[0, 1, 0]=0.005, max_n_succ_stage=1991, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.006GB, init=0.500GB, as_config=((2, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[1, 1, 2]=0.003, max_n_succ_stage=2767, Mem: avail=10.457GB, peak=0.194GB, intermediate=0.004GB, init=0.125GB, as_config=((2, 1), {})
 
- 78%|#######7  | 7/9 [00:11&lt;00:01,  1.14it/s]
- 89%|########8 | 8/9 [00:11&lt;00:00,  1.34it/s]
+ 78%|#######7  | 7/9 [00:14&lt;00:01,  1.26it/s]
+ 89%|########8 | 8/9 [00:14&lt;00:00,  1.42it/s]
 
-cost[1, 1, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.502GB, intermediate=0.003GB, init=0.250GB, as_config=((2, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[1, 1, 0]=0.004, max_n_succ_stage=3179, Mem: avail=10.457GB, peak=0.502GB, intermediate=0.003GB, init=0.250GB, as_config=((2, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 89%|########8 | 8/9 [00:12&lt;00:00,  1.34it/s]
-100%|##########| 9/9 [00:12&lt;00:00,  1.34it/s]
-100%|##########| 9/9 [00:12&lt;00:00,  1.37s/it]
-Profiling for submesh 1 (1, 2) takes 14.58 seconds
-Profiled costs are: [[[0.00261346 0.00154781 0.00157099        inf        inf]
-  [0.00514685 0.00304916 0.00301576        inf        inf]]
+ 89%|########8 | 8/9 [00:14&lt;00:00,  1.42it/s]
+100%|##########| 9/9 [00:14&lt;00:00,  1.86it/s]
+100%|##########| 9/9 [00:14&lt;00:00,  1.57s/it]
+Profiling for submesh 1 (1, 2) takes 18.06 seconds
+Profiled costs are: [[[0.00384182 0.00220142 0.00218402        inf        inf]
+  [0.0071928  0.00501919 0.00461939        inf        inf]]
 
  [[       inf        inf        inf        inf        inf]
-  [0.00281758 0.00181362 0.00182936        inf        inf]]]
-Profiled max_n_succ_stages are: [[[4096 4096 4096   -1   -1]
-  [1991 1778 1778   -1   -1]]
+  [0.00401531 0.00273085 0.00271482        inf        inf]]]
+Profiled max_n_succ_stages are: [[[3785 3774 3774   -1   -1]
+  [1466 1340 1340   -1   -1]]
 
  [[  -1   -1   -1   -1   -1]
-  [4096 3643 3643   -1   -1]]]
+  [3179 2767 2767   -1   -1]]]
 --------------------------------------------------
 - Profiling for submesh 0 (1, 1):
 - Generate all stage infos (Jaxpr -&gt; HLO)
@@ -577,65 +589,68 @@ Profiled max_n_succ_stages are: [[[4096 4096 4096   -1   -1]
 
   0%|          | 0/2 [00:00&lt;?, ?it/s]
 
-100%|##########| 2/2 [00:00&lt;00:00, 18.98it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 17.01it/s]
 
 
- 50%|#####     | 1/2 [00:00&lt;00:00,  9.39it/s]
+ 50%|#####     | 1/2 [00:00&lt;00:00,  8.42it/s]
 
   0%|          | 0/1 [00:00&lt;?, ?it/s]
 
 
-100%|##########| 2/2 [00:00&lt;00:00, 14.38it/s]
+100%|##########| 2/2 [00:00&lt;00:00, 12.98it/s]
 - Compile all stages
 
   0%|          | 0/6 [00:00&lt;?, ?it/s]
- 17%|#6        | 1/6 [00:01&lt;00:07,  1.50s/it]
-100%|##########| 6/6 [00:01&lt;00:00,  4.94it/s]
-100%|##########| 6/6 [00:01&lt;00:00,  3.74it/s]
+ 17%|#6        | 1/6 [00:02&lt;00:12,  2.57s/it]
+ 50%|#####     | 3/6 [00:02&lt;00:02,  1.40it/s]
+100%|##########| 6/6 [00:02&lt;00:00,  2.15it/s]
 - Profile all stages
 
   0%|          | 0/6 [00:00&lt;?, ?it/s]
 
-cost[0, 1, 0]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 1, 0]=0.007, max_n_succ_stage=752, Mem: avail=10.457GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
-  0%|          | 0/6 [00:10&lt;?, ?it/s]
- 17%|#6        | 1/6 [00:10&lt;00:50, 10.19s/it]
+  0%|          | 0/6 [00:12&lt;?, ?it/s]
+ 17%|#6        | 1/6 [00:12&lt;01:02, 12.53s/it]
 
-cost[1, 1, 0]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 0, 0]=0.003, max_n_succ_stage=1914, Mem: avail=10.457GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 17%|#6        | 1/6 [00:10&lt;00:50, 10.19s/it]
- 33%|###3      | 2/6 [00:10&lt;00:17,  4.29s/it]
+ 17%|#6        | 1/6 [00:13&lt;01:02, 12.53s/it]
+ 33%|###3      | 2/6 [00:13&lt;00:21,  5.48s/it]
 
-cost[0, 0, 1]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
+cost[1, 1, 0]=0.004, max_n_succ_stage=1608, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
 
- 33%|###3      | 2/6 [00:10&lt;00:17,  4.29s/it]
+ 33%|###3      | 2/6 [00:13&lt;00:21,  5.48s/it]
+ 50%|#####     | 3/6 [00:13&lt;00:09,  3.09s/it]
 
-cost[1, 1, 1]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
+cost[1, 1, 1]=0.004, max_n_succ_stage=1608, Mem: avail=10.457GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
 
- 33%|###3      | 2/6 [00:10&lt;00:17,  4.29s/it]
+ 50%|#####     | 3/6 [00:13&lt;00:09,  3.09s/it]
+ 67%|######6   | 4/6 [00:13&lt;00:03,  1.99s/it]
 
-cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {&#39;force_batch_dim_to_mesh_dim&#39;: 0})
+cost[0, 0, 1]=0.003, max_n_succ_stage=1914, Mem: avail=10.457GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
 
- 33%|###3      | 2/6 [00:10&lt;00:17,  4.29s/it]
- 83%|########3 | 5/6 [00:10&lt;00:01,  1.25s/it]
+ 67%|######6   | 4/6 [00:13&lt;00:03,  1.99s/it]
+ 83%|########3 | 5/6 [00:13&lt;00:01,  1.34s/it]
 
-cost[0, 1, 1]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
+cost[0, 1, 1]=0.007, max_n_succ_stage=752, Mem: avail=10.457GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
 
- 83%|########3 | 5/6 [00:10&lt;00:01,  1.25s/it]
-100%|##########| 6/6 [00:10&lt;00:00,  1.76s/it]
-Profiling for submesh 0 (1, 1) takes 12.62 seconds
-Profiled costs are: [[[0.00240209 0.00232538        inf        inf        inf]
-  [0.00472821 0.0047871         inf        inf        inf]]
+ 83%|########3 | 5/6 [00:14&lt;00:01,  1.34s/it]
+100%|##########| 6/6 [00:14&lt;00:00,  1.01it/s]
+100%|##########| 6/6 [00:14&lt;00:00,  2.36s/it]
+Profiling for submesh 0 (1, 1) takes 17.55 seconds
+Profiled costs are: [[[0.00313467 0.00343593        inf        inf        inf]
+  [0.00669209 0.00659143        inf        inf        inf]]
 
  [[       inf        inf        inf        inf        inf]
-  [0.00267063 0.00267424        inf        inf        inf]]]
-Profiled max_n_succ_stages are: [[[2540 2540   -1   -1   -1]
-  [1014 1014   -1   -1   -1]]
+  [0.00366039 0.003594          inf        inf        inf]]]
+Profiled max_n_succ_stages are: [[[1914 1914   -1   -1   -1]
+  [ 752  752   -1   -1   -1]]
 
  [[  -1   -1   -1   -1   -1]
-  [2134 2134   -1   -1   -1]]]
+  [1608 1608   -1   -1   -1]]]
 --------------------------------------------------
-Compute cost saved to: compute-cost-2022-07-01-23-13-36.npy
+Compute cost saved to: compute-cost-2022-07-02-09-10-03.npy
 ----------------------------------------------------------------------
 Result forward_stage_layer_ids: [[0], [1]]
 Result mesh_shapes: [(1, 4), (1, 4)]
@@ -643,7 +658,7 @@ Result logical_mesh_shapes: [(4, 1), (1, 4)]
 Result autosharding_option_dicts: [{}, {&#39;force_batch_dim_to_mesh_dim&#39;: 0}]
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 2 minutes  29.092 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 2 minutes  32.673 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-pipeshard-parallelism-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a3ca1faed62a74bef9de2bc3edfc7d0a/pipeshard_parallelism.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">pipeshard_parallelism.py</span></code></a></p>
