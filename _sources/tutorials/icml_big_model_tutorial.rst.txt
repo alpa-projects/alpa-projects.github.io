@@ -1,0 +1,7 @@
+ICML'22 Big Model Tutorial
+==========================
+
+Alpa team ran a tutorial on parallelization techniques for training big models at ICML 2022.
+This tutorial is very helpful for learning the related background, concepts and research topics.
+
+Recordings, slides and demos are avaiable at https://sites.google.com/view/icml-2022-big-model/

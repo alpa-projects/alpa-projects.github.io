@@ -70,6 +70,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/perf_tuning_guide.html">Performance Tuning Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/opt_serving.html">Serving OPT-175B using Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -193,7 +194,7 @@ If you need features from newer versions of jaxlib, please open an issue at the 
 <li><p>Clone repos</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive git@github.com:alpa-projects/alpa.git
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive https://github.com/alpa-projects/alpa.git
 </pre></div>
 </div>
 </div></blockquote>
@@ -210,7 +211,7 @@ pip3 install -e <span class="s2">&quot;.[dev]&quot;</span>  <span class="c1"># N
 <li><p>Build and install jaxlib</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa/build_jaxlib
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> build_jaxlib
 python3 build/build.py --enable_cuda --dev_install --tf_path<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/../third_party/tensorflow-alpa
 <span class="nb">cd</span> dist
 
