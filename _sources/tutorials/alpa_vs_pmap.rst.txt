@@ -18,8 +18,8 @@
 .. _sphx_glr_tutorials_alpa_vs_pmap.py:
 
 
-Differences between alpa.parallelize and jax.pmap
-=================================================
+Differences between alpa.parallelize, jax.pmap and jax.pjit
+===========================================================
 
 The most common tool for parallelization or distributed computing in jax is
 `pmap <https://jax.readthedocs.io/en/latest/jax.html#parallelization-pmap>`_.
@@ -80,7 +80,7 @@ When model parallelism is prefered
 .. GENERATED FROM PYTHON SOURCE LINES 37-61
 
 Comparing ``alpa.parallelize``, ``pmap``, ``xmap``, and ``pjit``
------------------------------------------------------------------
+----------------------------------------------------------------
 Besides ``pmap``, jax also provides
 `xmap <https://jax.readthedocs.io/en/latest/notebooks/xmap_tutorial.html>`_ and
 `pjit <https://jax.readthedocs.io/en/latest/jax-101/08-pjit.html>`_

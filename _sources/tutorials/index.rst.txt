@@ -11,27 +11,6 @@ Alpa Tutorials
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Alpa can automatically parallelizes jax functions with both shard parallelism (a.k.a. intra-ope...">
-
-.. only:: html
-
- .. figure:: /tutorials/images/thumb/sphx_glr_pipeshard_parallelism_thumb.png
-     :alt: Distributed Training with Both Shard and Pipeline Parallelism
-
-     :ref:`sphx_glr_tutorials_pipeshard_parallelism.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /tutorials/pipeshard_parallelism
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="Alpa is built on top of a tensor computation framework `Jax &lt;https://jax.readthedocs.io/en/late...">
 
 .. only:: html
@@ -53,12 +32,33 @@ Alpa Tutorials
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Alpa can automatically parallelizes jax functions with both shard parallelism (a.k.a. intra-ope...">
+
+.. only:: html
+
+ .. figure:: /tutorials/images/thumb/sphx_glr_pipeshard_parallelism_thumb.png
+     :alt: Distributed Training with Both Shard and Pipeline Parallelism
+
+     :ref:`sphx_glr_tutorials_pipeshard_parallelism.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/pipeshard_parallelism
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="The most common tool for parallelization or distributed computing in jax is `pmap &lt;https://jax....">
 
 .. only:: html
 
  .. figure:: /tutorials/images/thumb/sphx_glr_alpa_vs_pmap_thumb.png
-     :alt: Differences between alpa.parallelize and jax.pmap
+     :alt: Differences between alpa.parallelize, jax.pmap and jax.pjit
 
      :ref:`sphx_glr_tutorials_alpa_vs_pmap.py`
 

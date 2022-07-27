@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alpa Tutorials &mdash; Alpa 0.1.5 documentation</title>
+  <title>Alpa Tutorials &mdash; Alpa 0.1.5.dev14 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.5
+                0.1.5.dev14
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,10 +51,9 @@
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
-<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -91,26 +90,26 @@
              
   <section id="alpa-tutorials">
 <span id="sphx-glr-tutorials"></span><h1>Alpa Tutorials<a class="headerlink" href="#alpa-tutorials" title="Permalink to this headline"></a></h1>
-<div class="sphx-glr-thumbcontainer" tooltip="Alpa can automatically parallelizes jax functions with both shard parallelism (a.k.a. intra-ope..."><figure class="align-default" id="id1">
-<img alt="Distributed Training with Both Shard and Pipeline Parallelism" src="../_images/sphx_glr_pipeshard_parallelism_thumb.png" />
+<div class="sphx-glr-thumbcontainer" tooltip="Alpa is built on top of a tensor computation framework `Jax &lt;https://jax.readthedocs.io/en/late..."><figure class="align-default" id="id1">
+<img alt="Alpa Quickstart" src="../_images/sphx_glr_quickstart_thumb.png" />
 <figcaption>
-<p><span class="caption-text"><a class="reference internal" href="pipeshard_parallelism.html#sphx-glr-tutorials-pipeshard-parallelism-py"><span class="std std-ref">Distributed Training with Both Shard and Pipeline Parallelism</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-text"><a class="reference internal" href="quickstart.html#sphx-glr-tutorials-quickstart-py"><span class="std std-ref">Alpa Quickstart</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="sphx-glr-thumbcontainer" tooltip="Alpa is built on top of a tensor computation framework `Jax &lt;https://jax.readthedocs.io/en/late..."><figure class="align-default" id="id2">
-<img alt="Alpa Quickstart" src="../_images/sphx_glr_quickstart_thumb.png" />
+<div class="sphx-glr-thumbcontainer" tooltip="Alpa can automatically parallelizes jax functions with both shard parallelism (a.k.a. intra-ope..."><figure class="align-default" id="id2">
+<img alt="Distributed Training with Both Shard and Pipeline Parallelism" src="../_images/sphx_glr_pipeshard_parallelism_thumb.png" />
 <figcaption>
-<p><span class="caption-text"><a class="reference internal" href="quickstart.html#sphx-glr-tutorials-quickstart-py"><span class="std std-ref">Alpa Quickstart</span></a></span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-text"><a class="reference internal" href="pipeshard_parallelism.html#sphx-glr-tutorials-pipeshard-parallelism-py"><span class="std std-ref">Distributed Training with Both Shard and Pipeline Parallelism</span></a></span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </div><div class="toctree-wrapper compound">
 </div>
 <div class="sphx-glr-thumbcontainer" tooltip="The most common tool for parallelization or distributed computing in jax is `pmap &lt;https://jax...."><figure class="align-default" id="id3">
-<img alt="Differences between alpa.parallelize and jax.pmap" src="../_images/sphx_glr_alpa_vs_pmap_thumb.png" />
+<img alt="Differences between alpa.parallelize, jax.pmap and jax.pjit" src="../_images/sphx_glr_alpa_vs_pmap_thumb.png" />
 <figcaption>
-<p><span class="caption-text"><a class="reference internal" href="alpa_vs_pmap.html#sphx-glr-tutorials-alpa-vs-pmap-py"><span class="std std-ref">Differences between alpa.parallelize and jax.pmap</span></a></span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+<p><span class="caption-text"><a class="reference internal" href="alpa_vs_pmap.html#sphx-glr-tutorials-alpa-vs-pmap-py"><span class="std std-ref">Differences between alpa.parallelize, jax.pmap and jax.pjit</span></a></span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </div><div class="toctree-wrapper compound">

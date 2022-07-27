@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Differences between alpa.parallelize and jax.pmap &mdash; Alpa 0.1.5 documentation</title>
+  <title>Differences between alpa.parallelize, jax.pmap and jax.pjit &mdash; Alpa 0.1.5.dev14 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.5
+                0.1.5.dev14
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -53,7 +53,7 @@
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Differences between alpa.parallelize and jax.pmap</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Differences between alpa.parallelize, jax.pmap and jax.pjit</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#when-data-parallelism-is-prefered">When data parallelism is prefered</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#when-model-parallelism-is-prefered">When model parallelism is prefered</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#comparing-alpa-parallelize-pmap-xmap-and-pjit">Comparing <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, <code class="docutils literal notranslate"><span class="pre">pmap</span></code>, <code class="docutils literal notranslate"><span class="pre">xmap</span></code>, and <code class="docutils literal notranslate"><span class="pre">pjit</span></code></a></li>
@@ -61,7 +61,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -86,7 +85,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Differences between alpa.parallelize and jax.pmap</li>
+      <li>Differences between alpa.parallelize, jax.pmap and jax.pjit</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/alpa-projects/alpa/blob/main/docs/tutorials/alpa_vs_pmap.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -101,8 +100,8 @@
 <p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-alpa-vs-pmap-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<section class="sphx-glr-example-title" id="differences-between-alpa-parallelize-and-jax-pmap">
-<span id="sphx-glr-tutorials-alpa-vs-pmap-py"></span><h1>Differences between alpa.parallelize and jax.pmap<a class="headerlink" href="#differences-between-alpa-parallelize-and-jax-pmap" title="Permalink to this headline"></a></h1>
+<section class="sphx-glr-example-title" id="differences-between-alpa-parallelize-jax-pmap-and-jax-pjit">
+<span id="sphx-glr-tutorials-alpa-vs-pmap-py"></span><h1>Differences between alpa.parallelize, jax.pmap and jax.pjit<a class="headerlink" href="#differences-between-alpa-parallelize-jax-pmap-and-jax-pjit" title="Permalink to this headline"></a></h1>
 <p>The most common tool for parallelization or distributed computing in jax is
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.html#parallelization-pmap">pmap</a>.
 With several lines of code change, we can use <code class="docutils literal notranslate"><span class="pre">pmap</span></code> for data parallel

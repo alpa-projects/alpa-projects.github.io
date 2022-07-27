@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alpa Quickstart &mdash; Alpa 0.1.5 documentation</title>
+  <title>Alpa Quickstart &mdash; Alpa 0.1.5.dev14 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.5
+                0.1.5.dev14
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,16 +54,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#auto-parallelization-with-alpa-parallelize">Auto-parallelization with <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#execution-speed-comparison">Execution Speed Comparison</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#memory-usage-comparison">Memory Usage Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-against-data-parallelism-or-jax-pmap">Comparison against Data Parallelism (or <code class="docutils literal notranslate"><span class="pre">jax.pmap</span></code>)</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
-<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -121,7 +121,7 @@ on a distributed cluster, without any expertise in distributed computing.</p>
 Flax and optax are libraries on top of jax for training neural networks.
 Although we use these libraries in this example, Alpa works on jax’s and XLA’s internal
 intermediate representations and does not depend on any specific high-level libraries.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/functools.html#functools.partial" title="functools.partial" class="sphx-glr-backref-module-functools sphx-glr-backref-type-py-function"><span class="n">partial</span></a>
 
 <span class="kn">import</span> <span class="nn">alpa</span>
 <span class="kn">from</span> <span class="nn">alpa.testing</span> <span class="kn">import</span> <span class="n">assert_allclose</span>
@@ -239,7 +239,7 @@ stored distributedly.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input parameter type:&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;Dense_0&quot;</span><span class="p">][</span><span class="s2">&quot;kernel&quot;</span><span class="p">]))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output parameter type:&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;Dense_0&quot;</span><span class="p">][</span><span class="s2">&quot;kernel&quot;</span><span class="p">]))</span>
 
-<span class="c1"># Get one copy</span>
+<span class="c1"># We can use `np.array` to convert a distributed array back to a numpy array.</span>
 <span class="n">kernel_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;Dense_0&quot;</span><span class="p">][</span><span class="s2">&quot;kernel&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -252,7 +252,7 @@ Output parameter type: &lt;class &#39;jaxlib.xla_extension.pmap_lib.ShardedDevic
 <section id="execution-speed-comparison">
 <h2>Execution Speed Comparison<a class="headerlink" href="#execution-speed-comparison" title="Permalink to this headline"></a></h2>
 <p>By parallelizing a jax function, we can accelerate the computation and reduce
-the memory usage per GPU, so we can train large models faster.
+the memory usage per GPU, so we can train larger models faster.
 We benchmark the execution speed of <code class="docutils literal notranslate"><span class="pre">jax.jit</span></code> and <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>
 on a 8-GPU machine.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">actual_state</span>  <span class="c1"># We need this assignment because the original `state` is &quot;donated&quot; and freed.</span>
@@ -269,25 +269,23 @@ on a 8-GPU machine.</p>
     <span class="n">state</span> <span class="o">=</span> <span class="n">jit_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 
 <span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">serial_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
-
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Serial execution time. Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
 
-<span class="c1"># Benchmark parallel execution</span>
-<span class="c1"># We distribute arguments in advance for the benchmarking purpose</span>
+<span class="c1"># Benchmark parallel execution with alpa</span>
+<span class="c1"># We distribute arguments in advance for the benchmarking purpose.</span>
 <span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="o">.</span><span class="n">preshard_dynamic_args</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">parallel_execution</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">alpa_execution</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">state</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 
-<span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">parallel_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallel execution time. Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+<span class="n">alpa_costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">alpa_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alpa execution time.   Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">alpa_costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">alpa_costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 156.05 ms, Std: 0.33 ms
-Parallel execution time. Mean: 22.97 ms, Std: 0.33 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 150.49 ms, Std: 0.55 ms
+Alpa execution time.   Mean: 22.87 ms, Std: 0.39 ms
 </pre></div>
 </div>
 </section>
@@ -299,16 +297,73 @@ Parallel execution time. Mean: 22.97 ms, Std: 0.33 ms
 <span class="n">executable</span> <span class="o">=</span> <span class="n">jit_train_step</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span><span class="o">.</span><span class="n">runtime_executable</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Serial execution per GPU memory usage: </span><span class="si">{</span><span class="n">executable</span><span class="o">.</span><span class="n">total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
 
-<span class="n">executable</span> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="o">.</span><span class="n">get_executable</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallel execution per GPU memory usage: </span><span class="si">{</span><span class="n">executable</span><span class="o">.</span><span class="n">get_total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+<span class="n">alpa_executable</span> <span class="o">=</span> <span class="n">alpa_train_step</span><span class="o">.</span><span class="n">get_executable</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alpa execution per GPU memory usage:   </span><span class="si">{</span><span class="n">alpa_executable</span><span class="o">.</span><span class="n">get_total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution per GPU memory usage: 2.78 GB
-Parallel execution per GPU memory usage: 0.50 GB
+Alpa execution per GPU memory usage:   0.50 GB
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  50.520 seconds)</p>
+</section>
+<section id="comparison-against-data-parallelism-or-jax-pmap">
+<h2>Comparison against Data Parallelism (or <code class="docutils literal notranslate"><span class="pre">jax.pmap</span></code>)<a class="headerlink" href="#comparison-against-data-parallelism-or-jax-pmap" title="Permalink to this headline"></a></h2>
+<p>The most common parallelization technique in deep learning is data parallelism.
+In jax, we can use <code class="docutils literal notranslate"><span class="pre">jax.pmap</span></code> to implement data parallelism.
+However, data parallelism only is not enough for training large models due to
+both memory and communication costs. Here, we use the same model to benchmark the
+execution speed and memory usage of <code class="docutils literal notranslate"><span class="pre">jax.pmap</span></code> on the same 8-GPU machine.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">pmap</span><span class="p">,</span> <span class="n">axis_name</span><span class="o">=</span><span class="s2">&quot;batch&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">pmap_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="c1"># all-reduce gradients</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">pmean</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">axis_name</span><span class="o">=</span><span class="s2">&quot;batch&quot;</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_state</span>
+
+<span class="c1"># Replicate model and distribute batch</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">devices</span></a> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">local_devices</span><span class="p">()</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">device_put_replicated</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">devices</span></a><span class="p">)</span>
+<span class="k">def</span> <span class="nf">shard_batch</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">devices</span></a><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">device_put_sharded</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">devices</span></a><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span><span class="n">shard_batch</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
+
+<span class="c1"># Benchmark data parallel execution</span>
+<span class="k">def</span> <span class="nf">data_parallel_execution</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">state</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">pmap_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
+
+<span class="n">costs</span> <span class="o">=</span> <span class="n">benchmark_func</span><span class="p">(</span><span class="n">data_parallel_execution</span><span class="p">,</span> <span class="n">sync_func</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data parallel execution time. Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alpa execution time.          Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">alpa_costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">alpa_costs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">executable</span> <span class="o">=</span> <span class="n">pmap_train_step</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span><span class="o">.</span><span class="n">runtime_executable</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data parallel execution per GPU memory usage: </span><span class="si">{</span><span class="n">executable</span><span class="o">.</span><span class="n">total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alpa execution per GPU memory usage:          </span><span class="si">{</span><span class="n">alpa_executable</span><span class="o">.</span><span class="n">get_total_allocation_size</span><span class="p">()</span> <span class="o">/</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GB</span></a><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Data parallel execution time. Mean: 33.59 ms, Std: 0.31 ms
+Alpa execution time.          Mean: 22.87 ms, Std: 0.39 ms
+
+Data parallel execution per GPU memory usage: 3.76 GB
+Alpa execution per GPU memory usage:          0.50 GB
+</pre></div>
+</div>
+<p>As you can see, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> achieves better execution speed and
+requires less memory compared with data parallelism.
+This is because data parallelism only works well if the activation size is much
+larger than the model size, which is not the case in this benchmark.
+In contrast, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> analyzes the computational graph and
+finds the best parallelization strategy.</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  50.998 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-quickstart-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a526f4c21167c30e565f6eef2922968a/quickstart.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">quickstart.py</span></code></a></p>

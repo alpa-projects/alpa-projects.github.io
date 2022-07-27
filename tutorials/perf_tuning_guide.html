@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Performance Tuning Guide &mdash; Alpa 0.1.5 documentation</title>
+  <title>Performance Tuning Guide &mdash; Alpa 0.1.5.dev14 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Serving OPT-175B using Alpa" href="opt_serving.html" />
-    <link rel="prev" title="Differences between alpa.parallelize and jax.pmap" href="alpa_vs_pmap.html" /> 
+    <link rel="prev" title="Differences between alpa.parallelize, jax.pmap and jax.pjit" href="alpa_vs_pmap.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.5
+                0.1.5.dev14
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -53,14 +53,13 @@
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
-<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize and jax.pmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Performance Tuning Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#choosing-parallel-methods">Choosing Parallel Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reducing-runtime-overhead">Reducing Runtime Overhead</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -151,7 +150,7 @@ However, accessing metadata such as <cite>shape</cite> and <cite>dtype</cite> do
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="alpa_vs_pmap.html" class="btn btn-neutral float-left" title="Differences between alpa.parallelize and jax.pmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="alpa_vs_pmap.html" class="btn btn-neutral float-left" title="Differences between alpa.parallelize, jax.pmap and jax.pjit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="opt_serving.html" class="btn btn-neutral float-right" title="Serving OPT-175B using Alpa" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
