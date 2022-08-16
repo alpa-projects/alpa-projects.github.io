@@ -91,7 +91,7 @@ the cluster and disributed workers. We initialize ray and alpa.
 
  .. code-block:: none
 
-    2022-07-27 13:20:34,159 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8265
+    2022-08-16 12:28:30,349 INFO services.py:1333 -- View the Ray dashboard at http://127.0.0.1:8266
 
 
 
@@ -133,13 +133,13 @@ process to use the CPU.
     # Generate ground truth W and b
     rngkey = jax.random.PRNGKey(0)
     k1, k2 = random.split(rngkey)
-    W = random.normal(k1, (dim, dim), jnp.float32)
-    b = random.normal(k2, (dim,), jnp.float32)
+    W = random.normal(k1, (dim, dim))
+    b = random.normal(k2, (dim,))
 
     # Generate the training data
     ksample, knoise = random.split(k1)
-    x = random.normal(ksample, (batch_size, dim), jnp.float32)
-    y = (x @ W + b) + 0.1 * random.normal(knoise, (batch_size, dim), jnp.float32)
+    x = random.normal(ksample, (batch_size, dim))
+    y = (x @ W + b) + 0.1 * random.normal(knoise, (batch_size, dim))
 
     # Initialize a train state, which includes the model paramter and optimizer
     # state.
@@ -344,9 +344,9 @@ partitioning algorithm consists of the following steps:
     cost[0, 1, 2]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.251GB, intermediate=0.000GB, init=0.078GB, as_config=((2, 4), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 1, 3]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.097GB, intermediate=0.000GB, init=0.063GB, as_config=((1, 8), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 1, 4]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.097GB, intermediate=0.000GB, init=0.063GB, as_config=((8, 1), {})
-    Profiling for submesh 3 (1, 8) takes 32.93 seconds
+    Profiling for submesh 3 (1, 8) takes 32.54 seconds
     Profiled costs are: [[[       inf        inf        inf        inf        inf]
-      [0.00464246 0.00278722 0.00218195 0.00159505 0.0016621 ]]
+      [0.0046752  0.00283938 0.00215512 0.00162935 0.00170787]]
 
      [[       inf        inf        inf        inf        inf]
       [       inf        inf        inf        inf        inf]]]
@@ -364,20 +364,20 @@ partitioning algorithm consists of the following steps:
     cost[0, 0, 2]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((1, 4), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 0, 3]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.099GB, intermediate=0.001GB, init=0.063GB, as_config=((4, 1), {})
     cost[0, 0, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.001GB, init=0.063GB, as_config=((4, 1), {'force_batch_dim_to_mesh_dim': 0})
-    cost[0, 1, 1]=0.003, max_n_succ_stage=3873, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.003GB, init=0.156GB, as_config=((2, 2), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 1, 0]=0.004, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.003GB, init=0.125GB, as_config=((4, 1), {'force_batch_dim_to_mesh_dim': 0})
+    cost[0, 1, 1]=0.003, max_n_succ_stage=3873, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.003GB, init=0.156GB, as_config=((2, 2), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 1, 2]=0.002, max_n_succ_stage=3363, Mem: avail=13.664GB, peak=0.193GB, intermediate=0.004GB, init=0.125GB, as_config=((1, 4), {'force_batch_dim_to_mesh_dim': 0})
-    cost[0, 1, 3]=0.002, max_n_succ_stage=3363, Mem: avail=13.664GB, peak=0.193GB, intermediate=0.004GB, init=0.125GB, as_config=((4, 1), {})
     cost[1, 1, 0]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.501GB, intermediate=0.002GB, init=0.063GB, as_config=((4, 1), {'force_batch_dim_to_mesh_dim': 0})
-    cost[1, 1, 2]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {'force_batch_dim_to_mesh_dim': 0})
+    cost[0, 1, 3]=0.002, max_n_succ_stage=3363, Mem: avail=13.664GB, peak=0.193GB, intermediate=0.004GB, init=0.125GB, as_config=((4, 1), {})
     cost[1, 1, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.251GB, intermediate=0.002GB, init=0.094GB, as_config=((2, 2), {'force_batch_dim_to_mesh_dim': 0})
+    cost[1, 1, 2]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.002GB, init=0.063GB, as_config=((1, 4), {'force_batch_dim_to_mesh_dim': 0})
     cost[1, 1, 3]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.098GB, intermediate=0.002GB, init=0.063GB, as_config=((4, 1), {})
-    Profiling for submesh 2 (1, 4) takes 20.47 seconds
-    Profiled costs are: [[[0.00227425 0.00163902 0.00122364 0.00119268        inf]
-      [0.00444534 0.00319825 0.00200134 0.00226034        inf]]
+    Profiling for submesh 2 (1, 4) takes 20.20 seconds
+    Profiled costs are: [[[0.00240302 0.00193649 0.00120176 0.00107784        inf]
+      [0.00447551 0.0033852  0.00204357 0.00208251        inf]]
 
      [[       inf        inf        inf        inf        inf]
-      [0.00239939 0.00186867 0.00195522 0.00127549        inf]]]
+      [0.00236326 0.0018759  0.00130494 0.0012904         inf]]]
     Profiled max_n_succ_stages are: [[[4096 4096 4096 4096   -1]
       [4096 3873 3363 3363   -1]]
 
@@ -388,8 +388,8 @@ partitioning algorithm consists of the following steps:
     - Generate all stage infos (Jaxpr -> HLO)
     - Compile all stages
     - Profile all stages
-    cost[0, 0, 2]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((2, 1), {})
     cost[0, 0, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {'force_batch_dim_to_mesh_dim': 0})
+    cost[0, 0, 2]=0.001, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.194GB, intermediate=0.003GB, init=0.125GB, as_config=((2, 1), {})
     cost[0, 1, 1]=0.003, max_n_succ_stage=1939, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((1, 2), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 0, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.502GB, intermediate=0.003GB, init=0.125GB, as_config=((2, 1), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 1, 2]=0.003, max_n_succ_stage=1939, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.007GB, init=0.250GB, as_config=((2, 1), {})
@@ -397,12 +397,12 @@ partitioning algorithm consists of the following steps:
     cost[0, 1, 0]=0.005, max_n_succ_stage=2032, Mem: avail=13.664GB, peak=1.001GB, intermediate=0.006GB, init=0.250GB, as_config=((2, 1), {'force_batch_dim_to_mesh_dim': 0})
     cost[1, 1, 1]=0.002, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.193GB, intermediate=0.003GB, init=0.125GB, as_config=((1, 2), {'force_batch_dim_to_mesh_dim': 0})
     cost[1, 1, 0]=0.003, max_n_succ_stage=4096, Mem: avail=13.664GB, peak=0.502GB, intermediate=0.003GB, init=0.125GB, as_config=((2, 1), {'force_batch_dim_to_mesh_dim': 0})
-    Profiling for submesh 1 (1, 2) takes 14.76 seconds
-    Profiled costs are: [[[0.00257227 0.0015441  0.00157049        inf        inf]
-      [0.00513458 0.00311038 0.00302948        inf        inf]]
+    Profiling for submesh 1 (1, 2) takes 15.68 seconds
+    Profiled costs are: [[[0.00266353 0.00150969 0.00148829        inf        inf]
+      [0.00509445 0.00304368 0.00307356        inf        inf]]
 
      [[       inf        inf        inf        inf        inf]
-      [0.00283676 0.00186372 0.00185299        inf        inf]]]
+      [0.0027398  0.00184478 0.00187429        inf        inf]]]
     Profiled max_n_succ_stages are: [[[4096 4096 4096   -1   -1]
       [2032 1939 1939   -1   -1]]
 
@@ -413,25 +413,25 @@ partitioning algorithm consists of the following steps:
     - Generate all stage infos (Jaxpr -> HLO)
     - Compile all stages
     - Profile all stages
-    cost[0, 0, 1]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
+    cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {'force_batch_dim_to_mesh_dim': 0})
     cost[1, 1, 0]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {'force_batch_dim_to_mesh_dim': 0})
+    cost[0, 0, 1]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {})
     cost[1, 1, 1]=0.003, max_n_succ_stage=2134, Mem: avail=13.664GB, peak=0.383GB, intermediate=0.006GB, init=0.250GB, as_config=((1, 1), {})
     cost[0, 1, 0]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {'force_batch_dim_to_mesh_dim': 0})
-    cost[0, 0, 0]=0.002, max_n_succ_stage=2540, Mem: avail=13.664GB, peak=0.384GB, intermediate=0.005GB, init=0.250GB, as_config=((1, 1), {'force_batch_dim_to_mesh_dim': 0})
     cost[0, 1, 1]=0.005, max_n_succ_stage=1014, Mem: avail=13.664GB, peak=0.763GB, intermediate=0.012GB, init=0.500GB, as_config=((1, 1), {})
-    Profiling for submesh 0 (1, 1) takes 13.29 seconds
-    Profiled costs are: [[[0.00239793 0.0024279         inf        inf        inf]
-      [0.00473158 0.00471105        inf        inf        inf]]
+    Profiling for submesh 0 (1, 1) takes 12.96 seconds
+    Profiled costs are: [[[0.00232742 0.00248554        inf        inf        inf]
+      [0.00470779 0.00477653        inf        inf        inf]]
 
      [[       inf        inf        inf        inf        inf]
-      [0.00278004 0.00272322        inf        inf        inf]]]
+      [0.00260674 0.00268873        inf        inf        inf]]]
     Profiled max_n_succ_stages are: [[[2540 2540   -1   -1   -1]
       [1014 1014   -1   -1   -1]]
 
      [[  -1   -1   -1   -1   -1]
       [2134 2134   -1   -1   -1]]]
     --------------------------------------------------
-    Compute cost saved to: compute-cost-2022-07-27-13-22-29.npy
+    Compute cost saved to: compute-cost-2022-08-16-12-30-25.npy
     ----------------------------------------------------------------------
     Result forward_stage_layer_ids: [[0], [1]]
     Result mesh_shapes: [(1, 4), (1, 4)]
@@ -444,7 +444,7 @@ partitioning algorithm consists of the following steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  20.223 seconds)
+   **Total running time of the script:** ( 2 minutes  19.544 seconds)
 
 
 .. _sphx_glr_download_tutorials_pipeshard_parallelism.py:

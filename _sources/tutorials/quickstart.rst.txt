@@ -103,12 +103,12 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
     # Generate ground truth W and b
     rngkey = jax.random.PRNGKey(0)
     k1, k2 = random.split(rngkey)
-    W = random.normal(k1, (dim, dim), jnp.float32)
-    b = random.normal(k2, (dim,), jnp.float32)
+    W = random.normal(k1, (dim, dim))
+    b = random.normal(k2, (dim,))
 
     # Generate the training data
     ksample, knoise = random.split(k1)
-    x = random.normal(ksample, (batch_size, dim), jnp.float32)
+    x = random.normal(ksample, (batch_size, dim))
     y = (x @ W + b) + 0.1 * random.normal(knoise, (batch_size, dim))
 
     # Initialize a train state, which includes the model paramter and optimizer state.
@@ -134,15 +134,6 @@ parallelize it later. We train an MLP to learn a function y = Wx + b.
 
 
 
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /home/ubuntu/.local/lib/python3.7/site-packages/jax/_src/numpy/lax_numpy.py:1866: UserWarning: Explicitly requested dtype <class 'numpy.float64'> requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/google/jax#current-gotchas for more.
-      lax_internal._check_user_dtype_supported(dtype, "asarray")
 
 
 
@@ -283,8 +274,8 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 150.49 ms, Std: 0.55 ms
-    Alpa execution time.   Mean: 22.87 ms, Std: 0.39 ms
+    Serial execution time. Mean: 154.85 ms, Std: 0.34 ms
+    Alpa execution time.   Mean: 23.36 ms, Std: 0.24 ms
 
 
 
@@ -383,8 +374,8 @@ execution speed and memory usage of ``jax.pmap`` on the same 8-GPU machine.
 
  .. code-block:: none
 
-    Data parallel execution time. Mean: 33.59 ms, Std: 0.31 ms
-    Alpa execution time.          Mean: 22.87 ms, Std: 0.39 ms
+    Data parallel execution time. Mean: 33.75 ms, Std: 0.14 ms
+    Alpa execution time.          Mean: 23.36 ms, Std: 0.24 ms
 
     Data parallel execution per GPU memory usage: 3.76 GB
     Alpa execution per GPU memory usage:          0.50 GB
@@ -404,7 +395,7 @@ finds the best parallelization strategy.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  50.998 seconds)
+   **Total running time of the script:** ( 0 minutes  51.513 seconds)
 
 
 .. _sphx_glr_download_tutorials_quickstart.py:
