@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Design and Architecture &mdash; Alpa 0.1.6 documentation</title>
+  <title>Design and Architecture &mdash; Alpa 0.1.6.dev1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Developer Guide" href="../developer/developer_guide.html" />
+    <link rel="next" title="Alpa Compiler Walk-Through" href="alpa_compiler_walk_through.html" />
     <link rel="prev" title="ICML’22 Big Model Tutorial" href="../tutorials/icml_big_model_tutorial.html" /> 
 </head>
 
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.6
+                0.1.6.dev1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -81,9 +81,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#runtime">Runtime</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#walking-through-example-distributing-an-mlp">Walking-through Example: Distributing an MLP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="alpa_compiler_walk_through.html">Alpa Compiler Walk-Through</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -116,12 +116,7 @@
              
   <section id="design-and-architecture">
 <h1>Design and Architecture<a class="headerlink" href="#design-and-architecture" title="Permalink to this headline"></a></h1>
-<p>This document aims to describe the architecture of Alpa and explain several core concepts and compilation passes introduced by Alpa at a high level.
-This document is organized as follows:</p>
-<ul class="simple">
-<li><p>An overview of Alpa’s architecture, including core terms and componenents introduced by Alpa;</p></li>
-<li><p>Walking-through the workflow of Alpa using an example.</p></li>
-</ul>
+<p>This document aims to describe the architecture of Alpa and explain several core concepts and compilation passes introduced by Alpa at a high level. It provides an overview of Alpa’s architecture, including core terms and componenents introduced by Alpa. In <a class="reference internal" href="alpa_compiler_walk_through.html#alpa-compiler-walk-through"><span class="std std-ref">Alpa Compiler Walk-Through</span></a>, we further show the workflow of Alpa using an MLP example.</p>
 <p>You are recommended to read the the following materials as well:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/pdf/2201.12023.pdf">Alpa paper</a> (OSDI’22)</p></li>
@@ -190,7 +185,7 @@ with high communication bandwidth, such as <a class="reference external" href="h
 <h4>Worker<a class="headerlink" href="#worker" title="Permalink to this headline"></a></h4>
 <p>Each device mesh might consist of partial or full devices from a single node or from multiple nodes. Alpa uses a worker to manage multiple devices from a node; hence a device mesh might contain multiple workers, each mapping to a process that manages multiple devices on a node.
 For example, <a class="reference internal" href="#mesh-worker"><span class="std std-ref">Figure 3</span></a> shows a mesh, consisted of 2 workers, and each worker manages 4 devices.
-The workers are implemented as <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/alpa/device_mesh.py#L64">Ray actors</a>.</p>
+The workers are implemented as <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/alpa/device_mesh.py">Ray actors</a>.</p>
 <figure class="align-center" id="id7">
 <span id="mesh-worker"></span><a class="reference internal image-reference" href="../_images/mesh-worker.png"><img alt="../_images/mesh-worker.png" src="../_images/mesh-worker.png" style="width: 350px;" /></a>
 <figcaption>
@@ -237,11 +232,6 @@ Despite the compilation passes for distributed execution, <a class="reference ex
 <h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline"></a></h2>
 <p>Alpa implements a <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/alpa/pipeline_parallel/decentralized_distributed_runtime.py">runtime</a> to orchestrate the inter-op parallel execution of different stages on these meshes.
 For each stage, Alpa uses the GSPMD runtime to parallelize its execution on its assigned device mesh, following the intra-op parallelism execution plan generated by the intra-op pass.</p>
-<p>Next, we will walk through the process of how the single-node code of an MLP, such as the <a class="reference external" href="tutorial/getting_started">MLP</a> in the tutorial  is converted to a distributed version by Alpa.</p>
-</section>
-<section id="walking-through-example-distributing-an-mlp">
-<h2>Walking-through Example: Distributing an MLP<a class="headerlink" href="#walking-through-example-distributing-an-mlp" title="Permalink to this headline"></a></h2>
-<p># TODO</p>
 </section>
 </section>
 
@@ -250,7 +240,7 @@ For each stage, Alpa uses the GSPMD runtime to parallelize its execution on its 
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../tutorials/icml_big_model_tutorial.html" class="btn btn-neutral float-left" title="ICML’22 Big Model Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../developer/developer_guide.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="alpa_compiler_walk_through.html" class="btn btn-neutral float-right" title="Alpa Compiler Walk-Through" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

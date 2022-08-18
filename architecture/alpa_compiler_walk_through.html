@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alpa Compiler Walk-Through &mdash; Alpa 0.1.6.dev1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/alpa-logo.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developer Guide" href="../developer/developer_guide.html" />
+    <link rel="prev" title="Design and Architecture" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Alpa
+          </a>
+              <div class="version">
+                0.1.6.dev1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Alpa Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/perf_tuning_guide.html">Performance Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/opt_serving.html">Serving OPT-175B using Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Design and Architecture</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Alpa Compiler Walk-Through</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#layer-construction">Layer Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stage-construction">Stage Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#auto-sharding">Auto Sharding</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer_guide.html">Developer Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Alpa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Alpa Compiler Walk-Through</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/alpa-projects/alpa/blob/main/docs/architecture/alpa_compiler_walk_through.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="alpa-compiler-walk-through">
+<span id="id1"></span><h1>Alpa Compiler Walk-Through<a class="headerlink" href="#alpa-compiler-walk-through" title="Permalink to this headline"></a></h1>
+<p>This document provides a walk-through of the compiler part of Alpa.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This document is based on the workflow as in <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/388594f">this commit</a>. While some specific details might not be the same as in the latest version, the general idea should be the same.</p>
+</div>
+<p>Starting from an arbitrary JAX function (i.e., computational graph) of a neural network training step, Alpa’s overall workflow includes the following steps:</p>
+<ol class="arabic simple">
+<li><p><strong>Layer construction:</strong> Cluster different operators in the
+computational graph into a sequential list of pipeline layers.</p></li>
+<li><p><strong>Stage construction:</strong> Cluster the pipeline layers into pipeline
+stages and assign each stage a subset of devices for pipeline
+execution (i.e., inter-operator parallelism).</p></li>
+<li><p><strong>Auto sharding:</strong> Figure out how to shard each operator within each pipeline stage on its corresponding devices with SPMD parallelism (i.e., intra-operator parallelism).</p></li>
+</ol>
+<p>Let’s start with the following code snippet:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ManualPipelineMLPModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@nn</span><span class="o">.</span><span class="n">compact</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># Use this boundary marker to separate the model into two stages.</span>
+        <span class="n">alpa</span><span class="o">.</span><span class="n">mark_pipeline_boundary</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">alpa</span><span class="o">.</span><span class="n">PipeshardParallel</span><span class="p">(</span><span class="n">num_micro_batches</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                                                <span class="n">layer_option</span><span class="o">=</span><span class="s2">&quot;manual&quot;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">manual_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+    <span class="c1"># Use `alpa.grad` here to slice the forward/backward stages and the</span>
+    <span class="c1"># gradient update stage</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">alpa</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_state</span>
+</pre></div>
+</div>
+<p>Compared to original JAX/Flax, this code snippet additionally calls <code class="docutils literal notranslate"><span class="pre">alpa.mark_pipeline</span></code>, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code>, and <code class="docutils literal notranslate"><span class="pre">alpa.grad</span></code>. Below, we will show how Alpa uses these functions and decorators to compile the original single device computational graph into a distributed version.</p>
+<section id="layer-construction">
+<h2>Layer Construction<a class="headerlink" href="#layer-construction" title="Permalink to this headline"></a></h2>
+<p>The first transformation we perform is in <code class="docutils literal notranslate"><span class="pre">alpa.grad</span></code>
+(<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/api.py#L213">link</a>)
+for layer construction. It is a thin wrapper of the original <code class="docutils literal notranslate"><span class="pre">jax.grad</span></code> in JAX,
+which additionally performs the following tasks:</p>
+<ol class="arabic simple">
+<li><p>Process pipeline markers to form forward pipeline layers.</p></li>
+<li><p>Call the original <code class="docutils literal notranslate"><span class="pre">jax.grad</span></code>. We directly use JAX’s autograd to map
+the forward layers to the backward layers.</p></li>
+<li><p>Mark all the gradients with a special marker so that we can perform
+gradient accumulation for them.</p></li>
+<li><p>Mark all the operators after the gradient computation as the
+gradient update phase.</p></li>
+</ol>
+<p>We form the pipeline layers by inserting pipeline markers into the JAX
+automatically or manually with user annotations.
+<code class="docutils literal notranslate"><span class="pre">layer_option=&quot;manual&quot;</span></code> in the code example above indicates that we
+are inserting the markers manually.</p>
+<p>The definition of pipeline markers can be found in
+<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/pipeline_parallel/primitive_def.py">primitive_def.py</a>.
+We define a new JAX primitive <code class="docutils literal notranslate"><span class="pre">pipeline_p</span></code> and an XLA custom call
+<code class="docutils literal notranslate"><span class="pre">pipeline_marker</span></code>. All these markers behave exactly the same as an
+identity function that returns all the input
+arguments.</p>
+<p>We distinguish between <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> markers. The <code class="docutils literal notranslate"><span class="pre">start</span></code>
+marker captures all the inputs to a pipeline layer, and the <code class="docutils literal notranslate"><span class="pre">end</span></code> marker captures the outputs. To preserve the forward/backward
+stage mapping, we set the gradient of a <code class="docutils literal notranslate"><span class="pre">start</span></code> marker to be an <code class="docutils literal notranslate"><span class="pre">end</span></code>
+marker, and the gradient of an <code class="docutils literal notranslate"><span class="pre">end</span></code> to be a <code class="docutils literal notranslate"><span class="pre">start</span></code>.</p>
+<p>A complete pipeline layer has the following structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marked_inputs</span> <span class="o">=</span> <span class="n">pipeline_marker</span><span class="p">[</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">]</span> <span class="n">layer_inputs</span>
+<span class="o">...</span>
+<span class="n">layer_outputs</span> <span class="o">=</span> <span class="n">some_jax_operator</span> <span class="n">marked_inputs</span>
+<span class="o">...</span>
+<span class="n">marked_outputs</span> <span class="o">=</span> <span class="n">pipeline_marker</span><span class="p">[</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="n">layer_outputs</span>
+</pre></div>
+</div>
+<p>Note that all the inputs of the JAX operators within the pipeline layer
+should take the marked inputs or the intermediate results within the
+layer. All the outputs of the layer will be marked by the <code class="docutils literal notranslate"><span class="pre">end</span></code>
+marker.</p>
+<p>In the manual case, we provide a simpler API that doesn’t require two
+markers for a stage and the users do not need to specify the input and
+output variables. Instead, the users only need to call
+<code class="docutils literal notranslate"><span class="pre">alpa.mark_pipeline_boundary</span></code> at the boundary of two pipeline layers.
+The <code class="docutils literal notranslate"><span class="pre">layer_level_jaxpr_transformation</span></code> function
+(<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/pipeline_parallel/layer_construction.py#L424-L432">link</a>)
+will transform it to the above form.</p>
+<p><strong>Note:</strong> Alpa can also perform rematerialization (i.e., gradient checkpointing) at these pipeline stage
+boundaries. See these functions:
+<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/pipeline_parallel/layer_construction.py#L475-L547">link</a>.</p>
+</section>
+<section id="stage-construction">
+<h2>Stage Construction<a class="headerlink" href="#stage-construction" title="Permalink to this headline"></a></h2>
+<p>The transformed function with layer markers is then transformed by
+<code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code>. The most important option of
+<code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> is <code class="docutils literal notranslate"><span class="pre">method</span></code>, which specifies which type of
+parallelism to use. Here we set it to <code class="docutils literal notranslate"><span class="pre">alpa.PipeshardParallel</span></code>,
+indicating that we are using both pipeline parallelism (inter-operator
+parallelism) and SPMD-shard parallelism (intra-operator parallelism).</p>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;alpa.parallelize</span></code> transforms the original function to a
+<code class="docutils literal notranslate"><span class="pre">ParallelizedFunc</span></code>. <code class="docutils literal notranslate"><span class="pre">ParallelizedFunc</span></code> is a Python class that
+behaves like the original function but with some additional methods.
+<code class="docutils literal notranslate"><span class="pre">ParallelizedFunc</span></code> flattens the input arguments, and will compile the
+JAX function according to the <code class="docutils literal notranslate"><span class="pre">method</span></code>. In our case, it eventually
+calls <code class="docutils literal notranslate"><span class="pre">compile_pipeshard_executable()</span></code>
+<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/pipeline_parallel/compile_executable.py#L42-L50">here</a>,
+which transforms the input as follows:</p>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">compile_pipeshard_executable</span></code> first traces the original function
+to JAXPR. Note that we trace the function with both full batch size
+and the smaller micro-batch size for gradient accumulation. Then we
+call into <code class="docutils literal notranslate"><span class="pre">compile_pipeshard_executable_internal</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">split_compute_grad_and_apply_grad</span></code> splits the <code class="docutils literal notranslate"><span class="pre">apply_grad</span></code> part
+from the rest of the function. There is a special transformation for
+the case where a single parameter <code class="docutils literal notranslate"><span class="pre">x</span></code> is used in multiple pipeline
+layers <code class="docutils literal notranslate"><span class="pre">l1(x)</span></code>, <code class="docutils literal notranslate"><span class="pre">l2(x)</span></code>, … For example in language models’ tied-embedding layer, the embedding matrix is used by both the first
+and the last stage. In this case, the backward pass of JAX will
+generate some equations that are not captured by pipeline markers to
+calculate the gradient to <code class="docutils literal notranslate"><span class="pre">x</span></code>: <code class="docutils literal notranslate"><span class="pre">grad_x</span> <span class="pre">=</span> <span class="pre">grad_l1_x</span> <span class="pre">+</span> <span class="pre">grad_l2_x</span></code>.
+We move these kinds of equations to the <code class="docutils literal notranslate"><span class="pre">apply_grad</span></code> part and let
+each layer perform gradient accumulation separately.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_grad_to_accumulate_grad</span></code> transforms the original
+a <code class="docutils literal notranslate"><span class="pre">compute_grad</span></code> JAXPR that only computes gradient to
+an <code class="docutils literal notranslate"><span class="pre">accumulate_grad</span></code> JAXPR that performs gradient accumulation. More
+specifically, the structure of <code class="docutils literal notranslate"><span class="pre">accumulate_grad</span></code> is shown in the following pseudo-code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">accumulate_grad</span><span class="p">(</span><span class="n">compute_grad_inputs</span><span class="p">,</span> <span class="n">accumulated_grad</span><span class="p">):</span>
+    <span class="n">grad</span> <span class="o">=</span> <span class="n">compute_grad</span><span class="p">(</span><span class="n">compute_grad_inputs</span><span class="p">)</span>
+  <span class="n">accumulated_grad</span> <span class="o">+=</span> <span class="n">grad</span>
+    <span class="k">return</span> <span class="n">accumulated_grad</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">+=</span></code> above is only correct when the gradients can be
+summed up. When the output is per input data (e.g., inference
+output), we use <code class="docutils literal notranslate"><span class="pre">concat</span></code> instead of <code class="docutils literal notranslate"><span class="pre">+=</span></code>. The analysis of which
+operator to use is done in <code class="docutils literal notranslate"><span class="pre">_get_full_batch_apply_grad</span></code> by
+comparing full-batch and micro-batch codes.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slice_closed_jaxpr_by_full_pipeline_marks</span></code> slices the
+<code class="docutils literal notranslate"><span class="pre">accumulate_grad</span></code> JAXPR into many pipeline layers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mark_missing_vars_in_backward_computation_pipeline_marks</span></code>. When
+JAX derives the backward JAXPR, the backward layer will directly use
+the intermediate results of the forward layer instead of adding it
+to the backward layer’s start pipeline marker. This function fixes
+this issue. In addition, it removes all <code class="docutils literal notranslate"><span class="pre">Literal</span></code> in start markers
+and all <code class="docutils literal notranslate"><span class="pre">DropVar</span></code> in end markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cluster_layers_and_slice_mesh</span></code> performs stage construction. it
+clusters different pipeline layers into pipeline stages, slice the
+compute cluster represented as a 2D device mesh into many submeshes,
+and assign each stage a submesh. Right now, a forward layer and its
+corresponding backward layer will always be on the same submesh. See
+the full automatic algorithm in <a class="reference external" href="https://arxiv.org/abs/2201.12023">the Alpa paper</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">process_apply_gradient</span></code> splits the single <code class="docutils literal notranslate"><span class="pre">apply_grad</span></code> JAXPR into
+#submeshes parts, each part processes the gradient updates and
+optimizer states related to the variables on a specific submesh.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_donation_mapping</span></code> and <code class="docutils literal notranslate"><span class="pre">split_donate_invars</span></code>: Process
+donated invars for each pipeline stage, and also add donation variables for gradient accumulation.</p></li>
+</ol>
+</section>
+<section id="auto-sharding">
+<h2>Auto Sharding<a class="headerlink" href="#auto-sharding" title="Permalink to this headline"></a></h2>
+<p>Then, in <code class="docutils literal notranslate"><span class="pre">shard_each_stage</span></code> we run the auto-sharding pass for each
+pipeline stage. Because we include distributed compilation for
+different stages to accelerate the compilation, the code is nested here.
+Specifically, the following two functions are the two most important ones:</p>
+<ol class="arabic simple">
+<li><p>In <code class="docutils literal notranslate"><span class="pre">generate_sharded_xla_computations_arguments</span></code>
+(<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/pipeline_parallel/computation.py#L827">code</a>),
+we concat the JAXPRs of all stages on a submesh (which typically
+include forward/backward/update of a single stage) and compile it to
+an <code class="docutils literal notranslate"><span class="pre">HLOModule</span></code>.</p></li>
+<li><p>Then we call <code class="docutils literal notranslate"><span class="pre">run_auto_sharding_pass</span></code>
+(<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/shard_parallel/auto_sharding.py#L183">code</a>),
+which eventually calls <code class="docutils literal notranslate"><span class="pre">RunAutoShardingPass</span></code> we wrote in XLA
+(<a class="reference external" href="https://github.com/alpa-projects/tensorflow-alpa/blob/445b4588a93c01a155053d6b77f4621b5f704a68/tensorflow/compiler/xla/service/spmd/alpa_compile.cc#L89-L90">code</a>).
+This XLA function:</p>
+<ol class="arabic simple">
+<li><p>First run a subset of XLA passes before SPMD partitioner.</p></li>
+<li><p>Then we run the Alpa <code class="docutils literal notranslate"><span class="pre">AutoSharding</span></code> pass
+(<a class="reference external" href="https://github.com/alpa-projects/tensorflow-alpa/blob/445b4588a93c01a155053d6b77f4621b5f704a68/tensorflow/compiler/xla/service/spmd/auto_sharding.cc">code</a>)
+that automatically annotate the graph with GSPMD annotations.</p></li>
+<li><p>Then run the <code class="docutils literal notranslate"><span class="pre">SliceAutoShardedStages</span></code> pass
+(<a class="reference external" href="https://github.com/alpa-projects/tensorflow-alpa/blob/445b4588a93c01a155053d6b77f4621b5f704a68/tensorflow/compiler/xla/service/spmd/slice_auto_sharded_stages.cc">code</a>)
+that slices the concated stages back to individual stages, and
+return these stages back to Python.</p></li>
+</ol>
+</li>
+</ol>
+<p>The result of <code class="docutils literal notranslate"><span class="pre">shard_each_stage</span></code> will be a list of SPMD sharded
+pipeline stages. Then the whole pipeline and sharding execution schedule
+will be summarized and organized via a <code class="docutils literal notranslate"><span class="pre">PipelineInstEmitter</span></code>
+(<a class="reference external" href="https://github.com/alpa-projects/alpa/blob/388594f00d1ee0fe4dc0d51c2d8567da13226fdf/alpa/pipeline_parallel/compile_executable.py#L221-L233">code</a>).
+The result <code class="docutils literal notranslate"><span class="pre">pipeshard_config</span></code> will be sent to the runtime to be
+executed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To debug and visualize each step, you can debug via simply adding print instructions to the JAXPR in Python or the HLO in XLA.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="Design and Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../developer/developer_guide.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alpa Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
