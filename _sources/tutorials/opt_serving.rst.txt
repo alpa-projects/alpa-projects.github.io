@@ -218,10 +218,10 @@ Launch the web server:
 
 .. code:: shell
 
-  # Serve the OPT-175B model at port 10001
-  python3 interactive_hosted.py --model alpa/opt-175b --port 10001 --path [PATH_TO_WEIGHT]
+  # Serve the OPT-175B model at port 20001
+  python3 interactive_hosted.py --model alpa/opt-175b --port 20001 --path [PATH_TO_WEIGHT]
 
-Then open ``https://[IP-ADDRESS]:10001`` in your browser to try out the model!
+Then open ``https://[IP-ADDRESS]:20001`` in your browser to try out the model!
 
 Code structure
 ==============
