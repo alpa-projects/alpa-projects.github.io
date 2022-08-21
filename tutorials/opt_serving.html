@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.1.6.dev3 documentation</title>
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.1.6.dev9 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.6.dev3
+                0.1.6.dev9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -66,7 +66,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#run-and-benchmark-generation-in-the-command-line">Run and Benchmark Generation in the Command Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a Web Server to Serve the OPT Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#code-structure">Code structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#improving-generation-speed">Improving Generation Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-structure">Code Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
@@ -148,13 +149,12 @@ Pick an appropriate size from <a class="reference external" href="https://github
 
 <span class="c1"># Load the model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;alpa/opt-2.7b&quot;</span><span class="p">,</span>
-                  <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">,</span>
                   <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/home/ubuntu/opt_weights/&quot;</span><span class="p">)</span>
 
 <span class="c1"># Generate</span>
 <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;Paris is the capital city of&quot;</span>
 
-<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">)</span>
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">input_ids</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">generated_string</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">batch_decode</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -328,8 +328,20 @@ python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">20001
 </div>
 <p>Then open <code class="docutils literal notranslate"><span class="pre">https://[IP-ADDRESS]:20001</span></code> in your browser to try out the model!</p>
 </section>
+<section id="improving-generation-speed">
+<h2>Improving Generation Speed<a class="headerlink" href="#improving-generation-speed" title="Permalink to this headline"></a></h2>
+<p>Here are some tips for improving the generation speed.</p>
+<ol class="arabic simple">
+<li><p>Batching. Single sequence generation cannot fully utilize the GPU power.
+Applying batching can greatly boost the performace. See <code class="docutils literal notranslate"><span class="pre">textgen_demo.py</span></code> for the usage.</p></li>
+<li><p>Tune the <code class="docutils literal notranslate"><span class="pre">encoder_chunk_sizes</span></code> argument of <code class="docutils literal notranslate"><span class="pre">get_model</span></code>.
+Alpa compiles multiple executables and uses these executables to encode a prompt chunk by chunk. This argument controls the possible chunk sizes. Depending on the length of your prompt, you can try different combinations. For example, if your prompt lengths are around 1000-1500, a good combination is <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">256,</span> <span class="pre">1024]</span></code>.</p></li>
+<li><p>Tune parallelization strategy. If you are familiar with alpa, you can tune the <code class="docutils literal notranslate"><span class="pre">method</span></code> argument of <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> and try different parallelization methods.</p></li>
+</ol>
+<p>If you find the generation speed too slow and want to accelerate it, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> and tell us your use cases. We are acitvely working on improving the performance.</p>
+</section>
 <section id="code-structure">
-<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this headline"></a></h2>
+<h2>Code Structure<a class="headerlink" href="#code-structure" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/benchmark">examples/opt_serving/benchmark</a>: Benchmark scripts for generation in the command line.</p></li>
 <li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/dataset">examples/opt_serving/dataset</a>: Data loaders for serving.</p></li>
