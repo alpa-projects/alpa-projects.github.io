@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.1.6.dev9 documentation</title>
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.1.6.dev12 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.6.dev9
+                0.1.6.dev12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -59,9 +59,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-alpa-compatible-opt-weights">Get Alpa-compatible OPT Weights</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#convert-weights-into-alpa-formats-by-yourself">Convert weights into Alpa formats by yourself</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#download-alpa-compatible-weights">Download Alpa-compatible weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convert-weights-format">Convert Weights Format</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convert-opt-175b-weights-into-alpa-formats">Convert OPT-175B weights into Alpa formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#converted-weights-for-other-models">Converted weights for other models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#copy-weights-to-multiple-nodes">Copy Weights to Multiple Nodes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#run-and-benchmark-generation-in-the-command-line">Run and Benchmark Generation in the Command Line</a></li>
@@ -147,9 +148,8 @@ Pick an appropriate size from <a class="reference external" href="https://github
 <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;facebook/opt-30b&quot;</span><span class="p">,</span> <span class="n">use_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tokenizer</span><span class="o">.</span><span class="n">add_bos_token</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="c1"># Load the model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;alpa/opt-2.7b&quot;</span><span class="p">,</span>
-                  <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/home/ubuntu/opt_weights/&quot;</span><span class="p">)</span>
+<span class="c1"># Load the model. Alpa automatically downloads the weights to the specificed path</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;alpa/opt-2.7b&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;~/opt_weights/&quot;</span><span class="p">)</span>
 
 <span class="c1"># Generate</span>
 <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;Paris is the capital city of&quot;</span>
@@ -194,13 +194,15 @@ pip3 install -e .
 </div>
 </div></blockquote>
 </section>
-<section id="get-alpa-compatible-opt-weights">
-<h2>Get Alpa-compatible OPT Weights<a class="headerlink" href="#get-alpa-compatible-opt-weights" title="Permalink to this headline"></a></h2>
-<p>There are two ways to obtain Alpa-compatible OPT weights: converting the weights by yourself or downloading a copy of processed weights provided by the Alpa team.</p>
-<section id="convert-weights-into-alpa-formats-by-yourself">
-<span id="process-weights"></span><h3>Convert weights into Alpa formats by yourself<a class="headerlink" href="#convert-weights-into-alpa-formats-by-yourself" title="Permalink to this headline"></a></h3>
-<p>We provide detailed instructions below on how to convert the original OPT-175B weights into Alpa-compatible formats.
-For processing other sizes of OPT (125M - 66B), you can skip Step 1 and start from <a class="reference internal" href="#download-singleton"><span class="std std-ref">the latter part of Step 2</span></a>.</p>
+<section id="convert-weights-format">
+<h2>Convert Weights Format<a class="headerlink" href="#convert-weights-format" title="Permalink to this headline"></a></h2>
+<p>The weights of OPT 125M–66B models are publicly available. Huggingface hosts copies of these weights.
+For OPT 125M–66B, you <strong>do not need</strong> to download or convert the weights manually. Alpa will automatically download the weights from huggingface to the given path if Alpa cannot find cached weights locally.</p>
+<p>The weights of OPT-175B can be got from meta by filling a <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">request form</a> .
+You then need to manually convert the obtained weights into Alpa format.</p>
+<section id="convert-opt-175b-weights-into-alpa-formats">
+<h3>Convert OPT-175B weights into Alpa formats<a class="headerlink" href="#convert-opt-175b-weights-into-alpa-formats" title="Permalink to this headline"></a></h3>
+<p>We provide detailed instructions below on how to convert the original OPT-175B weights into Alpa-compatible formats. You can skip this section if you only want to run smaller models.</p>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -235,24 +237,6 @@ Please make sure your RAM is sufficient to run the script without throwing an OO
 <p>The above script will save the model weights as a single consolidated checkpoint at <code class="docutils literal notranslate"><span class="pre">PATH_TO_SAVE_CHECKPOINT</span></code>, hence will require at least 350GB disk space available.</p>
 </div>
 </div></blockquote>
-<blockquote id="download-singleton">
-<div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you use Alpa to target smaller versions of OPT (125M, 350M, 1.3B, 2.7B, 6.7B, 13B, 30B), you can skip the above procedures
-and download the consolidated singleton checkpoint using the links below, then proceed to the next step.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference external" href="https://huggingface.co/patrickvonplaten/opt_metaseq_125m/blob/main/model/restored.pt">OPT-125M</a></p></li>
-<li><p><a class="reference external" href="https://dl.fbaipublicfiles.com/opt/v1_20220502/350m/reshard.pt">OPT-350M</a></p></li>
-<li><p><a class="reference external" href="https://huggingface.co/patrickvonplaten/opt_metaseq_1300m/blob/main/model/restored.pt">OPT-1.3B</a></p></li>
-<li><p><a class="reference external" href="https://huggingface.co/patrickvonplaten/opt_metaseq_2700m/blob/main/model/restored.pt">OPT-2.7B</a></p></li>
-<li><p><a class="reference external" href="https://huggingface.co/patrickvonplaten/opt_metaseq_6700m/blob/main/model/restored.pt">OPT-6.7B</a></p></li>
-<li><p><a class="reference external" href="https://huggingface.co/patrickvonplaten/opt_metaseq_13000m/blob/main/model/restored.pt">OPT-13B</a></p></li>
-<li><p><a class="reference external" href="https://huggingface.co/patrickvonplaten/opt_metaseq_30000m/blob/main/model/restored.pt">OPT-30B</a></p></li>
-</ul>
-</div></blockquote>
-</div>
-</div></blockquote>
 <ol class="arabic" start="3">
 <li><dl>
 <dt>Convert the single checkpoint into Alpa-compatible formats</dt><dd><p>Alpa ingests weights simply from numpy formats. Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/scripts/step_3_convert_to_numpy_weights.py">step_3_convert_to_numpy_weights.py</a> to convert the
@@ -272,9 +256,9 @@ single checkpoint into numpy formats:</p>
 </div>
 </div></blockquote>
 </section>
-<section id="download-alpa-compatible-weights">
-<h3>Download Alpa-compatible weights<a class="headerlink" href="#download-alpa-compatible-weights" title="Permalink to this headline"></a></h3>
-<p>Alternatively, we provide links to download the preprocessed 125M, 2.7B, 30B model weights below.</p>
+<section id="converted-weights-for-other-models">
+<h3>Converted weights for other models<a class="headerlink" href="#converted-weights-for-other-models" title="Permalink to this headline"></a></h3>
+<p>You do not need to download the weights manually for OPT 125M–66B. However, if you have trouble with the automatic downloading or huggingface. We also provide the converted weights for the following models.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference external" href="https://drive.google.com/file/d/1Ps7DFD80wNO7u2t39YCYcBX-9XwypGzl/view?usp=sharing">OPT-125M weights</a></p></li>
@@ -282,9 +266,15 @@ single checkpoint into numpy formats:</p>
 <li><p><a class="reference external" href="https://drive.google.com/file/d/1_MBcgwTqHFboV0JkGWR03AOHusrxcHlu/view?usp=sharing">OPT-30B weights</a></p></li>
 </ul>
 </div></blockquote>
-<p>Due to Meta’s license on the OPT-175B model, we are not able to provide public links for downloading the preprocessed OPT-175B weights.
-If you need the weights for other model sizes but have trouble following <a class="reference internal" href="#process-weights"><span class="std std-ref">the guide</span></a> to perform the conversion by yourself,
-please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> to request a copy from the Alpa developer team.</p>
+</section>
+<section id="copy-weights-to-multiple-nodes">
+<h3>Copy Weights to Multiple Nodes<a class="headerlink" href="#copy-weights-to-multiple-nodes" title="Permalink to this headline"></a></h3>
+<p>If you want to run on multiple nodes, you can use one of the following methods.</p>
+<ol class="arabic simple">
+<li><p>Put the weights under a shared network file system, so all nodes can access it.</p></li>
+<li><p>Run the script first on a driver node. The driver node will download the weights to its local disk, but the script will fail later because worker nodes cannot access the weights.
+You can then manually copy all downloaded weights under <code class="docutils literal notranslate"><span class="pre">path</span></code> from the driver node to all worker nodes.</p></li>
+</ol>
 </section>
 </section>
 <section id="run-and-benchmark-generation-in-the-command-line">
@@ -298,7 +288,7 @@ python3 benchmark_text_gen.py --model facebook/opt-125m --debug
 </div>
 </li>
 <li><p>Run generation using the 125M model with JAX backend on a single GPU:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model jax/opt-125m --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model jax/opt-125m --debug
 </pre></div>
 </div>
 </li>
@@ -306,14 +296,14 @@ python3 benchmark_text_gen.py --model facebook/opt-125m --debug
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start ray on the node</span>
 ray start --head
 
-python3 benchmark_text_gen.py --model alpa/opt-2.7b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
+python3 benchmark_text_gen.py --model alpa/opt-2.7b --debug
 </pre></div>
 </div>
 </li>
 <li><p>Run distributed generation using the 175B model with Alpa on a cluster of GPU nodes.
 Note you will need &gt;350GB total GPU memory in the entire cluster to successfully run the inference.</p>
 <p>Before running the command below, start Ray on the cluster following <a class="reference external" href="https://docs.ray.io/en/latest/cluster/cloud.html#manual-cluster">this guide</a>. You can check the cluster status by <code class="docutils literal notranslate"><span class="pre">ray</span> <span class="pre">status</span></code>. You should be able to see all GPUs and all nodes in the output.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model alpa/opt-175b --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span> --debug
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model alpa/opt-175b --debug
 </pre></div>
 </div>
 </li>
@@ -323,7 +313,7 @@ Note you will need &gt;350GB total GPU memory in the entire cluster to successfu
 <h2>Launch a Web Server to Serve the OPT Models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this headline"></a></h2>
 <p>Launch the web server:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Serve the OPT-175B model at port 20001</span>
-python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">20001</span> --path <span class="o">[</span>PATH_TO_WEIGHT<span class="o">]</span>
+python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">20001</span>
 </pre></div>
 </div>
 <p>Then open <code class="docutils literal notranslate"><span class="pre">https://[IP-ADDRESS]:20001</span></code> in your browser to try out the model!</p>
