@@ -173,7 +173,8 @@ You might also find the discussion under `Issue #452 <https://github.com/alpa-pr
 Jaxlib, Jax, Flax Version Problems
 ##################################
 Alpa is only tested against specific versions of Jax and Flax.
-The recommended Jax and Flax versions are specified in `setup.py <https://github.com/alpa-projects/alpa/blob/main/setup.py>`_
+The recommended Jax and Flax versions are specified by the ``install_require_list`` in `setup.py <https://github.com/alpa-projects/alpa/blob/main/setup.py>`_ .
+(You can checkout the file to specific version tag if you are not using the latest HEAD.)
 
 If you see version errors like below
 
@@ -183,8 +184,8 @@ If you see version errors like below
     ......
     RuntimeError: jaxlib version 0.3.7 is newer than and incompatible with jax version 0.3.5. Please update your jax and/or jaxlib packages
 
-Make sure your Jax, Flax and Optax/Chex versions are compatible with the verions specified in Alpa's ``setup.py``.
-Make sure you re-install **Alpa-modified Jaxlib** by either using :ref:`our prebuilt wheels<install-from-wheels>` or :ref:`Install from Source<install-from-source>`.
+Make sure your Jax, Flax and Optax/Chex versions are compatible with the versions specified in Alpa's ``setup.py``.
+Make sure you re-install **Alpa-modified Jaxlib** by either using :ref:`our prebuilt wheels<install-from-wheels>` or :ref:`Install from Source<install-from-source>` to overwrite the default Jaxlib.
 
 Numpy Version Problems
 #######################

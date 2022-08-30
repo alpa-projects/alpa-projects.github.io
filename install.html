@@ -277,15 +277,16 @@ The users need to adjust the value for the argument <code class="docutils litera
 <section id="jaxlib-jax-flax-version-problems">
 <h3>Jaxlib, Jax, Flax Version Problems<a class="headerlink" href="#jaxlib-jax-flax-version-problems" title="Permalink to this headline"></a></h3>
 <p>Alpa is only tested against specific versions of Jax and Flax.
-The recommended Jax and Flax versions are specified in <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/setup.py">setup.py</a></p>
+The recommended Jax and Flax versions are specified by the <code class="docutils literal notranslate"><span class="pre">install_require_list</span></code> in <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/setup.py">setup.py</a> .
+(You can checkout the file to specific version tag if you are not using the latest HEAD.)</p>
 <p>If you see version errors like below</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; import alpa
   ......
   RuntimeError: jaxlib version <span class="m">0</span>.3.7 is newer than and incompatible with jax version <span class="m">0</span>.3.5. Please update your jax and/or jaxlib packages
 </pre></div>
 </div>
-<p>Make sure your Jax, Flax and Optax/Chex versions are compatible with the verions specified in Alpa’s <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.
-Make sure you re-install <strong>Alpa-modified Jaxlib</strong> by either using <a class="reference internal" href="#install-from-wheels"><span class="std std-ref">our prebuilt wheels</span></a> or <a class="reference internal" href="#install-from-source"><span class="std std-ref">Install from Source</span></a>.</p>
+<p>Make sure your Jax, Flax and Optax/Chex versions are compatible with the versions specified in Alpa’s <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.
+Make sure you re-install <strong>Alpa-modified Jaxlib</strong> by either using <a class="reference internal" href="#install-from-wheels"><span class="std std-ref">our prebuilt wheels</span></a> or <a class="reference internal" href="#install-from-source"><span class="std std-ref">Install from Source</span></a> to overwrite the default Jaxlib.</p>
 </section>
 <section id="numpy-version-problems">
 <h3>Numpy Version Problems<a class="headerlink" href="#numpy-version-problems" title="Permalink to this headline"></a></h3>
