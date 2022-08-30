@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.1.6.dev21 documentation</title>
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.1.6.dev20 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.6.dev21
+                0.1.6.dev20
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -65,9 +65,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#copy-weights-to-multiple-nodes">Copy Weights to Multiple Nodes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#run-generation-in-the-command-line">Run Generation in the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-and-benchmark-generation-in-the-command-line">Run and Benchmark Generation in the Command Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a Web Server to Serve the OPT Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#improving-generation-speed">Improving Generation Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-structure">Code Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
@@ -268,7 +269,7 @@ single checkpoint into numpy formats:</p>
 </section>
 <section id="copy-weights-to-multiple-nodes">
 <h3>Copy Weights to Multiple Nodes<a class="headerlink" href="#copy-weights-to-multiple-nodes" title="Permalink to this headline"></a></h3>
-<p>If you want to run the model on multiple nodes, you can use one of the following methods to copy the weights to all nodes.</p>
+<p>If you want to run on multiple nodes, you can use one of the following methods.</p>
 <ol class="arabic simple">
 <li><p>Put the weights under a shared network file system, so all nodes can access it.</p></li>
 <li><p>Run the script first on a driver node. The driver node will download the weights to its local disk, but the script will fail later because worker nodes cannot access the weights.
@@ -276,17 +277,18 @@ You can then manually copy all downloaded weights under <code class="docutils li
 </ol>
 </section>
 </section>
-<section id="run-generation-in-the-command-line">
-<h2>Run Generation in the Command Line<a class="headerlink" href="#run-generation-in-the-command-line" title="Permalink to this headline"></a></h2>
+<section id="run-and-benchmark-generation-in-the-command-line">
+<h2>Run and Benchmark Generation in the Command Line<a class="headerlink" href="#run-and-benchmark-generation-in-the-command-line" title="Permalink to this headline"></a></h2>
 <p>The code of this tutorial is under <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving">examples/opt_serving</a>.</p>
 <ul>
 <li><p>Run generation using the 125M model with PyTorch/HuggingFace backend on a single GPU:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 textgen.py --model facebook/opt-125m
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> opt_serving/benchmark
+python3 benchmark_text_gen.py --model facebook/opt-125m --debug
 </pre></div>
 </div>
 </li>
 <li><p>Run generation using the 125M model with JAX backend on a single GPU:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 textgen.py --model jax/opt-125m
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model jax/opt-125m --debug
 </pre></div>
 </div>
 </li>
@@ -294,14 +296,14 @@ You can then manually copy all downloaded weights under <code class="docutils li
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start ray on the node</span>
 ray start --head
 
-python3 textgen.py --model alpa/opt-2.7b
+python3 benchmark_text_gen.py --model alpa/opt-2.7b --debug
 </pre></div>
 </div>
 </li>
 <li><p>Run distributed generation using the 175B model with Alpa on a cluster of GPU nodes.
 Note you will need &gt;350GB total GPU memory in the entire cluster to successfully run the inference.</p>
 <p>Before running the command below, start Ray on the cluster following <a class="reference external" href="https://docs.ray.io/en/latest/cluster/cloud.html#manual-cluster">this guide</a>. You can check the cluster status by <code class="docutils literal notranslate"><span class="pre">ray</span> <span class="pre">status</span></code>. You should be able to see all GPUs and all nodes in the output.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 textgen.py --model alpa/opt-175b
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 benchmark_text_gen.py --model alpa/opt-175b --debug
 </pre></div>
 </div>
 </li>
@@ -321,12 +323,21 @@ python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">20001
 <p>Here are some tips for improving the generation speed.</p>
 <ol class="arabic simple">
 <li><p>Batching. Single sequence generation cannot fully utilize the GPU power.
-Applying batching can greatly boost the performace. See <code class="docutils literal notranslate"><span class="pre">textgen.py</span></code> for the usage.</p></li>
+Applying batching can greatly boost the performace. See <code class="docutils literal notranslate"><span class="pre">textgen_demo.py</span></code> for the usage.</p></li>
 <li><p>Tune the <code class="docutils literal notranslate"><span class="pre">encoder_chunk_sizes</span></code> argument of <code class="docutils literal notranslate"><span class="pre">get_model</span></code>.
 Alpa compiles multiple executables and uses these executables to encode a prompt chunk by chunk. This argument controls the possible chunk sizes. Depending on the length of your prompt, you can try different combinations. For example, if your prompt lengths are around 1000-1500, a good combination is <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">256,</span> <span class="pre">1024]</span></code>.</p></li>
 <li><p>Tune parallelization strategy. If you are familiar with alpa, you can tune the <code class="docutils literal notranslate"><span class="pre">method</span></code> argument of <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> and try different parallelization methods.</p></li>
 </ol>
 <p>If you find the generation speed too slow and want to accelerate it, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> and tell us your use cases. We are acitvely working on improving the performance.</p>
+</section>
+<section id="code-structure">
+<h2>Code Structure<a class="headerlink" href="#code-structure" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/benchmark">examples/opt_serving/benchmark</a>: Benchmark scripts for generation in the command line.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/service">examples/opt_serving/service</a>: Model serving web server.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/examples/opt_serving/generator.py">examples/opt_serving/generator.py</a>: Backend for web server.</p></li>
+<li><p><a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/examples/opt_serving/interactive_hosted.py">examples/opt_serving/interactive_hosted.py</a>: Web server entry point.</p></li>
+</ul>
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline"></a></h2>
