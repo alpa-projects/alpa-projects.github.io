@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Install Alpa &mdash; Alpa 0.1.6.dev12 documentation</title>
+  <title>Install Alpa &mdash; Alpa 0.1.6.dev21 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.6.dev12
+                0.1.6.dev21
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -205,7 +205,7 @@ pip3 install -e <span class="s2">&quot;.[dev]&quot;</span>  <span class="c1"># N
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> build_jaxlib
-python3 build/build.py --enable_cuda --dev_install --tf_path<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/../third_party/tensorflow-alpa
+python3 build/build.py --enable_cuda --dev_install --bazel_options<span class="o">=</span>--override_repository<span class="o">=</span><span class="nv">org_tensorflow</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/../third_party/tensorflow-alpa
 <span class="nb">cd</span> dist
 
 pip3 install -e .
@@ -216,7 +216,7 @@ pip3 install -e .
 <p class="admonition-title">Note</p>
 <p>All installations are in development mode, so you can modify python code and it will take effect immediately.
 To modify c++ code in tensorflow, you only need to run the command below from step 3 to recompile jaxlib:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>python3 build/build.py --enable_cuda --dev_install --tf_path=$(pwd)/../third_party/tensorflow-alpa
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>python3 build/build.py --enable_cuda --dev_install --bazel_options=--override_repository=org_tensorflow=$(pwd)/../third_party/tensorflow-alpa
 </pre></div>
 </div>
 </div>
@@ -240,13 +240,14 @@ Alpa supports PyTorch models that meet the following requirements:</p>
 </ol>
 <p>To enable Alpa for PyTorch, install the following dependencies:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install nightly version of torch and torchdistx</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install torch and torchdistx</span>
 pip3 uninstall -y torch torchdistx
-pip install torch torchdistx --pre --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+pip install --extra-index-url https://download.pytorch.org/whl/cpu <span class="nv">torch</span><span class="o">==</span><span class="m">1</span>.12 torchdistx
 
 <span class="c1"># Build functorch from source</span>
 git clone https://github.com/pytorch/functorch
 <span class="nb">cd</span> functorch/
+git checkout 76976db8412b60d322c680a5822116ba6f2f762a
 python3 setup.py install
 </pre></div>
 </div>
@@ -275,23 +276,16 @@ The users need to adjust the value for the argument <code class="docutils litera
 </section>
 <section id="jaxlib-jax-flax-version-problems">
 <h3>Jaxlib, Jax, Flax Version Problems<a class="headerlink" href="#jaxlib-jax-flax-version-problems" title="Permalink to this headline"></a></h3>
-<p>Alpa is compatible with the following Jaxlib, Jax, and Flax versions:
-- Jax==0.3.5
-- Flax==0.4.1
-- Alpa-modified Jaxlib distributed at <a class="reference external" href="http://169.229.48.123:8080/simple/">self-hosted PyPI</a> or compiled from source.</p>
-<p>However, sometimes the users might have installed other versions of Jax-based neural network libraries, such as Flax or Optax in their environment, an incompatible version of
-Jaxlib or Jax will be automatically installed by pip, and the following error might appear when importing alpa:</p>
+<p>Alpa is only tested against specific versions of Jax and Flax.
+The recommended Jax and Flax versions are specified in <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/setup.py">setup.py</a></p>
+<p>If you see version errors like below</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; import alpa
   ......
   RuntimeError: jaxlib version <span class="m">0</span>.3.7 is newer than and incompatible with jax version <span class="m">0</span>.3.5. Please update your jax and/or jaxlib packages
 </pre></div>
 </div>
-<p>Make sure your jax version is 0.3.5, Flax version is 0.4.1 by reinstalling them following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install <span class="nv">jax</span><span class="o">==</span><span class="m">0</span>.3.5
-pip3 install <span class="nv">flax</span><span class="o">==</span><span class="m">0</span>.4.1
-</pre></div>
-</div>
-<p>Make sure you install <strong>Alpa-modified Jaxlib</strong> by either using <a class="reference internal" href="#install-from-wheels"><span class="std std-ref">our prebuilt wheels</span></a> or <a class="reference internal" href="#install-from-source"><span class="std std-ref">Install from Source</span></a>.</p>
+<p>Make sure your Jax, Flax and Optax/Chex versions are compatible with the verions specified in Alpa’s <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.
+Make sure you re-install <strong>Alpa-modified Jaxlib</strong> by either using <a class="reference internal" href="#install-from-wheels"><span class="std std-ref">our prebuilt wheels</span></a> or <a class="reference internal" href="#install-from-source"><span class="std std-ref">Install from Source</span></a>.</p>
 </section>
 <section id="numpy-version-problems">
 <h3>Numpy Version Problems<a class="headerlink" href="#numpy-version-problems" title="Permalink to this headline"></a></h3>
