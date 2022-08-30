@@ -173,7 +173,7 @@ You might also find the discussion under `Issue #452 <https://github.com/alpa-pr
 Jaxlib, Jax, Flax Version Problems
 ##################################
 Alpa is only tested against specific versions of Jax and Flax.
-The recommended Jax and Flax versions are specified by the ``install_require_list`` in `setup.py <https://github.com/alpa-projects/alpa/blob/main/setup.py>`_ .
+The recommended Jax and Flax versions are specified by ``install_require_list`` in `setup.py <https://github.com/alpa-projects/alpa/blob/main/setup.py>`_ .
 (You can checkout the file to specific version tag if you are not using the latest HEAD.)
 
 If you see version errors like below
