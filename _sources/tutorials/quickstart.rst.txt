@@ -274,8 +274,8 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 154.85 ms, Std: 0.34 ms
-    Alpa execution time.   Mean: 23.36 ms, Std: 0.24 ms
+    Serial execution time. Mean: 149.40 ms, Std: 0.15 ms
+    Alpa execution time.   Mean: 23.19 ms, Std: 0.38 ms
 
 
 
@@ -374,8 +374,8 @@ execution speed and memory usage of ``jax.pmap`` on the same 8-GPU machine.
 
  .. code-block:: none
 
-    Data parallel execution time. Mean: 33.75 ms, Std: 0.14 ms
-    Alpa execution time.          Mean: 23.36 ms, Std: 0.24 ms
+    Data parallel execution time. Mean: 33.83 ms, Std: 0.27 ms
+    Alpa execution time.          Mean: 23.19 ms, Std: 0.38 ms
 
     Data parallel execution per GPU memory usage: 3.76 GB
     Alpa execution per GPU memory usage:          0.50 GB
@@ -395,7 +395,7 @@ finds the best parallelization strategy.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  51.513 seconds)
+   **Total running time of the script:** ( 0 minutes  51.849 seconds)
 
 
 .. _sphx_glr_download_tutorials_quickstart.py:

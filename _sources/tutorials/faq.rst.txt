@@ -1,0 +1,21 @@
+Frequently Asked Questions (FAQ)
+================================
+
+How to control the GPU devices used by Alpa?
+--------------------------------------------
+
+Method 1: Use ``CUDA_VISIBLE_DEVICES``
+######################################
+``CUDA_VISIBLE_DEVICES`` works for alpa, but there are some caveats.
+If you use Ray cluster, you should not put ``CUDA_VISIBLE_DEVICES`` before the python script you run.
+You should apply this environment variable to ``ray start --head``. For example, ``CUDA_VISIBLE_DEVICES=0,1 ray start --head``.
+
+Method 2: Use arguments in ``alpa.init``
+########################################
+You can use the arguments of ``alpa.init`` to configure the number of devices to use.
+See the `docstring <https://github.com/alpa-projects/alpa/blob/62faf7129131b8e9f122ee7ef10d2a1800adba53/alpa/api.py#L24-L26>`_
+
+Method 3: Use other Ray features
+################################
+If you are familiar with Ray, you can use advanced Ray features
+like placement group.

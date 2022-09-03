@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ICML’22 Big Model Tutorial &mdash; Alpa 0.1.6.dev34 documentation</title>
+  <title>Performance Benchmark &mdash; Alpa 0.1.6.dev34 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -23,8 +23,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Frequently Asked Questions (FAQ)" href="faq.html" />
-    <link rel="prev" title="Serving OPT-175B using Alpa" href="opt_serving.html" /> 
+    <link rel="next" title="Design and Architecture" href="../architecture/overview.html" />
+    <link rel="prev" title="Frequently Asked Questions (FAQ)" href="../tutorials/faq.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,20 +48,20 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Install Alpa</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Alpa Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Alpa Quickstart</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
-<li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ICML’22 Big Model Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/perf_tuning_guide.html">Performance Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/opt_serving.html">Serving OPT-175B using Alpa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/faq.html">Frequently Asked Questions (FAQ)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Benchmark</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../benchmark/benchmark.html">Performance Benchmark</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Performance Benchmark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -87,9 +87,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>ICML’22 Big Model Tutorial</li>
+      <li>Performance Benchmark</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/alpa-projects/alpa/blob/main/docs/tutorials/icml_big_model_tutorial.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/alpa-projects/alpa/blob/main/docs/benchmark/benchmark.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -97,18 +97,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="icml-22-big-model-tutorial">
-<h1>ICML’22 Big Model Tutorial<a class="headerlink" href="#icml-22-big-model-tutorial" title="Permalink to this headline"></a></h1>
-<p>Alpa team ran a tutorial on training big models at ICML 2022. This tutorial covers background, concepts, and advanced reserach topics, which will be very helpful for understanding the design of Alpa.</p>
-<p>Recordings, slides, and demos are available at <a class="reference external" href="https://sites.google.com/view/icml-2022-big-model">https://sites.google.com/view/icml-2022-big-model</a></p>
-</section>
+  <section id="performance-benchmark">
+<h1>Performance Benchmark<a class="headerlink" href="#performance-benchmark" title="Permalink to this headline"></a></h1>
+<p>The figure below shows the scaling efficiency of Alpa on training models with billions of parameters on an AWS cluster.
+The instructions to reproduce the benchmark results is in this <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/benchmark/alpa/README.md">README.md</a>.
+The explanation of the results can be found in Section 8.1 of <a class="reference external" href="https://arxiv.org/pdf/2201.12023.pdf">Alpa paper</a>.</p>
+<figure class="align-center">
+<img alt="../_images/bench-paper.png" src="../_images/bench-paper.png" />
+</figure>
+<br></br></section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="opt_serving.html" class="btn btn-neutral float-left" title="Serving OPT-175B using Alpa" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions (FAQ)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../tutorials/faq.html" class="btn btn-neutral float-left" title="Frequently Asked Questions (FAQ)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../architecture/overview.html" class="btn btn-neutral float-right" title="Design and Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

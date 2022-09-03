@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alpa Quickstart &mdash; Alpa 0.1.6.dev23 documentation</title>
+  <title>Alpa Quickstart &mdash; Alpa 0.1.6.dev34 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.1.6.dev23
+                0.1.6.dev34
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -65,6 +65,11 @@
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Benchmark</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmark/benchmark.html">Performance Benchmark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -281,8 +286,8 @@ on a 8-GPU machine.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 154.85 ms, Std: 0.34 ms
-Alpa execution time.   Mean: 23.36 ms, Std: 0.24 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Serial execution time. Mean: 149.40 ms, Std: 0.15 ms
+Alpa execution time.   Mean: 23.19 ms, Std: 0.38 ms
 </pre></div>
 </div>
 </section>
@@ -347,8 +352,8 @@ execution speed and memory usage of <code class="docutils literal notranslate"><
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Data parallel execution time. Mean: 33.75 ms, Std: 0.14 ms
-Alpa execution time.          Mean: 23.36 ms, Std: 0.24 ms
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Data parallel execution time. Mean: 33.83 ms, Std: 0.27 ms
+Alpa execution time.          Mean: 23.19 ms, Std: 0.38 ms
 
 Data parallel execution per GPU memory usage: 3.76 GB
 Alpa execution per GPU memory usage:          0.50 GB
@@ -360,7 +365,7 @@ This is because data parallelism only works well if the activation size is much
 larger than the model size, which is not the case in this benchmark.
 In contrast, <code class="docutils literal notranslate"><span class="pre">alpa.parallelize</span></code> analyzes the computational graph and
 finds the best parallelization strategy.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  51.513 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  51.849 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-quickstart-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a526f4c21167c30e565f6eef2922968a/quickstart.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">quickstart.py</span></code></a></p>
