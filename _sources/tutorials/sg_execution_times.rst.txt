@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**02:21.809** total execution time for **tutorials** files:
+**02:25.280** total execution time for **tutorials** files:
 
 +-----------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_pipeshard_parallelism.py` (``pipeshard_parallelism.py``) | 02:21.809 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_pipeshard_parallelism.py` (``pipeshard_parallelism.py``) | 02:25.280 | 0.0 MB |
 +-----------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_alpa_vs_pmap.py` (``alpa_vs_pmap.py``)                   | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------+-----------+--------+
