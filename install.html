@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Install Alpa &mdash; Alpa 0.2.0 documentation</title>
+  <title>Install Alpa &mdash; Alpa 0.2.0.dev6 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.0
+                0.2.0.dev6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -217,6 +217,13 @@ pip3 install -e .
 </pre></div>
 </div>
 </div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Building the latest Alpa-modified jaxlib requires new C++17 standards. It is known that some compiler versions such as <code class="docutils literal notranslate"><span class="pre">gcc===7.3</span></code> or <code class="docutils literal notranslate"><span class="pre">gcc==9.4</span></code> cannot correctly compile the jaxlib code.
+See <a class="reference external" href="https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90415">this thread</a> about the know issues.</p>
+<p>If you meet compilation errors, please install our recommended gcc version <code class="docutils literal notranslate"><span class="pre">gcc==7.5</span></code>; newer gcc versions might also work.
+Then please clean the bazel caches and try to build jaxlib again.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>All installations are in development mode, so you can modify python code and it will take effect immediately.

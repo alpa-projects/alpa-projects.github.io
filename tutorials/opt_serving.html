@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.0 documentation</title>
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.0.dev6 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.0
+                0.2.0.dev6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -173,7 +173,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 <li><p>Install additional requirements for <code class="docutils literal notranslate"><span class="pre">opt_serving</span></code>:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install transformers flask cython omegaconf
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install transformers flask omegaconf
 
 <span class="c1"># Install torch corresponding to your CUDA version, e.g., for CUDA 11.3:</span>
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
@@ -245,7 +245,7 @@ Please make sure your RAM is sufficient to run the script without throwing an OO
 <li><dl>
 <dt>Convert the single checkpoint into Alpa-compatible formats</dt><dd><p>Alpa ingests weights simply from numpy formats. Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/scripts/step_3_convert_to_numpy_weights.py">step_3_convert_to_numpy_weights.py</a> to convert the
 single checkpoint into numpy formats:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 step_3_convert_to_numpy_weights.py --ckpt_path PATH_TO_SAVE_CHECKPOINT --output-folder OUTPUT_PATH
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 step_3_convert_to_numpy_weights.py --ckpt-path PATH_TO_SAVE_CHECKPOINT --output-folder OUTPUT_PATH
 </pre></div>
 </div>
 <p>The weights will be saved at the folder <code class="docutils literal notranslate"><span class="pre">OUTPUT_PATH</span></code> as specified in the command.</p>
