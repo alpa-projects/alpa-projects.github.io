@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.0.dev6 documentation</title>
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.0.dev8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.0.dev6
+                0.2.0.dev8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -145,7 +145,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 <h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
 <p>The code below shows how to use huggingface/transformers interface and Alpa distributed backend for large model inference.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
-<span class="kn">from</span> <span class="nn">opt_serving.model.wrapper</span> <span class="kn">import</span> <span class="n">get_model</span>
+<span class="kn">from</span> <span class="nn">llm_serving.model.wrapper</span> <span class="kn">import</span> <span class="n">get_model</span>
 
 <span class="c1"># Load the tokenizer. We have to use the 30B version because</span>
 <span class="c1"># other versions have some issues. The 30B version works for all OPT models.</span>
@@ -170,7 +170,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
 <ol class="arabic simple">
 <li><p>Install Alpa following the <a class="reference external" href="https://alpa-projects.github.io/install.html">installation guide</a>. You can either install by python wheel or build from source.</p></li>
-<li><p>Install additional requirements for <code class="docutils literal notranslate"><span class="pre">opt_serving</span></code>:</p></li>
+<li><p>Install additional requirements for <code class="docutils literal notranslate"><span class="pre">llm_serving</span></code>:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install transformers flask omegaconf
@@ -189,7 +189,7 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="4">
-<li><p>Install <code class="docutils literal notranslate"><span class="pre">opt_serving</span></code> package. Go to the examples folder and install the package.</p></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">llm_serving</span></code> package. Go to the examples folder and install the package.</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> alpa/examples
@@ -220,7 +220,7 @@ You then need to manually convert the obtained weights into Alpa format.</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Consolidate the weights from 992 shards into one single checkpoint</dt><dd><p>Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/scripts/step_2_consolidate_992_shards_to_singleton.py">step_2_consolidate_992_shards_to_singleton.py</a> as:</p>
+<dt>Consolidate the weights from 992 shards into one single checkpoint</dt><dd><p>Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/llm_serving/scripts/step_2_consolidate_992_shards_to_singleton.py">step_2_consolidate_992_shards_to_singleton.py</a> as:</p>
 </dd>
 </dl>
 </li>
@@ -243,7 +243,7 @@ Please make sure your RAM is sufficient to run the script without throwing an OO
 </div></blockquote>
 <ol class="arabic" start="3">
 <li><dl>
-<dt>Convert the single checkpoint into Alpa-compatible formats</dt><dd><p>Alpa ingests weights simply from numpy formats. Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving/scripts/step_3_convert_to_numpy_weights.py">step_3_convert_to_numpy_weights.py</a> to convert the
+<dt>Convert the single checkpoint into Alpa-compatible formats</dt><dd><p>Alpa ingests weights simply from numpy formats. Use the script <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/llm_serving/scripts/step_3_convert_to_numpy_weights.py">step_3_convert_to_numpy_weights.py</a> to convert the
 single checkpoint into numpy formats:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 step_3_convert_to_numpy_weights.py --ckpt-path PATH_TO_SAVE_CHECKPOINT --output-folder OUTPUT_PATH
 </pre></div>
@@ -283,7 +283,7 @@ You can then manually copy all downloaded weights under <code class="docutils li
 </section>
 <section id="run-generation-in-the-command-line">
 <h2>Run Generation in the Command Line<a class="headerlink" href="#run-generation-in-the-command-line" title="Permalink to this headline"></a></h2>
-<p>The code of this tutorial is under <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/opt_serving">examples/opt_serving</a>.</p>
+<p>The code of this tutorial is under <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/main/examples/llm_serving">examples/llm_serving</a>.</p>
 <ul>
 <li><p>Run generation using the 125M model with PyTorch/HuggingFace backend on a single GPU:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3 textgen.py --model facebook/opt-125m
@@ -320,6 +320,8 @@ python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">20001
 </pre></div>
 </div>
 <p>Then open <code class="docutils literal notranslate"><span class="pre">https://[IP-ADDRESS]:20001</span></code> in your browser to try out the model!</p>
+<p>There is also a client library which can be used to query the web server
+via a python script. Please check <code class="docutils literal notranslate"><span class="pre">test_completions.py</span></code> for the usage.</p>
 </section>
 <section id="improving-generation-speed">
 <h2>Improving Generation Speed<a class="headerlink" href="#improving-generation-speed" title="Permalink to this headline"></a></h2>
