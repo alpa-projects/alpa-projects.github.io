@@ -25,7 +25,7 @@ Alpa Quickstart
 
 Alpa is built on top of a tensor computation framework `Jax <https://jax.readthedocs.io/en/latest/index.html>`_ .
 Alpa can automatically parallelize jax functions and runs them on a distributed cluster.
-Alpa analyses the computational graph and generates a distributed execution plan 
+Alpa analyses the computational graph and generates a distributed execution plan
 tailored for the computational graph and target cluster.
 The generated execution plan can combine state-of-the-art distributed training techniques
 including data parallelism, operator parallelism, and pipeline parallelism.
@@ -169,7 +169,7 @@ writing for a single device.
     @alpa.parallelize
     def alpa_train_step(state, batch):
         def loss_func(params):
-            out = model.apply(params, batch["x"])
+            out = state.apply_fn(params, batch["x"])
             loss = jnp.mean((out - batch["y"])**2)
             return loss
 
@@ -274,8 +274,8 @@ on a 8-GPU machine.
 
  .. code-block:: none
 
-    Serial execution time. Mean: 149.40 ms, Std: 0.15 ms
-    Alpa execution time.   Mean: 23.19 ms, Std: 0.38 ms
+    Serial execution time. Mean: 148.01 ms, Std: 0.34 ms
+    Alpa execution time.   Mean: 22.87 ms, Std: 0.23 ms
 
 
 
@@ -374,8 +374,8 @@ execution speed and memory usage of ``jax.pmap`` on the same 8-GPU machine.
 
  .. code-block:: none
 
-    Data parallel execution time. Mean: 33.83 ms, Std: 0.27 ms
-    Alpa execution time.          Mean: 23.19 ms, Std: 0.38 ms
+    Data parallel execution time. Mean: 33.56 ms, Std: 0.27 ms
+    Alpa execution time.          Mean: 22.87 ms, Std: 0.23 ms
 
     Data parallel execution per GPU memory usage: 3.76 GB
     Alpa execution per GPU memory usage:          0.50 GB
@@ -395,7 +395,7 @@ finds the best parallelization strategy.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  51.849 seconds)
+   **Total running time of the script:** ( 0 minutes  52.944 seconds)
 
 
 .. _sphx_glr_download_tutorials_quickstart.py:
