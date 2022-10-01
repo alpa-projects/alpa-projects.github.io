@@ -4,7 +4,7 @@ Serving OPT-175B using Alpa
 
 This tutorial shows how to setup a serving system to serve the largest available pretrained language model `OPT-175B <https://github.com/facebookresearch/metaseq/tree/main/projects/OPT>`_.
 
-👉 Try a live demo at `Alpa-OPT Demo <https://opt.alpa.ai>`_.
+👉 Try a live demo at `Alpa-OPT Demo <https://opt.alpa.ai>`_ 👈
 
 Overview
 ========
