@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.0.dev17 documentation</title>
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.1.dev8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.0.dev17
+                0.2.1.dev8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -114,8 +114,8 @@
              
   <section id="serving-opt-175b-using-alpa">
 <h1>Serving OPT-175B using Alpa<a class="headerlink" href="#serving-opt-175b-using-alpa" title="Permalink to this headline"></a></h1>
-<p>This tutorial shows how to setup a serving system to serve the largest available pretrained language model <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT-175B</a>.
-You can also try a live demo at <a class="reference external" href="https://opt.alpa.ai">Alpa-OPT Demo</a>.</p>
+<p>This tutorial shows how to setup a serving system to serve the largest available pretrained language model <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT-175B</a>.</p>
+<p>👉 Try a live demo at <a class="reference external" href="https://opt.alpa.ai">Alpa-OPT Demo</a>.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
 <p>As a serving system, Alpa offers the following unique advantages:</p>
@@ -173,7 +173,7 @@ Pick an appropriate size from <a class="reference external" href="https://github
 <li><p>Install additional requirements for <code class="docutils literal notranslate"><span class="pre">llm_serving</span></code>:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install transformers flask omegaconf
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install transformers fastapi uvicorn omegaconf
 
 <span class="c1"># Install torch corresponding to your CUDA version, e.g., for CUDA 11.3:</span>
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
@@ -314,13 +314,17 @@ Note you will need &gt;350GB total GPU memory in the entire cluster to successfu
 </section>
 <section id="launch-a-web-server-to-serve-the-opt-models">
 <h2>Launch a Web Server to Serve the OPT Models<a class="headerlink" href="#launch-a-web-server-to-serve-the-opt-models" title="Permalink to this headline"></a></h2>
-<p>Launch the web server:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Serve the OPT-175B model at port 20001</span>
-python3 interactive_hosted.py --model alpa/opt-175b --port <span class="m">20001</span>
+<p>We need to run two scripts: one for web server and another for the model serving worker.
+They will use two ports. The port of the website is defined in the command line and the port of the worker is defined in <code class="docutils literal notranslate"><span class="pre">service/constants.py</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch the model worker</span>
+python3 launch_model_worker.py --model alpa/opt-175b
+
+<span class="c1"># Launch the website (in a new terminal)</span>
+uvicorn launch_website:app --host <span class="m">0</span>.0.0.0 --port <span class="m">8001</span>
 </pre></div>
 </div>
-<p>Then open <code class="docutils literal notranslate"><span class="pre">https://[IP-ADDRESS]:20001</span></code> in your browser to try out the model!</p>
-<p>There is also a client library which can be used to query the web server
+<p>Then open <code class="docutils literal notranslate"><span class="pre">http://[IP-ADDRESS]:8001</span></code> in your browser to try out the model!</p>
+<p>There is also a client library which can be used to query the model worker
 via a python script. Please check <code class="docutils literal notranslate"><span class="pre">test_completions.py</span></code> for the usage.</p>
 </section>
 <section id="improving-generation-speed">
