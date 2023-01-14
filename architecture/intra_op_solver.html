@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code Structure of the Intra-op Solver &mdash; Alpa 0.2.2.dev12 documentation</title>
+  <title>Code Structure of the Intra-op Solver &mdash; Alpa 0.2.2.dev31 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev12
+                0.2.2.dev31
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/perf_tuning_guide.html">Performance Tuning Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/opt_serving.html">Serving OPT-175B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/alpa_on_slurm.html">Using Alpa on Slurm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/faq.html">Frequently Asked Questions (FAQ)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Benchmark</span></p>
@@ -74,6 +75,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#inspect-the-sharding-strategy">Inspect the sharding strategy</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-debug">How to Debug</a></li>
 </ul>
 </li>
 </ul>
@@ -108,7 +110,8 @@
              
   <section id="code-structure-of-the-intra-op-solver">
 <h1>Code Structure of the Intra-op Solver<a class="headerlink" href="#code-structure-of-the-intra-op-solver" title="Permalink to this headline"></a></h1>
-<p>The specific code of the intra-op solver is scattered in various files of the project.
+<p>The specific code of the intra-op solver (a.k.a auto-sharding) is scattered
+in various files of the project.
 This page contains some pointers to key components of the intra-op solver and
 help you navigate the complicated code base.</p>
 <div class="admonition note">
@@ -155,6 +158,13 @@ You can start from the most basic ones in <code class="docutils literal notransl
 <h3>Inspect the sharding strategy<a class="headerlink" href="#inspect-the-sharding-strategy" title="Permalink to this headline"></a></h3>
 <p>You can print the HLO before and after the <code class="docutils literal notranslate"><span class="pre">run_auto_sharding_pass</span></code>.</p>
 </section>
+</section>
+<section id="how-to-debug">
+<h2>How to Debug<a class="headerlink" href="#how-to-debug" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Set global environment variable <code class="docutils literal notranslate"><span class="pre">ALPA_DEBUG_PRINT_AS_STRATEGY=1</span></code>. This will print the choosen sharding strategy for each instruction and edge costs in a prettier way.</p></li>
+<li><p>Check batch dim analysis <a class="reference external" href="https://github.com/alpa-projects/tensorflow-alpa/blob/721260d122f096040762b2d226b37e8ab23f74b8/tensorflow/compiler/xla/service/spmd/auto_sharding_util.cc#L857">https://github.com/alpa-projects/tensorflow-alpa/blob/721260d122f096040762b2d226b37e8ab23f74b8/tensorflow/compiler/xla/service/spmd/auto_sharding_util.cc#L857</a></p></li>
+</ul>
 </section>
 </section>
 
