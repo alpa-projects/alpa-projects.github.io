@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Install Alpa &mdash; Alpa 0.2.2.dev31 documentation</title>
+  <title>Install Alpa &mdash; Alpa 0.2.2.dev39 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev31
+                0.2.2.dev39
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -137,8 +137,8 @@ Alpa requires CUDA &gt;= 11.1 and  cuDNN &gt;= 8.0.5.</p>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Update pip</span>
 pip3 install --upgrade pip
 
-<span class="c1"># Use your own CUDA version. Here cuda-cuda114 means cuda 11.4</span>
-pip3 install cupy-cuda114
+<span class="c1"># Install cupy</span>
+pip3 install cupy-cuda11x
 </pre></div>
 </div>
 <p>Then, check whether your system already has NCCL installed.</p>
@@ -147,6 +147,9 @@ pip3 install cupy-cuda114
 </div>
 <p>If it prints nothing, then NCCL has already been installed.
 Otherwise, follow the printed instructions to install NCCL.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m cupyx.tools.install_library --cuda <span class="m">11</span>.x --library nccl
+</pre></div>
+</div>
 </div></blockquote>
 </section>
 <section id="methods">
