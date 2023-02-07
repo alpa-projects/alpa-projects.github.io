@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.2.dev40 documentation</title>
+  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.2.dev44 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev40
+                0.2.2.dev44
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -68,7 +68,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#run-generation-in-the-command-line">Run Generation in the Command Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a Web Server to Serve the OPT Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#improving-generation-speed">Improving Generation Speed</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#other-models">Other Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-models-bloom">Other Models (BLOOM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-models-codegen">Other Models (CodeGen)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
@@ -341,8 +342,8 @@ Alpa compiles multiple executables and uses these executables to encode a prompt
 </ol>
 <p>If you find the generation speed too slow and want to accelerate it, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> and tell us your use cases. We are actively working on improving the performance.</p>
 </section>
-<section id="other-models">
-<h2>Other Models<a class="headerlink" href="#other-models" title="Permalink to this headline"></a></h2>
+<section id="other-models-bloom">
+<h2>Other Models (BLOOM)<a class="headerlink" href="#other-models-bloom" title="Permalink to this headline"></a></h2>
 <p>Alpa also supports <a class="reference external" href="https://huggingface.co/bigscience/bloom">BLOOM</a>.
 You can use commands similar to OPT but with a different model name.</p>
 <blockquote>
@@ -354,6 +355,20 @@ python3 textgen.py --model jax/bloom-560m
 
 <span class="c1"># Alpa backend</span>
 python3 textgen.py --model alpa/bloom-560m
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="other-models-codegen">
+<h2>Other Models (CodeGen)<a class="headerlink" href="#other-models-codegen" title="Permalink to this headline"></a></h2>
+<p>Alpa also supports <a class="reference external" href="https://github.com/salesforce/CodeGen">CodeGen</a>.
+You can use commands similar to OPT but with a different model name.</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Huggingface/pytorch backend</span>
+python3 codegen.py --model Salesforce/codegen-2B-mono
+
+<span class="c1"># Alpa backend</span>
+python3 codegen.py --model alpa/codegen-2B-mono
 </pre></div>
 </div>
 </div></blockquote>

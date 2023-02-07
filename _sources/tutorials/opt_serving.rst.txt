@@ -226,8 +226,8 @@ Here are some tips for improving the generation speed.
 If you find the generation speed too slow and want to accelerate it, please join `Alpa slack <https://forms.gle/YEZTCrtZD6EAVNBQ7>`_ and tell us your use cases. We are actively working on improving the performance.
 
 
-Other Models
-============
+Other Models (BLOOM)
+====================
 Alpa also supports `BLOOM <https://huggingface.co/bigscience/bloom>`_.
 You can use commands similar to OPT but with a different model name.
 
@@ -241,6 +241,20 @@ You can use commands similar to OPT but with a different model name.
 
     # Alpa backend
     python3 textgen.py --model alpa/bloom-560m
+
+
+Other Models (CodeGen)
+======================
+Alpa also supports `CodeGen <https://github.com/salesforce/CodeGen>`_.
+You can use commands similar to OPT but with a different model name.
+
+  .. code:: shell
+
+    # Huggingface/pytorch backend
+    python3 codegen.py --model Salesforce/codegen-2B-mono
+
+    # Alpa backend
+    python3 codegen.py --model alpa/codegen-2B-mono
 
 
 License
