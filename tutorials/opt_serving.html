@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serving OPT-175B using Alpa &mdash; Alpa 0.2.2.dev44 documentation</title>
+  <title>Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa &mdash; Alpa 0.2.2.dev44 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -55,7 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Serving OPT-175B using Alpa</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
@@ -68,9 +68,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#run-generation-in-the-command-line">Run Generation in the Command Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#launch-a-web-server-to-serve-the-opt-models">Launch a Web Server to Serve the OPT Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#improving-generation-speed">Improving Generation Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opt-license">OPT License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-models-bloom">Other Models (BLOOM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-models-codegen">Other Models (CodeGen)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
@@ -106,7 +106,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Serving OPT-175B using Alpa</li>
+      <li>Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/alpa-projects/alpa/blob/main/docs/tutorials/opt_serving.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -116,9 +116,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="serving-opt-175b-using-alpa">
-<h1>Serving OPT-175B using Alpa<a class="headerlink" href="#serving-opt-175b-using-alpa" title="Permalink to this headline"></a></h1>
-<p>This tutorial shows how to setup a serving system to serve the largest available pretrained language model <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT-175B</a>.</p>
+  <section id="serving-opt-175b-bloom-176b-and-codegen-16b-using-alpa">
+<h1>Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa<a class="headerlink" href="#serving-opt-175b-bloom-176b-and-codegen-16b-using-alpa" title="Permalink to this headline"></a></h1>
+<p>This tutorial shows how to setup a serving system to serve one of the largest available pretrained language models <a class="reference external" href="https://github.com/facebookresearch/metaseq/tree/main/projects/OPT">OPT-175B</a>. The instructions for other models (BLOOM and CodeGen) are also listed at the end.</p>
 <p>👉 Try a live demo at <a class="reference external" href="https://opt.alpa.ai">Alpa-OPT Demo</a> 👈</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
@@ -342,6 +342,10 @@ Alpa compiles multiple executables and uses these executables to encode a prompt
 </ol>
 <p>If you find the generation speed too slow and want to accelerate it, please join <a class="reference external" href="https://forms.gle/YEZTCrtZD6EAVNBQ7">Alpa slack</a> and tell us your use cases. We are actively working on improving the performance.</p>
 </section>
+<section id="opt-license">
+<h2>OPT License<a class="headerlink" href="#opt-license" title="Permalink to this headline"></a></h2>
+<p>The use of the OPT pretrained weights is subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model License</a> by Metaseq.</p>
+</section>
 <section id="other-models-bloom">
 <h2>Other Models (BLOOM)<a class="headerlink" href="#other-models-bloom" title="Permalink to this headline"></a></h2>
 <p>Alpa also supports <a class="reference external" href="https://huggingface.co/bigscience/bloom">BLOOM</a>.
@@ -372,10 +376,6 @@ python3 codegen.py --model alpa/codegen-2B-mono
 </pre></div>
 </div>
 </div></blockquote>
-</section>
-<section id="license">
-<h2>License<a class="headerlink" href="#license" title="Permalink to this headline"></a></h2>
-<p>The use of the OPT pretrained weights is subject to the <a class="reference external" href="https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md">Model License</a> by Metaseq.</p>
 </section>
 </section>
 
