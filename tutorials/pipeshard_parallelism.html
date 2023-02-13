@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Distributed Training with Both Shard and Pipeline Parallelism &mdash; Alpa 0.2.2.dev44 documentation</title>
+  <title>Distributed Training with Both Shard and Pipeline Parallelism &mdash; Alpa 0.2.2.dev51 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -36,7 +36,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev44
+                0.2.2.dev51
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -62,8 +62,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alpa_on_slurm.html">Using Alpa on Slurm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
@@ -118,7 +118,8 @@ to download the full example code</p>
 parallelism (a.k.a. intra-operator parallelism) and pipeline parallelism
 (a.k.a. inter-operator parallelism). Shard parallelism includes
 data parallelism, operator parallelism, and their combinations.
-The <a class="reference internal" href="quickstart.html#alpa-quickstart"><span class="std std-ref">quick start</span></a> focuses on using Alpa for shard parallelism.</p>
+The previous <a class="reference internal" href="quickstart.html#alpa-quickstart"><span class="std std-ref">quick start</span></a> tutorial focuses on
+using Alpa for shard parallelism.</p>
 <p>In this tutorial, we show how to use Alpa with both shard and pipeline parallelism.
 First, we show how to use Alpa to manually assign stages for pipeline parallelism.
 Then we show how to use Alpa to automate this process.</p>
@@ -159,7 +160,8 @@ the cluster and disributed workers. We initialize ray and alpa.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2023-01-14 09:50:50,122 INFO worker.py:1525 -- Started a local Ray instance. View the dashboard at http://127.0.0.1:8265
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2023-02-13 03:45:06,294 INFO worker.py:1342 -- Connecting to existing Ray cluster at address: 172.31.36.188:6379...
+2023-02-13 03:45:06,302 INFO worker.py:1525 -- Connected to Ray cluster. View the dashboard at http://127.0.0.1:8265
 </pre></div>
 </div>
 </section>
@@ -185,34 +187,34 @@ process to use the CPU.</p>
         <span class="k">return</span> <span class="n">x</span>
 
 
-<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a> <span class="o">=</span> <span class="mi">2048</span>
-<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a></a> <span class="o">=</span> <span class="mi">2048</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a> <span class="o">=</span> <span class="mi">2048</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a> <span class="o">=</span> <span class="mi">2048</span>
 
 <span class="c1"># Generate ground truth W and b</span>
 <span class="n">rngkey</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">rngkey</span><span class="p">)</span>
-<span class="n">W</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a><span class="p">))</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a><span class="p">,))</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">,))</span>
 
 <span class="c1"># Generate the training data</span>
 <span class="n">ksample</span><span class="p">,</span> <span class="n">knoise</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">ksample</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a><span class="p">))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">W</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">knoise</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a><span class="p">))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">ksample</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">W</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">knoise</span><span class="p">,</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch_size</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">))</span>
 
 <span class="c1"># Initialize a train state, which includes the model paramter and optimizer</span>
 <span class="c1"># state.</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">MLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">)</span>
 <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">rngkey</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="n">tx</span> <span class="o">=</span> <span class="n">optax</span><span class="o">.</span><span class="n">adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
 
 
 <span class="c1"># Define the training step</span>
-<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">):</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">loss</span>
 
     <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_func</span><span class="p">)(</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
@@ -220,8 +222,8 @@ process to use the CPU.</p>
     <span class="k">return</span> <span class="n">new_state</span>
 
 
-<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
-<span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
+<span class="n">expected_state</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -253,9 +255,9 @@ shard parallel pass.</p>
 
 <span class="c1"># Initialize the train state with the same parameters as the single-device</span>
 <span class="c1"># model.</span>
-<span class="n">manual_pipeline_model</span> <span class="o">=</span> <span class="n">ManualPipelineMLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a></a><span class="p">)</span>
+<span class="n">manual_pipeline_model</span> <span class="o">=</span> <span class="n">ManualPipelineMLPModel</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dim</span></a><span class="p">)</span>
 <span class="n">manual_pipeline_state</span> <span class="o">=</span> <span class="n">TrainState</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">apply_fn</span><span class="o">=</span><span class="n">manual_pipeline_model</span><span class="o">.</span><span class="n">apply</span><span class="p">,</span>
-                                          <span class="n">params</span><span class="o">=</span><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span></a></a><span class="p">(</span><span class="n">params</span><span class="p">),</span>
+                                          <span class="n">params</span><span class="o">=</span><a href="https://docs.python.org/3/library/copy.html#copy.deepcopy" title="copy.deepcopy" class="sphx-glr-backref-module-copy sphx-glr-backref-type-py-function"><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span></a><span class="p">(</span><span class="n">params</span><span class="p">),</span>
                                           <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">)</span>
 
 
@@ -264,13 +266,13 @@ shard parallel pass.</p>
 <span class="c1"># pipeline parallelism and shard parallelism. To make pipeline parallelism</span>
 <span class="c1"># efficient, we need to fill the pipeline with many micro batches,</span>
 <span class="c1"># so a `num_micro_batches` should be specified.</span>
-<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">PipeshardParallel</span></a></a><span class="p">(</span><span class="n">num_micro_batches</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+<span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">PipeshardParallel</span></a><span class="p">(</span><span class="n">num_micro_batches</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
                                                 <span class="n">layer_option</span><span class="o">=</span><span class="s2">&quot;manual&quot;</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">manual_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">):</span>
+<span class="k">def</span> <span class="nf">manual_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">loss</span>
 
     <span class="c1"># We use `alpa.grad` here to separate the apply gradient stage with the</span>
@@ -282,7 +284,7 @@ shard parallel pass.</p>
 
 
 <span class="n">manual_pipeline_actual_state</span> <span class="o">=</span> <span class="n">manual_pipeline_train_step</span><span class="p">(</span>
-    <span class="n">manual_pipeline_state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">)</span>
+    <span class="n">manual_pipeline_state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 <span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
                 <span class="n">manual_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
                 <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
@@ -321,18 +323,18 @@ pipeline execution latency.</p></li>
 <span class="c1"># `alpa.AutoLayerOption(layer_num=2)` means we use the auto layer construcion</span>
 <span class="c1"># algorithm to cluster primitive operators into two layers.</span>
 <span class="c1"># `stage_option=&quot;auto&quot;` means we enable the auto stage construction algorithm.</span>
-<span class="n">method</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">PipeshardParallel</span></a></a><span class="p">(</span><span class="n">num_micro_batches</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-                                <span class="n">layer_option</span><span class="o">=</span><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">AutoLayerOption</span></a></a><span class="p">(</span><span class="n">layer_num</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+<span class="n">method</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">PipeshardParallel</span></a><span class="p">(</span><span class="n">num_micro_batches</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                                <span class="n">layer_option</span><span class="o">=</span><a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">alpa</span><span class="o">.</span><span class="n">AutoLayerOption</span></a><span class="p">(</span><span class="n">layer_num</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
                                 <span class="n">stage_option</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">)</span>
 
 
 <span class="c1"># Define the training step. The function body is the same as the above one.</span>
 <span class="nd">@alpa</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">):</span>
+<span class="k">def</span> <span class="nf">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">apply_fn</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">loss</span>
 
     <span class="c1"># Again, we use `alpa.grad` here to separate the apply gradient stage with</span>
@@ -345,7 +347,7 @@ pipeline execution latency.</p></li>
 <span class="c1"># In the first call, alpa triggers the compilation.</span>
 <span class="c1"># The compilation first profiles several costs and solves an optimization</span>
 <span class="c1"># problem to get the optimal pipeline assignments.</span>
-<span class="n">auto_pipeline_actual_state</span> <span class="o">=</span> <span class="n">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a></a><span class="p">)</span>
+<span class="n">auto_pipeline_actual_state</span> <span class="o">=</span> <span class="n">auto_pipeline_train_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">batch</span></a><span class="p">)</span>
 <span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
                 <span class="n">auto_pipeline_actual_state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
                 <span class="n">atol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
@@ -365,12 +367,12 @@ result[(0, 1, 3, 0), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.
 result[(0, 1, 3, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.127 GB, invar_size=0.125 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 1, 3, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.346 GB, invar_size=0.221 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
 result[(0, 1, 3, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.066 GB, invar_size=0.063 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-result[(0, 1, 3, 2), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.174 GB, invar_size=0.112 GB, outvar_size=0.063 GB, temp_buffer_size=0.063 GB, available_memory=13.664 GB)
+result[(0, 1, 3, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.174 GB, invar_size=0.112 GB, outvar_size=0.063 GB, temp_buffer_size=0.063 GB, available_memory=13.664 GB)
 result[(0, 1, 3, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.036 GB, invar_size=0.032 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
 result[(0, 1, 3, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.060 GB, invar_size=0.058 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
 result[(0, 1, 3, 4), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.036 GB, invar_size=0.032 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
 result[(0, 1, 3, 4), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.060 GB, invar_size=0.058 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
-Profiling for submesh 3 (1, 8) takes 38.71 seconds
+Profiling for submesh 3 (1, 8) takes 38.04 seconds
 --------------------------------------------------
 - Profiling for submesh 2 (1, 4):
 - Generate all stage infos (Jaxpr -&gt; HLO)
@@ -382,77 +384,77 @@ result[(0, 0, 2, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.
 result[(0, 0, 2, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.314 GB, invar_size=0.189 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
 result[(0, 0, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.052 GB, invar_size=0.050 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
 result[(0, 0, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-result[(0, 0, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 0, 2, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.052 GB, invar_size=0.050 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
+result[(0, 0, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 1, 2, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.254 GB, invar_size=0.251 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 1, 2, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.130 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
 result[(0, 1, 2, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.348 GB, invar_size=0.223 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
 result[(0, 1, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.069 GB, invar_size=0.064 GB, outvar_size=0.004 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+result[(0, 1, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
 result[(0, 1, 2, 0), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.691 GB, invar_size=0.441 GB, outvar_size=0.250 GB, temp_buffer_size=0.250 GB, available_memory=13.664 GB)
 result[(0, 1, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.069 GB, invar_size=0.064 GB, outvar_size=0.004 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-result[(0, 1, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
 result[(1, 1, 2, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.127 GB, invar_size=0.126 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-result[(0, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
+result[(0, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
 result[(1, 1, 2, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.066 GB, invar_size=0.063 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
 result[(1, 1, 2, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.190 GB, invar_size=0.127 GB, outvar_size=0.063 GB, temp_buffer_size=0.063 GB, available_memory=13.664 GB)
 result[(1, 1, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
 result[(1, 1, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.065 GB, outvar_size=0.032 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-result[(1, 1, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-result[(1, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.067 GB, invar_size=0.065 GB, outvar_size=0.032 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
 result[(1, 1, 2, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.377 GB, invar_size=0.252 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
-Profiling for submesh 2 (1, 4) takes 29.73 seconds
+result[(1, 1, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+result[(1, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.065 GB, outvar_size=0.032 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+Profiling for submesh 2 (1, 4) takes 30.26 seconds
 --------------------------------------------------
 - Profiling for submesh 1 (1, 2):
 - Generate all stage infos (Jaxpr -&gt; HLO)
 - Compile all stages
 - Profile all stages
-result[(0, 0, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 0, 1, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.063 GB, outvar_size=0.004 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-result[(0, 0, 1, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.102 GB, invar_size=0.098 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
 result[(0, 0, 1, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.063 GB, outvar_size=0.004 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-result[(0, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.257 GB, invar_size=0.251 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+result[(0, 0, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 0, 1, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.102 GB, invar_size=0.098 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
-result[(0, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.230 GB, invar_size=0.226 GB, outvar_size=0.125 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
-result[(0, 1, 1, 2), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.134 GB, invar_size=0.127 GB, outvar_size=0.007 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+result[(0, 0, 1, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.102 GB, invar_size=0.098 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+result[(0, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.257 GB, invar_size=0.251 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 1, 1, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.127 GB, outvar_size=0.007 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-result[(0, 0, 1, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.316 GB, invar_size=0.191 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
-result[(1, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+result[(0, 1, 1, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.127 GB, outvar_size=0.007 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
 result[(0, 1, 1, 2), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.230 GB, invar_size=0.226 GB, outvar_size=0.125 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+result[(0, 0, 1, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.316 GB, invar_size=0.191 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
+result[(0, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.230 GB, invar_size=0.226 GB, outvar_size=0.125 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+result[(1, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(1, 1, 1, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.068 GB, invar_size=0.064 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-result[(1, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.134 GB, invar_size=0.129 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+result[(0, 1, 1, 0), 1] = ModuleProfileResult(compute_cost=0.004, peak_memory=0.694 GB, invar_size=0.444 GB, outvar_size=0.250 GB, temp_buffer_size=0.250 GB, available_memory=13.664 GB)
 result[(1, 1, 1, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.068 GB, invar_size=0.064 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+result[(1, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.129 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
 result[(1, 1, 1, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.129 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
 result[(1, 1, 1, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.379 GB, invar_size=0.254 GB, outvar_size=0.126 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
-result[(0, 1, 1, 0), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.694 GB, invar_size=0.444 GB, outvar_size=0.250 GB, temp_buffer_size=0.250 GB, available_memory=13.664 GB)
-Profiling for submesh 1 (1, 2) takes 25.08 seconds
+Profiling for submesh 1 (1, 2) takes 25.17 seconds
 --------------------------------------------------
 - Profiling for submesh 0 (1, 1):
 - Generate all stage infos (Jaxpr -&gt; HLO)
 - Compile all stages
 - Profile all stages
-result[(0, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.006, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-result[(1, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-result[(0, 0, 0, 1), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.202 GB, invar_size=0.195 GB, outvar_size=0.125 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-result[(1, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-result[(1, 1, 0, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-result[(1, 1, 0, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-result[(0, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 0, 0, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.132 GB, invar_size=0.126 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+result[(1, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
 result[(0, 0, 0, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.132 GB, invar_size=0.126 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+result[(0, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+result[(0, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+result[(1, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+result[(0, 0, 0, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.202 GB, invar_size=0.195 GB, outvar_size=0.125 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
 result[(0, 0, 0, 0), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.202 GB, invar_size=0.195 GB, outvar_size=0.125 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
 result[(0, 1, 0, 1), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.459 GB, invar_size=0.451 GB, outvar_size=0.250 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
 result[(0, 1, 0, 0), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.459 GB, invar_size=0.451 GB, outvar_size=0.250 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-Profiling for submesh 0 (1, 1) takes 27.47 seconds
+result[(1, 1, 0, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
+result[(1, 1, 0, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
+Profiling for submesh 0 (1, 1) takes 27.37 seconds
 --------------------------------------------------
-Profile result saved to: profile-results-2023-01-14-09-53-30.npy
+Profile result saved to: profile-results-2023-02-13-03-47-45.npy
 ----------------------------------------------------------------------
 Result forward_stage_layer_ids: [[0], [1]]
 Result mesh_shapes: [(1, 4), (1, 4)]
-Result logical_mesh_shapes: [(4, 1), (1, 4)]
-Result autosharding_option_dicts: [{}, {&#39;force_batch_dim_to_mesh_dim&#39;: 0}]
+Result logical_mesh_shapes: [(1, 4), (4, 1)]
+Result autosharding_option_dicts: [{&#39;force_batch_dim_to_mesh_dim&#39;: 0}, {}]
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 3 minutes  9.712 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 3 minutes  5.925 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-pipeshard-parallelism-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a3ca1faed62a74bef9de2bc3edfc7d0a/pipeshard_parallelism.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">pipeshard_parallelism.py</span></code></a></p>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Performance Tuning Guide &mdash; Alpa 0.2.2.dev44 documentation</title>
+  <title>Performance Tuning Guide &mdash; Alpa 0.2.2.dev51 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -23,8 +23,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Serving OPT-175B using Alpa" href="opt_serving.html" />
-    <link rel="prev" title="Differences between alpa.parallelize, jax.pmap and jax.pjit" href="alpa_vs_pmap.html" /> 
+    <link rel="next" title="ICML’22 Big Model Tutorial" href="icml_big_model_tutorial.html" />
+    <link rel="prev" title="Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa" href="opt_serving.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev44
+                0.2.2.dev51
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,12 +54,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Performance Tuning Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#choosing-parallel-methods">Choosing Parallel Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reducing-runtime-overhead">Reducing Runtime Overhead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspect-the-parallelization-strategy">Inspect the parallelization strategy</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alpa_on_slurm.html">Using Alpa on Slurm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
@@ -117,7 +118,7 @@ To make sure Alpa can perform auto-parallelization correctly, we can start with 
 If you see warnings like “Detect unexpected behaviors in the auto-sharding pass.”, this means some analyses fail on the model. You can submit an issue with a reproducible script to report the error.</p>
 </li>
 <li><p>Try <code class="docutils literal notranslate"><span class="pre">Zero2Parallel</span></code></p>
-<p>Next, try the <code class="docutils literal notranslate"><span class="pre">Zero2Parallel</span></code> method. You are expected to see the allocation memory size is lower if you use optimizers with element-wise states, such as Adam. Note that <cite>nvidia-smi</cite> does not correctly report the memory usage, you can use <code class="docutils literal notranslate"><span class="pre">executable.get_total_allocation_size()</span></code> as we did in the <a class="reference internal" href="quickstart.html#alpa-quickstart"><span class="std std-ref">quick start</span></a>.</p>
+<p>Next, try the <code class="docutils literal notranslate"><span class="pre">Zero2Parallel</span></code> method. You are expected to see the allocation memory size is lower if you use optimizers with element-wise states, such as Adam. Note that <cite>nvidia-smi</cite> does not correctly report the memory usage, you can use <code class="docutils literal notranslate"><span class="pre">executable.get_total_allocation_size()</span></code> as we did in the <span class="xref std std-ref">quick start</span>.</p>
 </li>
 <li><p>Try <code class="docutils literal notranslate"><span class="pre">ShardParallel</span></code></p>
 <p>Next, try the more general <code class="docutils literal notranslate"><span class="pre">ShardParallel</span></code> method with different logical mesh shapes.</p>
@@ -153,14 +154,23 @@ You can also do layer construction manually by using <code class="docutils liter
 Printing or accessing the value of a <code class="docutils literal notranslate"><span class="pre">DistributedArray</span></code> is a case of synchronization because we have to fetch the data from workers’ GPUs to the driver’s CPU.
 However, accessing metadata such as <cite>shape</cite> and <cite>dtype</cite> does not need synchronization because the metadata is stored on the driver.</p>
 </section>
+<section id="inspect-the-parallelization-strategy">
+<h2>Inspect the parallelization strategy<a class="headerlink" href="#inspect-the-parallelization-strategy" title="Permalink to this headline"></a></h2>
+<p>If you want to inspect the parallelization strategies, Alpa provides several
+debug options to dump the intermediate representations. You can see example usages
+at <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/tests/runtime/test_debug_info.py">https://github.com/alpa-projects/alpa/blob/main/tests/runtime/test_debug_info.py</a>.
+Note that Alpa does not provide nice visualization tools currently, so understanding
+these intermediate representations requires some knowledge of HLO and Alpa algorithms.</p>
+<p>See also <a class="reference internal" href="../architecture/intra_op_solver.html#learn-intra-op-solver"><span class="std std-ref">intra-op solver guidance</span></a>.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="alpa_vs_pmap.html" class="btn btn-neutral float-left" title="Differences between alpa.parallelize, jax.pmap and jax.pjit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="opt_serving.html" class="btn btn-neutral float-right" title="Serving OPT-175B using Alpa" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="opt_serving.html" class="btn btn-neutral float-left" title="Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="icml_big_model_tutorial.html" class="btn btn-neutral float-right" title="ICML’22 Big Model Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

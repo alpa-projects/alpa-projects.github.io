@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code Structure of the Intra-op Solver &mdash; Alpa 0.2.2.dev44 documentation</title>
+  <title>Code Structure of the Intra-op Solver &mdash; Alpa 0.2.2.dev51 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev44
+                0.2.2.dev51
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,8 +54,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/opt_serving.html">Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/perf_tuning_guide.html">Performance Tuning Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/opt_serving.html">Serving OPT-175B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/alpa_on_slurm.html">Using Alpa on Slurm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/faq.html">Frequently Asked Questions (FAQ)</a></li>
@@ -150,7 +150,7 @@ help you navigate the complicated code base.</p>
 <section id="how-to-read-and-learn-the-code">
 <h2>How to Read and Learn the Code<a class="headerlink" href="#how-to-read-and-learn-the-code" title="Permalink to this headline"></a></h2>
 <section id="run-some-simple-examples">
-<h3>Run some simple examples<a class="headerlink" href="#run-some-simple-examples" title="Permalink to this headline"></a></h3>
+<span id="learn-intra-op-solver"></span><h3>Run some simple examples<a class="headerlink" href="#run-some-simple-examples" title="Permalink to this headline"></a></h3>
 <p>You can run the unit tests under <a class="reference external" href="https://github.com/alpa-projects/alpa/tree/v0.2.2/tests/shard_parallel">https://github.com/alpa-projects/alpa/tree/v0.2.2/tests/shard_parallel</a> and set break points in the python entrance <code class="docutils literal notranslate"><span class="pre">run_auto_sharding_pass</span></code>.
 You can start from the most basic ones in <code class="docutils literal notranslate"><span class="pre">test_basic.py</span></code>.</p>
 </section>

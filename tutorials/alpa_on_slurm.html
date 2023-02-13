@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using Alpa on Slurm &mdash; Alpa 0.2.2.dev44 documentation</title>
+  <title>Using Alpa on Slurm &mdash; Alpa 0.2.2.dev51 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev44
+                0.2.2.dev51
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,8 +54,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pipeshard_parallelism.html">Distributed Training with Both Shard and Pipeline Parallelism</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alpa_vs_pmap.html">Differences between alpa.parallelize, jax.pmap and jax.pjit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B, BLOOM-176B and CodeGen-16B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perf_tuning_guide.html">Performance Tuning Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="opt_serving.html">Serving OPT-175B using Alpa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icml_big_model_tutorial.html">ICML’22 Big Model Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using Alpa on Slurm</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
@@ -281,7 +281,7 @@ Just like a shell script, the <code class="code docutils literal notranslate"><s
 <p>The first lines in your sbatch script is used to specify resources for the job like all the options you specify when running srun or sbatch.
 These usually includes the name of the job, partition the job should go to, CPU per task, memory per CPU, number of nodes, number of tasks per node, and time limit for the job.</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#SBATCH --job-name=textgen_multinode_test</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#SBATCH --job-name=alpa_multinode_test</span>
 <span class="c1">#SBATCH --partition=GPU</span>
 <span class="c1">#SBATCH --nodes=2</span>
 <span class="c1">#SBATCH --tasks-per-node=1</span>
@@ -447,12 +447,8 @@ srun --nodes<span class="o">=</span><span class="m">1</span> --ntasks<span class
 <p>Just like running Alpa locally, the previous steps are equivalent of having run ray with <code class="code docutils literal notranslate"><span class="pre">ray</span> <span class="pre">start</span> <span class="pre">--head</span></code>.
 Then it’s time to run Alpa:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 alpa/examples/llm_serving/textgen.py --model alpa/bloom-560m --n-prompts <span class="m">1</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m alpa.test_install
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To run text generation using Alpa, please first install llm_serving in your environment. The installation follws from <a class="reference external" href="https://alpa.ai/tutorials/opt_serving.html#requirements">here</a>.</p>
 </div>
 </div></blockquote>
 </section>
@@ -502,7 +498,7 @@ You can check the file for output the same way you read a text file.</p>
 <p>Putting things together, a sample sbatch script that runs Alpa is as follows:</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
-<span class="c1">#SBATCH --job-name=textgen_multinode_test</span>
+<span class="c1">#SBATCH --job-name=alpa_multinode_test</span>
 <span class="c1">#SBATCH --partition=GPU</span>
 <span class="c1">#SBATCH --nodes=2</span>
 <span class="c1">#SBATCH --tasks-per-node=1</span>
@@ -553,8 +549,8 @@ sleep <span class="m">10</span>
     sleep <span class="m">5</span>
 <span class="k">done</span>
 
-<span class="c1"># Run Alpa textgen</span>
-python3 alpa/examples/llm_serving/textgen.py --model alpa/bloom-560m --n-prompts <span class="m">1</span>
+<span class="c1"># Run Alpa test</span>
+python3 -m alpa.test_install
 
 <span class="c1"># Optional. Slurm will terminate all processes automatically</span>
 ray stop
@@ -569,7 +565,7 @@ conda deactivate
 <p>For running Alpa on Slurm with only one node or shared node, the following script can be used:</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
-<span class="c1">#SBATCH --job-name=textgen_uninode_test</span>
+<span class="c1">#SBATCH --job-name=alpa_uninode_test</span>
 <span class="c1">#SBATCH -p GPU-shared</span>
 <span class="c1">#SBATCH -N 1</span>
 <span class="c1">#SBATCH --gpus=v100-16:1</span>
@@ -586,8 +582,8 @@ conda activate alpa_environment
 <span class="c1"># Start Ray on HEAD</span>
 ray start --head
 
-<span class="c1"># Run Alpa textgen</span>
-python3 alpa/examples/llm_serving/textgen.py --model alpa/bloom-560m --n-prompts <span class="m">1</span>
+<span class="c1"># Run Alpa test</span>
+python3 -m alpa.test_install
 
 <span class="c1"># Optional. Slurm will terminate all processes automatically</span>
 ray stop

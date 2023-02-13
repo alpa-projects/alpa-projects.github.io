@@ -25,19 +25,20 @@ Alpa can automatically parallelizes jax functions with both shard
 parallelism (a.k.a. intra-operator parallelism) and pipeline parallelism
 (a.k.a. inter-operator parallelism). Shard parallelism includes
 data parallelism, operator parallelism, and their combinations.
-The :ref:`quick start <Alpa Quickstart>` focuses on using Alpa for shard parallelism.
+The previous :ref:`quick start <alpa-quickstart>` tutorial focuses on
+using Alpa for shard parallelism.
 
 In this tutorial, we show how to use Alpa with both shard and pipeline parallelism.
 First, we show how to use Alpa to manually assign stages for pipeline parallelism.
 Then we show how to use Alpa to automate this process.
 
-.. GENERATED FROM PYTHON SOURCE LINES 17-20
+.. GENERATED FROM PYTHON SOURCE LINES 18-21
 
 Import Libraries and Initialize Environment
 -------------------------------------------
 First, import the required libraries.
 
-.. GENERATED FROM PYTHON SOURCE LINES 20-34
+.. GENERATED FROM PYTHON SOURCE LINES 21-35
 
 .. code-block:: default
 
@@ -62,14 +63,14 @@ First, import the required libraries.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 35-39
+.. GENERATED FROM PYTHON SOURCE LINES 36-40
 
 Connect to a Ray Cluster
 ------------------------
 Alpa uses a distributed framework `ray <https://docs.ray.io/>`_ to manage
 the cluster and disributed workers. We initialize ray and alpa.
 
-.. GENERATED FROM PYTHON SOURCE LINES 39-53
+.. GENERATED FROM PYTHON SOURCE LINES 40-54
 
 .. code-block:: default
 
@@ -97,12 +98,13 @@ the cluster and disributed workers. We initialize ray and alpa.
 
  .. code-block:: none
 
-    2023-01-14 09:50:50,122 INFO worker.py:1525 -- Started a local Ray instance. View the dashboard at http://127.0.0.1:8265 
+    2023-02-13 03:45:06,294 INFO worker.py:1342 -- Connecting to existing Ray cluster at address: 172.31.36.188:6379...
+    2023-02-13 03:45:06,302 INFO worker.py:1525 -- Connected to Ray cluster. View the dashboard at http://127.0.0.1:8265 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 54-60
+.. GENERATED FROM PYTHON SOURCE LINES 55-61
 
 Train an MLP on a Single Device
 -------------------------------
@@ -111,7 +113,7 @@ Specifically, we use the model to fit the function: :math:`y = Wx + b`.
 Note that now this model is being executed on CPU because we force the driver
 process to use the CPU.
 
-.. GENERATED FROM PYTHON SOURCE LINES 60-116
+.. GENERATED FROM PYTHON SOURCE LINES 61-117
 
 .. code-block:: default
 
@@ -178,7 +180,7 @@ process to use the CPU.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 117-124
+.. GENERATED FROM PYTHON SOURCE LINES 118-125
 
 Pipeline Parallelism with Manual Assignment
 -------------------------------------------
@@ -188,7 +190,7 @@ to mark the boundary of each pipeline stage in the forward function.
 Note that each pipeline stage is also automatically parallelized by the
 shard parallel pass.
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-183
+.. GENERATED FROM PYTHON SOURCE LINES 125-184
 
 .. code-block:: default
 
@@ -258,7 +260,7 @@ shard parallel pass.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 184-191
+.. GENERATED FROM PYTHON SOURCE LINES 185-192
 
 .. note::
 
@@ -268,7 +270,7 @@ shard parallel pass.
   device assignment of each stage, you can use the more advanced
   ``stage_option=alpa.ManualStageOption``.
 
-.. GENERATED FROM PYTHON SOURCE LINES 194-209
+.. GENERATED FROM PYTHON SOURCE LINES 195-210
 
 Pipeline Parallelism with Automatic Assignment
 ----------------------------------------------
@@ -286,7 +288,7 @@ partitioning algorithm consists of the following steps:
    layers to submeshes to form pipeline stages to minimize the total
    pipeline execution latency.
 
-.. GENERATED FROM PYTHON SOURCE LINES 209-246
+.. GENERATED FROM PYTHON SOURCE LINES 210-247
 
 .. code-block:: default
 
@@ -348,12 +350,12 @@ partitioning algorithm consists of the following steps:
     result[(0, 1, 3, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.127 GB, invar_size=0.125 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 1, 3, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.346 GB, invar_size=0.221 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
     result[(0, 1, 3, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.066 GB, invar_size=0.063 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-    result[(0, 1, 3, 2), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.174 GB, invar_size=0.112 GB, outvar_size=0.063 GB, temp_buffer_size=0.063 GB, available_memory=13.664 GB)
+    result[(0, 1, 3, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.174 GB, invar_size=0.112 GB, outvar_size=0.063 GB, temp_buffer_size=0.063 GB, available_memory=13.664 GB)
     result[(0, 1, 3, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.036 GB, invar_size=0.032 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
     result[(0, 1, 3, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.060 GB, invar_size=0.058 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
     result[(0, 1, 3, 4), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.036 GB, invar_size=0.032 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
     result[(0, 1, 3, 4), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.060 GB, invar_size=0.058 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
-    Profiling for submesh 3 (1, 8) takes 38.71 seconds
+    Profiling for submesh 3 (1, 8) takes 38.04 seconds
     --------------------------------------------------
     - Profiling for submesh 2 (1, 4):
     - Generate all stage infos (Jaxpr -> HLO)
@@ -365,74 +367,74 @@ partitioning algorithm consists of the following steps:
     result[(0, 0, 2, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.314 GB, invar_size=0.189 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
     result[(0, 0, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.052 GB, invar_size=0.050 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
     result[(0, 0, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-    result[(0, 0, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 0, 2, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.052 GB, invar_size=0.050 GB, outvar_size=0.031 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
+    result[(0, 0, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 1, 2, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.254 GB, invar_size=0.251 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 1, 2, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.130 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
     result[(0, 1, 2, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.348 GB, invar_size=0.223 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
     result[(0, 1, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.069 GB, invar_size=0.064 GB, outvar_size=0.004 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+    result[(0, 1, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
     result[(0, 1, 2, 0), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.691 GB, invar_size=0.441 GB, outvar_size=0.250 GB, temp_buffer_size=0.250 GB, available_memory=13.664 GB)
     result[(0, 1, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.069 GB, invar_size=0.064 GB, outvar_size=0.004 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-    result[(0, 1, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
     result[(1, 1, 2, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.127 GB, invar_size=0.126 GB, outvar_size=0.002 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-    result[(0, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
+    result[(0, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.116 GB, invar_size=0.114 GB, outvar_size=0.063 GB, temp_buffer_size=0.002 GB, available_memory=13.664 GB)
     result[(1, 1, 2, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.066 GB, invar_size=0.063 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
     result[(1, 1, 2, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.190 GB, invar_size=0.127 GB, outvar_size=0.063 GB, temp_buffer_size=0.063 GB, available_memory=13.664 GB)
     result[(1, 1, 2, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
     result[(1, 1, 2, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.065 GB, outvar_size=0.032 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-    result[(1, 1, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-    result[(1, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.067 GB, invar_size=0.065 GB, outvar_size=0.032 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
     result[(1, 1, 2, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.377 GB, invar_size=0.252 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
-    Profiling for submesh 2 (1, 4) takes 29.73 seconds
+    result[(1, 1, 2, 3), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.035 GB, invar_size=0.032 GB, outvar_size=0.002 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+    result[(1, 1, 2, 3), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.065 GB, outvar_size=0.032 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+    Profiling for submesh 2 (1, 4) takes 30.26 seconds
     --------------------------------------------------
     - Profiling for submesh 1 (1, 2):
     - Generate all stage infos (Jaxpr -> HLO)
     - Compile all stages
     - Profile all stages
-    result[(0, 0, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 0, 1, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.063 GB, outvar_size=0.004 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-    result[(0, 0, 1, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.102 GB, invar_size=0.098 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
     result[(0, 0, 1, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.067 GB, invar_size=0.063 GB, outvar_size=0.004 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-    result[(0, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.257 GB, invar_size=0.251 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+    result[(0, 0, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 0, 1, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.102 GB, invar_size=0.098 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
-    result[(0, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.230 GB, invar_size=0.226 GB, outvar_size=0.125 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
-    result[(0, 1, 1, 2), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.134 GB, invar_size=0.127 GB, outvar_size=0.007 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+    result[(0, 0, 1, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.102 GB, invar_size=0.098 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+    result[(0, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.257 GB, invar_size=0.251 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 1, 1, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.127 GB, outvar_size=0.007 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-    result[(0, 0, 1, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.316 GB, invar_size=0.191 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
-    result[(1, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+    result[(0, 1, 1, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.127 GB, outvar_size=0.007 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
     result[(0, 1, 1, 2), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.230 GB, invar_size=0.226 GB, outvar_size=0.125 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+    result[(0, 0, 1, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.316 GB, invar_size=0.191 GB, outvar_size=0.125 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
+    result[(0, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.230 GB, invar_size=0.226 GB, outvar_size=0.125 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+    result[(1, 1, 1, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.129 GB, invar_size=0.126 GB, outvar_size=0.003 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(1, 1, 1, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.068 GB, invar_size=0.064 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
-    result[(1, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.134 GB, invar_size=0.129 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
+    result[(0, 1, 1, 0), 1] = ModuleProfileResult(compute_cost=0.004, peak_memory=0.694 GB, invar_size=0.444 GB, outvar_size=0.250 GB, temp_buffer_size=0.250 GB, available_memory=13.664 GB)
     result[(1, 1, 1, 2), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.068 GB, invar_size=0.064 GB, outvar_size=0.003 GB, temp_buffer_size=0.001 GB, available_memory=13.664 GB)
+    result[(1, 1, 1, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.129 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
     result[(1, 1, 1, 2), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.134 GB, invar_size=0.129 GB, outvar_size=0.063 GB, temp_buffer_size=0.004 GB, available_memory=13.664 GB)
     result[(1, 1, 1, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.379 GB, invar_size=0.254 GB, outvar_size=0.126 GB, temp_buffer_size=0.125 GB, available_memory=13.664 GB)
-    result[(0, 1, 1, 0), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.694 GB, invar_size=0.444 GB, outvar_size=0.250 GB, temp_buffer_size=0.250 GB, available_memory=13.664 GB)
-    Profiling for submesh 1 (1, 2) takes 25.08 seconds
+    Profiling for submesh 1 (1, 2) takes 25.17 seconds
     --------------------------------------------------
     - Profiling for submesh 0 (1, 1):
     - Generate all stage infos (Jaxpr -> HLO)
     - Compile all stages
     - Profile all stages
-    result[(0, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.006, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-    result[(1, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-    result[(0, 0, 0, 1), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.202 GB, invar_size=0.195 GB, outvar_size=0.125 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-    result[(1, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
-    result[(1, 1, 0, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-    result[(1, 1, 0, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-    result[(0, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 0, 0, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.132 GB, invar_size=0.126 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+    result[(1, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
     result[(0, 0, 0, 0), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.132 GB, invar_size=0.126 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+    result[(0, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+    result[(0, 1, 0, 0), 0] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.264 GB, invar_size=0.252 GB, outvar_size=0.012 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+    result[(1, 1, 0, 1), 0] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.133 GB, invar_size=0.127 GB, outvar_size=0.006 GB, temp_buffer_size=0.000 GB, available_memory=13.664 GB)
+    result[(0, 0, 0, 1), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.202 GB, invar_size=0.195 GB, outvar_size=0.125 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
     result[(0, 0, 0, 0), 1] = ModuleProfileResult(compute_cost=0.001, peak_memory=0.202 GB, invar_size=0.195 GB, outvar_size=0.125 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
     result[(0, 1, 0, 1), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.459 GB, invar_size=0.451 GB, outvar_size=0.250 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
     result[(0, 1, 0, 0), 1] = ModuleProfileResult(compute_cost=0.003, peak_memory=0.459 GB, invar_size=0.451 GB, outvar_size=0.250 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
-    Profiling for submesh 0 (1, 1) takes 27.47 seconds
+    result[(1, 1, 0, 0), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
+    result[(1, 1, 0, 1), 1] = ModuleProfileResult(compute_cost=0.002, peak_memory=0.266 GB, invar_size=0.257 GB, outvar_size=0.126 GB, temp_buffer_size=0.008 GB, available_memory=13.664 GB)
+    Profiling for submesh 0 (1, 1) takes 27.37 seconds
     --------------------------------------------------
-    Profile result saved to: profile-results-2023-01-14-09-53-30.npy
+    Profile result saved to: profile-results-2023-02-13-03-47-45.npy
     ----------------------------------------------------------------------
     Result forward_stage_layer_ids: [[0], [1]]
     Result mesh_shapes: [(1, 4), (1, 4)]
-    Result logical_mesh_shapes: [(4, 1), (1, 4)]
-    Result autosharding_option_dicts: [{}, {'force_batch_dim_to_mesh_dim': 0}]
+    Result logical_mesh_shapes: [(1, 4), (4, 1)]
+    Result autosharding_option_dicts: [{'force_batch_dim_to_mesh_dim': 0}, {}]
 
 
 
@@ -440,7 +442,7 @@ partitioning algorithm consists of the following steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 3 minutes  9.712 seconds)
+   **Total running time of the script:** ( 3 minutes  5.925 seconds)
 
 
 .. _sphx_glr_download_tutorials_pipeshard_parallelism.py:
