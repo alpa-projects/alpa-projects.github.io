@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Performance Tuning Guide &mdash; Alpa 0.2.2.dev51 documentation</title>
+  <title>Performance Tuning Guide &mdash; Alpa 0.2.2.dev47 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> Alpa
           </a>
               <div class="version">
-                0.2.2.dev51
+                0.2.2.dev47
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -159,6 +159,8 @@ However, accessing metadata such as <cite>shape</cite> and <cite>dtype</cite> do
 <p>If you want to inspect the parallelization strategies, Alpa provides several
 debug options to dump the intermediate representations. You can see example usages
 at <a class="reference external" href="https://github.com/alpa-projects/alpa/blob/main/tests/runtime/test_debug_info.py">https://github.com/alpa-projects/alpa/blob/main/tests/runtime/test_debug_info.py</a>.
+The key interfaces include functions <code class="docutils literal notranslate"><span class="pre">dump_debug_info</span></code>, <code class="docutils literal notranslate"><span class="pre">get_last_dp_result</span></code> and
+environment variable <code class="docutils literal notranslate"><span class="pre">ALPA_DEBUG_PRINT_AS_STRATEGY</span></code>.
 Note that Alpa does not provide nice visualization tools currently, so understanding
 these intermediate representations requires some knowledge of HLO and Alpa algorithms.</p>
 <p>See also <a class="reference internal" href="../architecture/intra_op_solver.html#learn-intra-op-solver"><span class="std std-ref">intra-op solver guidance</span></a>.</p>
