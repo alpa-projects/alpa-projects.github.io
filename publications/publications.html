@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rationale &mdash; Alpa 0.2.2.dev53 documentation</title>
+  <title>Publications &mdash; Alpa 0.2.2.dev53 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -22,7 +22,9 @@
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developer Guide" href="../developer/developer_guide.html" />
+    <link rel="prev" title="Performance Benchmark" href="../benchmark/benchmark.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -60,17 +62,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Design and Architecture</a></li>
-<li class="toctree-l1"><a class="reference internal" href="alpa_compiler_walk_through.html">Alpa Compiler Walk-Through</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intra_op_solver.html">Code Structure of the Intra-op Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/overview.html">Design and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/alpa_compiler_walk_through.html">Alpa Compiler Walk-Through</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/intra_op_solver.html">Code Structure of the Intra-op Solver</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Benchmark</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../benchmark/benchmark.html">Performance Benchmark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Publications</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../publications/publications.html">Publications</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Publications</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -91,9 +93,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Rationale</li>
+      <li>Publications</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/alpa-projects/alpa/blob/main/docs/architecture/parallelism-view-and-rationale.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/alpa-projects/alpa/blob/main/docs/publications/publications.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -101,15 +103,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="rationale">
-<span id="id1"></span><h1>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline"></a></h1>
-<p>test</p>
+  <section id="publications">
+<h1>Publications<a class="headerlink" href="#publications" title="Permalink to this headline"></a></h1>
+<p>Alpa is developed as a research project with collaborators from multiple institutions.
+This page includes references to publications describing the ideas behind Alpa.</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://arxiv.org/abs/2201.12023">Alpa: Automating Inter- and Intra-Operator Parallelism for Distributed Deep Learning</a></div>
+<div class="line">Lianmin Zheng*, Zhuohan Li*, Hao Zhang*, Yonghao Zhuang, Zhifeng Chen, Yanping Huang, Yida Wang, Yuanzhong Xu, Danyang Zhuo, Eric P. Xing, Joseph E. Gonzalez, Ion Stoica</div>
+<div class="line"><em>OSDI 2022</em></div>
+<div class="line"><br /></div>
+<div class="line"><a class="reference external" href="https://arxiv.org/abs/2211.05322">On Optimizing the Communication of Model Parallelism</a></div>
+<div class="line">Yonghao Zhuang*, Hexu Zhao*, Lianmin Zheng, Zhuohan Li, Eric P. Xing, Qirong Ho, Joseph E. Gonzalez, Ion Stoica, Hao Zhang</div>
+<div class="line"><em>MLSys 2023</em></div>
+<div class="line"><br /></div>
+<div class="line"><a class="reference external" href="https://arxiv.org/abs/2302.11665">AlpaServe: Statistical Multiplexing with Model Parallelism for Deep Learning Serving</a></div>
+<div class="line">Zhuohan Li*, Lianmin Zheng*, Yinmin Zhong*, Vincent Liu, Ying Sheng, Xin Jin, Yanping Huang, Zhifeng Chen, Hao Zhang, Joseph E. Gonzalez, Ion Stoica</div>
+<div class="line"><em>Preprint</em></div>
+</div>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../benchmark/benchmark.html" class="btn btn-neutral float-left" title="Performance Benchmark" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../developer/developer_guide.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
