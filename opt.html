@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -143,9 +144,10 @@
         var length = parseInt($("#length_slider").val());
         var eta = (prompt_length / PROMPT_TOKEN_PER_SECOND + length / DECODING_TOKEN_PER_SECOND + OVERHEAD).toFixed(1);
         $("#eta").text(eta);
-        $("#loader_holder").css("visibility", "visible");
+        //$("#loader_holder").css("visibility", "visible");
         $("#generate-form-button").prop("disabled", true);
-        $("#error").text("");
+        //$("#error").text("");
+		$("#error").text("Sorry, this free online service has been discontinued. Please considering hosting your own service by following the guide at https://alpa-projects.github.io/tutorials/opt_serving.html");
         var formData = getFormData($("form"));
         var submitData = JSON.stringify(formData)
         console.log("submitData:");
@@ -185,8 +187,7 @@
                   }
                   $("#error").text(msg);
                 } else {
-                  $("#error").text(
-                      "Sorry, this free online service has been discontinued. Please host your own service by following the guide at https://alpa-projects.github.io/tutorials/opt_serving.html");
+                  $("#error").text("Sorry, this free online service has been discontinued. Please considering hosting your own service by following the guide at https://alpa-projects.github.io/tutorials/opt_serving.html");
                 }
             }
         });
@@ -403,7 +404,7 @@
     <a type="button" class="btn btn-outline-dark" href='javascript:set_prompt("math");'><i class="fa-solid fa-calculator"></i> Math</a>
     </div>
 
-<form method="POST" action="error" id="generate-form">
+<form method="POST" action="/generate" id="generate-form">
     <div class="my-3">
         <label for="textbox" class="form-label"></label>
         <textarea class="form-control" style="font-size: 20px;" name="prompt" rows="8" id="textbox" placeholder="Type the prompts here"></textarea>
@@ -756,13 +757,13 @@
   </div>
 
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XPSB9HFTDS"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-587CCSSRL2"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-XPSB9HFTDS');
+  gtag('config', 'G-587CCSSRL2');
 </script>
 
 </body>
